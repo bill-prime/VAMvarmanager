@@ -49,22 +49,22 @@ namespace VAMvarmanager
             this.btnRestoreSpec = new System.Windows.Forms.Button();
             this.btnRestoreAll = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbInvertCreators = new System.Windows.Forms.CheckBox();
+            this.cbAllCreators = new System.Windows.Forms.CheckBox();
             this.txtCreatorFilter = new System.Windows.Forms.TextBox();
             this.clbCreators = new System.Windows.Forms.CheckedListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.cbInvertFolders = new System.Windows.Forms.CheckBox();
+            this.cbAllFolders = new System.Windows.Forms.CheckBox();
             this.txtFolderFilter = new System.Windows.Forms.TextBox();
             this.clbFolders = new System.Windows.Forms.CheckedListBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.cbInvertSpec = new System.Windows.Forms.CheckBox();
+            this.cbAllSpec = new System.Windows.Forms.CheckBox();
             this.clbTypes = new System.Windows.Forms.CheckedListBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.btnRestoreRef = new System.Windows.Forms.Button();
-            this.cbAllSpec = new System.Windows.Forms.CheckBox();
-            this.cbInvertSpec = new System.Windows.Forms.CheckBox();
-            this.cbInvertCreators = new System.Windows.Forms.CheckBox();
-            this.cbAllCreators = new System.Windows.Forms.CheckBox();
-            this.cbInvertFolders = new System.Windows.Forms.CheckBox();
-            this.cbAllFolders = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -292,6 +292,28 @@ namespace VAMvarmanager
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Creator Exceptions";
             // 
+            // cbInvertCreators
+            // 
+            this.cbInvertCreators.AutoSize = true;
+            this.cbInvertCreators.Location = new System.Drawing.Point(65, 34);
+            this.cbInvertCreators.Name = "cbInvertCreators";
+            this.cbInvertCreators.Size = new System.Drawing.Size(56, 19);
+            this.cbInvertCreators.TabIndex = 15;
+            this.cbInvertCreators.Text = "Invert";
+            this.cbInvertCreators.UseVisualStyleBackColor = true;
+            this.cbInvertCreators.CheckedChanged += new System.EventHandler(this.cbInvertCreators_CheckedChanged);
+            // 
+            // cbAllCreators
+            // 
+            this.cbAllCreators.AutoSize = true;
+            this.cbAllCreators.Location = new System.Drawing.Point(9, 34);
+            this.cbAllCreators.Name = "cbAllCreators";
+            this.cbAllCreators.Size = new System.Drawing.Size(40, 19);
+            this.cbAllCreators.TabIndex = 14;
+            this.cbAllCreators.Text = "All";
+            this.cbAllCreators.UseVisualStyleBackColor = true;
+            this.cbAllCreators.CheckedChanged += new System.EventHandler(this.cbAllCreators_CheckedChanged);
+            // 
             // txtCreatorFilter
             // 
             this.txtCreatorFilter.Location = new System.Drawing.Point(6, 63);
@@ -322,6 +344,28 @@ namespace VAMvarmanager
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Folder Exceptions";
             // 
+            // cbInvertFolders
+            // 
+            this.cbInvertFolders.AutoSize = true;
+            this.cbInvertFolders.Location = new System.Drawing.Point(68, 34);
+            this.cbInvertFolders.Name = "cbInvertFolders";
+            this.cbInvertFolders.Size = new System.Drawing.Size(56, 19);
+            this.cbInvertFolders.TabIndex = 17;
+            this.cbInvertFolders.Text = "Invert";
+            this.cbInvertFolders.UseVisualStyleBackColor = true;
+            this.cbInvertFolders.CheckedChanged += new System.EventHandler(this.cbInvertFolders_CheckedChanged);
+            // 
+            // cbAllFolders
+            // 
+            this.cbAllFolders.AutoSize = true;
+            this.cbAllFolders.Location = new System.Drawing.Point(12, 34);
+            this.cbAllFolders.Name = "cbAllFolders";
+            this.cbAllFolders.Size = new System.Drawing.Size(40, 19);
+            this.cbAllFolders.TabIndex = 16;
+            this.cbAllFolders.Text = "All";
+            this.cbAllFolders.UseVisualStyleBackColor = true;
+            this.cbAllFolders.CheckedChanged += new System.EventHandler(this.cbAllFolders_CheckedChanged);
+            // 
             // txtFolderFilter
             // 
             this.txtFolderFilter.Location = new System.Drawing.Point(9, 63);
@@ -350,6 +394,28 @@ namespace VAMvarmanager
             this.groupBox5.TabIndex = 10;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Specific-Type Backup/Restore";
+            // 
+            // cbInvertSpec
+            // 
+            this.cbInvertSpec.AutoSize = true;
+            this.cbInvertSpec.Location = new System.Drawing.Point(65, 27);
+            this.cbInvertSpec.Name = "cbInvertSpec";
+            this.cbInvertSpec.Size = new System.Drawing.Size(56, 19);
+            this.cbInvertSpec.TabIndex = 13;
+            this.cbInvertSpec.Text = "Invert";
+            this.cbInvertSpec.UseVisualStyleBackColor = true;
+            this.cbInvertSpec.CheckedChanged += new System.EventHandler(this.cbInvertSpec_CheckedChanged);
+            // 
+            // cbAllSpec
+            // 
+            this.cbAllSpec.AutoSize = true;
+            this.cbAllSpec.Location = new System.Drawing.Point(9, 27);
+            this.cbAllSpec.Name = "cbAllSpec";
+            this.cbAllSpec.Size = new System.Drawing.Size(40, 19);
+            this.cbAllSpec.TabIndex = 12;
+            this.cbAllSpec.Text = "All";
+            this.cbAllSpec.UseVisualStyleBackColor = true;
+            this.cbAllSpec.CheckedChanged += new System.EventHandler(this.cbAllSpec_CheckedChanged);
             // 
             // clbTypes
             // 
@@ -382,72 +448,6 @@ namespace VAMvarmanager
             this.btnRestoreRef.Text = "Restore All Referenced vars";
             this.btnRestoreRef.UseVisualStyleBackColor = true;
             this.btnRestoreRef.Click += new System.EventHandler(this.btnRestoreRef_Click);
-            // 
-            // cbAllSpec
-            // 
-            this.cbAllSpec.AutoSize = true;
-            this.cbAllSpec.Location = new System.Drawing.Point(9, 27);
-            this.cbAllSpec.Name = "cbAllSpec";
-            this.cbAllSpec.Size = new System.Drawing.Size(40, 19);
-            this.cbAllSpec.TabIndex = 12;
-            this.cbAllSpec.Text = "All";
-            this.cbAllSpec.UseVisualStyleBackColor = true;
-            this.cbAllSpec.CheckedChanged += new System.EventHandler(this.cbAllSpec_CheckedChanged);
-            // 
-            // cbInvertSpec
-            // 
-            this.cbInvertSpec.AutoSize = true;
-            this.cbInvertSpec.Location = new System.Drawing.Point(65, 27);
-            this.cbInvertSpec.Name = "cbInvertSpec";
-            this.cbInvertSpec.Size = new System.Drawing.Size(56, 19);
-            this.cbInvertSpec.TabIndex = 13;
-            this.cbInvertSpec.Text = "Invert";
-            this.cbInvertSpec.UseVisualStyleBackColor = true;
-            this.cbInvertSpec.CheckedChanged += new System.EventHandler(this.cbInvertSpec_CheckedChanged);
-            // 
-            // cbInvertCreators
-            // 
-            this.cbInvertCreators.AutoSize = true;
-            this.cbInvertCreators.Location = new System.Drawing.Point(65, 34);
-            this.cbInvertCreators.Name = "cbInvertCreators";
-            this.cbInvertCreators.Size = new System.Drawing.Size(56, 19);
-            this.cbInvertCreators.TabIndex = 15;
-            this.cbInvertCreators.Text = "Invert";
-            this.cbInvertCreators.UseVisualStyleBackColor = true;
-            this.cbInvertCreators.CheckedChanged += new System.EventHandler(this.cbInvertCreators_CheckedChanged);
-            // 
-            // cbAllCreators
-            // 
-            this.cbAllCreators.AutoSize = true;
-            this.cbAllCreators.Location = new System.Drawing.Point(9, 34);
-            this.cbAllCreators.Name = "cbAllCreators";
-            this.cbAllCreators.Size = new System.Drawing.Size(40, 19);
-            this.cbAllCreators.TabIndex = 14;
-            this.cbAllCreators.Text = "All";
-            this.cbAllCreators.UseVisualStyleBackColor = true;
-            this.cbAllCreators.CheckedChanged += new System.EventHandler(this.cbAllCreators_CheckedChanged);
-            // 
-            // cbInvertFolders
-            // 
-            this.cbInvertFolders.AutoSize = true;
-            this.cbInvertFolders.Location = new System.Drawing.Point(68, 34);
-            this.cbInvertFolders.Name = "cbInvertFolders";
-            this.cbInvertFolders.Size = new System.Drawing.Size(56, 19);
-            this.cbInvertFolders.TabIndex = 17;
-            this.cbInvertFolders.Text = "Invert";
-            this.cbInvertFolders.UseVisualStyleBackColor = true;
-            this.cbInvertFolders.CheckedChanged += new System.EventHandler(this.cbInvertFolders_CheckedChanged);
-            // 
-            // cbAllFolders
-            // 
-            this.cbAllFolders.AutoSize = true;
-            this.cbAllFolders.Location = new System.Drawing.Point(12, 34);
-            this.cbAllFolders.Name = "cbAllFolders";
-            this.cbAllFolders.Size = new System.Drawing.Size(40, 19);
-            this.cbAllFolders.TabIndex = 16;
-            this.cbAllFolders.Text = "All";
-            this.cbAllFolders.UseVisualStyleBackColor = true;
-            this.cbAllFolders.CheckedChanged += new System.EventHandler(this.cbAllFolders_CheckedChanged);
             // 
             // frmVARManager
             // 
