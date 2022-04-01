@@ -485,13 +485,17 @@ namespace VAMvarmanager
                 boolSkip = false;
 
                 try
-                { 
+                {
                     vf.version = Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]);
+                    vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")).Replace(" ", "_");
+                    vf.Name = fi.Name.Replace(".var", "").Replace("." + Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]), "").Replace(" ", "_");
                 }
                 catch (Exception exFilename)
                 {
                     lstErrorsFilename.Add(fi.Name);
                     vf.version = 1;
+                    vf.creator = "";
+                    vf.Name = "";
                 }
 
                 // Read file contents
@@ -578,8 +582,11 @@ namespace VAMvarmanager
                             {
                                 varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
 
-                                vf.creator = metaJS.creatorName.Replace(" ","_");
-                                vf.Name = metaJS.creatorName.Replace(" ", "_") + "." + metaJS.packageName.Replace(" ", "_");
+                                if (vf.creator == "")
+                                { vf.creator = metaJS.creatorName.Replace(" ", "_"); }
+
+                                if (vf.Name == "")
+                                { vf.Name = metaJS.creatorName.Replace(" ", "_") + "." + metaJS.packageName.Replace(" ", "_"); }
 
                                 if (metaJS.dependencies != null)
                                 {
@@ -605,12 +612,6 @@ namespace VAMvarmanager
                             {
                                 Debug.Print(fi.FullName);
                                 lstErrorsJson.Add(fi.Name);
-
-                                if (vf.creator == "")
-                                { try { vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")).Replace(" ", "_"); } catch { vf.creator = ""; } }
-
-                                if (vf.Name == "")
-                                { try { vf.Name = fi.Name.Replace(".var", "").Replace("." + vf.version, "").Replace(" ", "_"); } catch { vf.Name = ""; } }
                             }
 
                             objReader.Close();
@@ -673,7 +674,7 @@ namespace VAMvarmanager
             var lstDepvars = new List<string>();
             var latestvars = new Dictionary<string, int>();
             var intlatest = default(int);
-            string curFile;
+            bool boolFileNameError = false;
 
             var lstErrorsFilename = new List<string>();
             var lstErrorsZipFile = new List<string>();
@@ -682,42 +683,48 @@ namespace VAMvarmanager
             {
                 vf = new varfile();
                 vf.fi = fi;
+                boolFileNameError = false;
 
                 try
                 {
                     vf.version = Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]);
+                    vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")).Replace(" ", "_");
+                    vf.Name = fi.Name.Replace(".var", "").Replace("." + Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]), "").Replace(" ", "_");
                 }
                 catch
                 {
                     lstErrorsFilename.Add(fi.Name);
+                    boolFileNameError = true;
                     vf.version = 1;
+                    vf.creator = "";
+                    vf.Name = "";
                 }
 
-                try 
+                if (boolFileNameError)
                 {
-                    var = ZipFile.Open(fi.FullName, ZipArchiveMode.Read);
+                    try
+                    {
+                        var = ZipFile.Open(fi.FullName, ZipArchiveMode.Read);
 
-                    var objReader = new StreamReader(var.GetEntry("meta.json").Open());
-                    varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
+                        var objReader = new StreamReader(var.GetEntry("meta.json").Open());
+                        varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
 
-                    vf.creator = metaJS.creatorName.Replace(" ", "_");
-                    vf.Name = metaJS.creatorName.Replace(" ", "_") + "." + metaJS.packageName.Replace(" ", "_");
+                        vf.creator = metaJS.creatorName.Replace(" ", "_");
+                        vf.Name = metaJS.creatorName.Replace(" ", "_") + "." + metaJS.packageName.Replace(" ", "_");
 
-                    objReader.Close();
-                    objReader.Dispose();
+                        objReader.Close();
+                        objReader.Dispose();
 
-                    var.Dispose();
+                        var.Dispose();
+                    }
+                    catch
+                    {
+                        lstErrorsZipFile.Add(fi.Name);
+                        vf.creator = "";
+                        vf.Name = "";
+                    }
                 }
-                catch 
-                {
-                    lstErrorsZipFile.Add(fi.Name);
-                    if (vf.creator == "")
-                    { try { vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")).Replace(" ", "_"); } catch { vf.creator = ""; } }
-
-                    if (vf.Name == "")
-                    { try { vf.Name = fi.Name.Replace(".var", "").Replace("." + vf.version, "").Replace(" ", "_"); } catch { vf.Name = ""; } }
-                }
-
+                
                 if (latestvars.TryGetValue(vf.creator + "." + vf.Name, out intlatest))
                 {
                     if (vf.version > intlatest)
