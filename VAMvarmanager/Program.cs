@@ -360,6 +360,12 @@ namespace VAMvarmanager
             {
                 foreach (FileInfo f in neededFiles)
                 {
+
+                    if (!Directory.Exists(Path.GetDirectoryName(f.FullName.Replace( _strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                    }
+
                     File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
                 }
 
@@ -395,7 +401,13 @@ namespace VAMvarmanager
 
             foreach (var f in backupvars)
             {
-                File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+
+                if (!Directory.Exists(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                }
+
+                File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
             }
 
             return GetVarCounts();
@@ -407,6 +419,11 @@ namespace VAMvarmanager
 
             foreach (FileInfo f in diBackup.GetFiles("*.var", SearchOption.AllDirectories))
             {
+                if (!Directory.Exists(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                }
+
                 File.Move(f.FullName, f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"));
             }
 

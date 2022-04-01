@@ -315,6 +315,8 @@ namespace VAMvarmanager
             lblVamcount.Text = vc.countVAMvars.ToString();
             lblBackupcount.Text = vc.countBackupvars.ToString();
 
+            setfunctionstatus();
+
             Cursor = Cursors.Default;
         }
 
@@ -326,6 +328,8 @@ namespace VAMvarmanager
             lblVamcount.Text = vc.countVAMvars.ToString();
             lblBackupcount.Text = vc.countBackupvars.ToString();
 
+            setfunctionstatus();
+
             Cursor = Cursors.Default;
         }
 
@@ -336,6 +340,8 @@ namespace VAMvarmanager
             varmanager.varCounts vc = _vm.RestoreAllvars();
             lblVamcount.Text = vc.countVAMvars.ToString();
             lblBackupcount.Text = vc.countBackupvars.ToString();
+
+            setfunctionstatus();
 
             Cursor = Cursors.Default;
         }
