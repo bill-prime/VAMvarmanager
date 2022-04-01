@@ -486,16 +486,14 @@ namespace VAMvarmanager
 
                 try
                 {
-                    vf.version = Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]);
                     vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")).Replace(" ", "_");
-                    vf.Name = fi.Name.Replace(".var", "").Replace("." + Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]), "").Replace(" ", "_");
+                    vf.Name = Strings.Left(fi.Name, fi.Name.IndexOf(".", fi.Name.IndexOf(".") + 1)).Replace(" ", "_");
+                    vf.version = Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]);
                 }
                 catch (Exception exFilename)
                 {
                     lstErrorsFilename.Add(fi.Name);
                     vf.version = 1;
-                    vf.creator = "";
-                    vf.Name = "";
                 }
 
                 // Read file contents
@@ -674,7 +672,6 @@ namespace VAMvarmanager
             var lstDepvars = new List<string>();
             var latestvars = new Dictionary<string, int>();
             var intlatest = default(int);
-            bool boolFileNameError = false;
 
             var lstErrorsFilename = new List<string>();
             var lstErrorsZipFile = new List<string>();
@@ -683,24 +680,20 @@ namespace VAMvarmanager
             {
                 vf = new varfile();
                 vf.fi = fi;
-                boolFileNameError = false;
 
                 try
                 {
-                    vf.version = Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]);
                     vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")).Replace(" ", "_");
-                    vf.Name = fi.Name.Replace(".var", "").Replace("." + Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]), "").Replace(" ", "_");
+                    vf.Name = Strings.Left(fi.Name, fi.Name.IndexOf(".", fi.Name.IndexOf(".") + 1)).Replace(" ", "_");
+                    vf.version = Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]);
                 }
                 catch
                 {
                     lstErrorsFilename.Add(fi.Name);
-                    boolFileNameError = true;
                     vf.version = 1;
-                    vf.creator = "";
-                    vf.Name = "";
                 }
 
-                if (boolFileNameError)
+                if (vf.creator == "")
                 {
                     try
                     {
@@ -720,8 +713,6 @@ namespace VAMvarmanager
                     catch
                     {
                         lstErrorsZipFile.Add(fi.Name);
-                        vf.creator = "";
-                        vf.Name = "";
                     }
                 }
                 
