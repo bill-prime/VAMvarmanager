@@ -407,6 +407,60 @@ namespace VAMvarmanager
             clbFilter(ref clbFolders, txtFolderFilter.Text, _folderListvam, _folderex);
         }
 
+        private void cbAllCreators_CheckedChanged(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+            clbSetAll(ref clbCreators, cbAllCreators.Checked);
+            Cursor = Cursors.Default;
+        }
+
+        private void cbInvertCreators_CheckedChanged(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+            clbInvert(ref clbCreators);
+            Cursor = Cursors.Default;
+        }
+
+        private void cbAllFolders_CheckedChanged(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+            clbSetAll(ref clbFolders, cbAllFolders.Checked);
+            Cursor = Cursors.Default;
+        }
+
+        private void cbInvertFolders_CheckedChanged(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+            clbInvert(ref clbFolders);
+            Cursor = Cursors.Default;
+        }
+
+        private void cbAllSpec_CheckedChanged(object sender, EventArgs e)
+        {
+            clbSetAll(ref clbTypes, cbAllSpec.Checked);
+        }
+
+        private void cbInvertSpec_CheckedChanged(object sender, EventArgs e)
+        {
+            clbInvert(ref clbTypes);
+        }
+
+        private void clbSetAll(ref CheckedListBox clb, bool boolChecked)
+        {
+            for (int i = 0; i < clb.Items.Count; i++)
+            {
+                clb.SetItemChecked(i, boolChecked);
+            }
+        }
+
+        private void clbInvert(ref CheckedListBox clb)
+        {
+            for (int i = 0; i < clb.Items.Count; i++)
+            {
+                clb.SetItemChecked(i, !clb.GetItemChecked(i));
+            }
+        }
+
         private void clbFilter(ref CheckedListBox clb, string strfilter, List<string> fulllist, System.Collections.Specialized.StringCollection checkedlist)
         {
             var itemsNeeded = from strItem in fulllist
