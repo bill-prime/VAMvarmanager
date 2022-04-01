@@ -577,17 +577,17 @@ namespace VAMvarmanager
                             {
                                 varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
 
-                                vf.creator = metaJS.creatorName;
-                                vf.Name = metaJS.creatorName + "." + metaJS.packageName;
+                                vf.creator = metaJS.creatorName.Replace(" ","_");
+                                vf.Name = metaJS.creatorName.Replace(" ", "_") + "." + metaJS.packageName.Replace(" ", "_");
 
                                 if (metaJS.dependencies != null)
                                 {
                                     var dependencies = metaJS.dependencies;
                                     foreach (string dep in dependencies.Keys)
-                                    {
-                                        if (!lstDepvars.Contains(dep.Split(".")[0] + "." + dep.Split(".")[1]))
+                                    {                                        
+                                        if (!lstDepvars.Contains(dep.Split(".")[0].Replace(" ", "_") + "." + dep.Split(".")[1].Replace(" ", "_")))
                                         {
-                                            lstDepvars.Add(dep.Split(".")[0] + "." + dep.Split(".")[1]);
+                                            lstDepvars.Add(dep.Split(".")[0].Replace(" ", "_") + "." + dep.Split(".")[1].Replace(" ", "_"));
                                         }
                                     }
                                 }
@@ -606,10 +606,10 @@ namespace VAMvarmanager
                                 lstErrorsJson.Add(fi.Name);
 
                                 if (vf.creator == "")
-                                { try { vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")); } catch { vf.creator = ""; } }
+                                { try { vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")).Replace(" ", "_"); } catch { vf.creator = ""; } }
 
                                 if (vf.Name == "")
-                                { try { vf.Name = fi.Name.Replace(".var", "").Replace("." + vf.version, ""); } catch { vf.Name = ""; } }
+                                { try { vf.Name = fi.Name.Replace(".var", "").Replace("." + vf.version, "").Replace(" ", "_"); } catch { vf.Name = ""; } }
                             }
 
                             objReader.Close();
@@ -699,8 +699,8 @@ namespace VAMvarmanager
                     var objReader = new StreamReader(var.GetEntry("meta.json").Open());
                     varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
 
-                    vf.creator = metaJS.creatorName;
-                    vf.Name = metaJS.creatorName + "." + metaJS.packageName;
+                    vf.creator = metaJS.creatorName.Replace(" ", "_");
+                    vf.Name = metaJS.creatorName.Replace(" ", "_") + "." + metaJS.packageName.Replace(" ", "_");
 
                     objReader.Close();
                     objReader.Dispose();
@@ -711,10 +711,10 @@ namespace VAMvarmanager
                 {
                     lstErrorsZipFile.Add(fi.Name);
                     if (vf.creator == "")
-                    { try { vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")); } catch { vf.creator = ""; } }
+                    { try { vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")).Replace(" ", "_"); } catch { vf.creator = ""; } }
 
                     if (vf.Name == "")
-                    { try { vf.Name = fi.Name.Replace(".var", "").Replace("." + vf.version, ""); } catch { vf.Name = ""; } }
+                    { try { vf.Name = fi.Name.Replace(".var", "").Replace("." + vf.version, "").Replace(" ", "_"); } catch { vf.Name = ""; } }
                 }
 
                 if (latestvars.TryGetValue(vf.creator + "." + vf.Name, out intlatest))
