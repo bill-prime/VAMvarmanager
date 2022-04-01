@@ -54,6 +54,8 @@ namespace VAMvarmanager
 
             public varfile()
             {
+                Name = "";
+                creator = "";
                 boolScripts = false;
                 boolTextures = false;
                 boolAssets = false;
@@ -167,7 +169,8 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                 }
 
-                File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)))) 
+                { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))); }
             }
 
             return GetVarCounts();
@@ -193,7 +196,7 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                 }
 
-                File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))); }
             }
 
             return GetVarCounts();
@@ -229,7 +232,7 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                 }
 
-                File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))); }
             }
 
             return GetVarCounts();
@@ -268,7 +271,7 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                 }
 
-                File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))); }
             }
 
             return GetVarCounts();
@@ -301,7 +304,7 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                 }
 
-                File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))); }
             }
 
             return GetVarCounts();
@@ -338,7 +341,7 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                 }
 
-                File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))); }
             }
 
             return GetVarCounts();
@@ -347,26 +350,25 @@ namespace VAMvarmanager
         public varCounts RestoreNeededVars()
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
-
+            varconfig vcbakup = GetVarconfig(_strVAMbackupdir);
             DirectoryInfo diBackup = new DirectoryInfo(_strVAMbackupdir);
-
             var neededFiles = new List<FileInfo>();
+            var lstErrorvars = new List<string>();
 
             //IEnumerable<FileInfo> neededFiles;
             //neededFiles = diBackup
             //    .GetFiles("*.var", SearchOption.AllDirectories)
             //    .Where(file => vc.deps.Contains(file.Name.Replace(".var", "").Substring(0, file.Name.Replace(".var", "").LastIndexOf(".")), StringComparer.OrdinalIgnoreCase));
 
-            foreach (FileInfo f in diBackup.GetFiles("*.var", SearchOption.AllDirectories))
+            foreach (varfile f in vcbakup.vars)
             {
                 try
                 {
-                    if (vc.deps.Contains(f.Name.Replace(".var", "").Substring(0, f.Name.Replace(".var", "").LastIndexOf(".")), StringComparer.OrdinalIgnoreCase))
-                    { neededFiles.Add(f); }
+                    if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase))
+                    { neededFiles.Add(f.fi); }
                 }
                 catch
-                { MessageBox.Show("Please manually remove file from VAM/backup folders:" + Environment.NewLine + f.Name, "Skipping Restore file, incorrect .var file naming format.", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
-                
+                { lstErrorvars.Add(f.fi.Name); }
             }
 
             while (neededFiles.Count() > 0)
@@ -379,24 +381,26 @@ namespace VAMvarmanager
                         Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
                     }
 
-                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                    if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))) { File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))); }
                 }
 
                 vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+                vcbakup = GetVarconfig(_strVAMbackupdir);
 
-                foreach (FileInfo f in diBackup.GetFiles("*.var", SearchOption.AllDirectories))
+                foreach (varfile f in vcbakup.vars)
                 {
                     try
                     {
-                        if (vc.deps.Contains(f.Name.Replace(".var", "").Substring(0, f.Name.Replace(".var", "").LastIndexOf(".")), StringComparer.OrdinalIgnoreCase))
-                        { neededFiles.Add(f); }
+                        if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase))
+                        { neededFiles.Add(f.fi); }
                     }
                     catch
-                    { MessageBox.Show(f.Name, "Skipping file, incorrect .var file naming format", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
-
+                    { lstErrorvars.Add(f.fi.Name); }
                 }
             }
-            
+
+            //MessageBox.Show("Please manually remove file from VAM/backup folders:" + Environment.NewLine + f.Name, "Skipping Restore file, incorrect .var file naming format.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
             return GetVarCounts();
         }
 
@@ -428,7 +432,7 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
                 }
 
-                File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))); }
             }
 
             return GetVarCounts();
@@ -445,7 +449,7 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
                 }
 
-                File.Move(f.FullName, f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"));
+                if (!File.Exists(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))){ File.Move(f.FullName, f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"), false); }
             }
 
             return GetVarCounts();
@@ -469,149 +473,159 @@ namespace VAMvarmanager
             var latestvars = new Dictionary<string, int>();
             int intlatest;
 
+            var lstErrorvars = new List<string>();
+
             foreach (FileInfo fi in diFolder.GetFiles("*.var", SearchOption.AllDirectories))
             {
+                vf = new varfile();
+                vf.fi = fi;
 
                 try
-                {
-                    vf = new varfile();
-                    vf.fi = fi;
-                    vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf("."));
+                { 
                     vf.version = Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]);
-                    vf.Name = fi.Name.Replace(".var", "").Replace("." + vf.version, "");
-                    if (latestvars.TryGetValue(vf.creator + "." + vf.Name, out intlatest))
-                    {
-                        if (vf.version > intlatest)
-                        {
-                            latestvars[vf.creator + "." + vf.Name] = vf.version;
-                        }
-                    }
-                    else
-                    {
-                        latestvars.Add(vf.creator + "." + vf.Name, vf.version);
-                    }
-
-                    var = ZipFile.Open(fi.FullName, ZipArchiveMode.Read);
-
-                    // Read file contents
-                    foreach (ZipArchiveEntry e in var.Entries)
-                    {
-                        if (e.FullName.IndexOf("custom/atom/person/textures/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolTextures = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/atom/person/morphs/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolMorphs = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/assets/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolAssets = true;
-                        }
-
-                        if (e.FullName.IndexOf("saves/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolLooks = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/atom/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolLookPresets = true;
-                        }
-
-                        if (e.FullName.IndexOf("saves/scene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolScenes = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/subscene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolSubScenes = true;
-                        }
-
-                        if (e.FullName.IndexOf("saves/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolPoses = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/atom/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolPosePresets = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolHair = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/atom/person/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolHairPreset = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolClothing = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/atom/person/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolClothingPreset = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/scripts/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolScripts = true;
-                        }
-
-                        if (e.FullName == "meta.json")
-                        {
-                            var objReader = new StreamReader(e.Open());
-                            try
-                            {
-                                varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
-
-                                if (metaJS.dependencies != null)
-                                {
-                                    var dependencies = metaJS.dependencies;
-                                    foreach (string dep in dependencies.Keys)
-                                    {
-                                        if (!lstDepvars.Contains(dep.Split(".")[0] + "." + dep.Split(".")[1]))
-                                        {
-                                            lstDepvars.Add(dep.Split(".")[0] + "." + dep.Split(".")[1]);
-                                        }
-                                    }
-                                }
-
-                                if ((metaJS.customOptions != null) && (metaJS.customOptions.preloadMorphs != null))
-                                {
-                                    if (metaJS.customOptions.preloadMorphs.HasValue && metaJS.customOptions.preloadMorphs.ToString() == "true")
-                                    {
-                                        vf.boolPreloadMorphs = true;
-                                    }
-                                }
-                            }
-                            catch (Exception)
-                            {
-                                Debug.Print(fi.FullName);
-                            }
-
-                            objReader.Close();
-                            objReader.Dispose();
-                        }
-                    }
-
-                    var.Dispose();
-
-                    lstVars.Add(vf);
-
                 }
-                catch (Exception)
+                catch 
                 {
-                    MessageBox.Show(fi.Name, "Skipping file, incorrect .var file naming format", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    lstErrorvars.Add(fi.Name);
+                    vf.version = 1;
                 }
+
+                var = ZipFile.Open(fi.FullName, ZipArchiveMode.Read);
+
+                // Read file contents
+                foreach (ZipArchiveEntry e in var.Entries)
+                {
+                    if (e.FullName.IndexOf("custom/atom/person/textures/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolTextures = true;
+                    }
+
+                    if (e.FullName.IndexOf("custom/atom/person/morphs/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolMorphs = true;
+                    }
+
+                    if (e.FullName.IndexOf("custom/assets/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolAssets = true;
+                    }
+
+                    if (e.FullName.IndexOf("saves/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolLooks = true;
+                    }
+
+                    if (e.FullName.IndexOf("custom/atom/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolLookPresets = true;
+                    }
+
+                    if (e.FullName.IndexOf("saves/scene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolScenes = true;
+                    }
+
+                    if (e.FullName.IndexOf("custom/subscene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolSubScenes = true;
+                    }
+
+                    if (e.FullName.IndexOf("saves/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolPoses = true;
+                    }
+
+                    if (e.FullName.IndexOf("custom/atom/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolPosePresets = true;
+                    }
+
+                    if (e.FullName.IndexOf("custom/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolHair = true;
+                    }
+
+                    if (e.FullName.IndexOf("custom/atom/person/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolHairPreset = true;
+                    }
+
+                    if (e.FullName.IndexOf("custom/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolClothing = true;
+                    }
+
+                    if (e.FullName.IndexOf("custom/atom/person/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolClothingPreset = true;
+                    }
+
+                    if (e.FullName.IndexOf("custom/scripts/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    {
+                        vf.boolScripts = true;
+                    }
+
+                    if (e.FullName == "meta.json")
+                    {
+                        var objReader = new StreamReader(e.Open());
+                        try
+                        {
+                            varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
+
+                            vf.creator = metaJS.creatorName;
+                            vf.Name = metaJS.creatorName + "." + metaJS.packageName;
+
+                            if (metaJS.dependencies != null)
+                            {
+                                var dependencies = metaJS.dependencies;
+                                foreach (string dep in dependencies.Keys)
+                                {
+                                    if (!lstDepvars.Contains(dep.Split(".")[0] + "." + dep.Split(".")[1]))
+                                    {
+                                        lstDepvars.Add(dep.Split(".")[0] + "." + dep.Split(".")[1]);
+                                    }
+                                }
+                            }
+
+                            if ((metaJS.customOptions != null) && (metaJS.customOptions.preloadMorphs != null))
+                            {
+                                if (metaJS.customOptions.preloadMorphs.HasValue && metaJS.customOptions.preloadMorphs.ToString() == "true")
+                                {
+                                    vf.boolPreloadMorphs = true;
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            Debug.Print(fi.FullName);
+                            if(vf.creator == "") 
+                            { try { vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")); } catch { vf.creator = ""; } }
+
+                            if (vf.Name == "")
+                            { try { vf.Name = fi.Name.Replace(".var", "").Replace("." + vf.version, ""); } catch { vf.Name = ""; } }
+                        }
+
+                        objReader.Close();
+                        objReader.Dispose();
+                    }
+                }
+
+                if (latestvars.TryGetValue(vf.creator + "." + vf.Name, out intlatest))
+                {
+                    if (vf.version > intlatest)
+                    {
+                        latestvars[vf.creator + "." + vf.Name] = vf.version;
+                    }
+                }
+                else
+                {
+                    latestvars.Add(vf.creator + "." + vf.Name, vf.version);
+                }
+
+                var.Dispose();
+
+                lstVars.Add(vf);
+
             }
 
             varconfig vc = new varconfig();
@@ -619,11 +633,18 @@ namespace VAMvarmanager
             vc.deps = lstDepvars;
             vc.latestvars = latestvars;
 
+            if(lstErrorvars.Count > 0) 
+            {
+                //var message = string.Join(Environment.NewLine, lstErrorvars);
+                //MessageBox.Show("These .vars have incorrect file names, though should not cause issues:" + Environment.NewLine + message, "Warning: Incorrectly named files.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
             return vc;
         }
 
         public List<string> GetCreatorList()
         {
+            ZipArchive var;
             var diFolder = new DirectoryInfo(_strVAMdir + @"\AddonPackages");
             varfile vf;
             var lstVars = new List<varfile>();
@@ -632,47 +653,64 @@ namespace VAMvarmanager
             var intlatest = default(int);
             string curFile;
 
+            var lstErrorvars = new List<string>();
 
             foreach (FileInfo fi in diFolder.GetFiles("*.var", SearchOption.AllDirectories))
             {
+                vf = new varfile();
+                vf.fi = fi;
+
                 try
                 {
-                    vf = new varfile();
-                    vf.fi = fi;
-                    vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf("."));
                     vf.version = Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]);
-                    vf.Name = fi.Name.Replace(".var", "").Replace("." + vf.version, "");
-                    if (latestvars.TryGetValue(vf.creator + "." + vf.Name, out intlatest))
-                    {
-                        if (vf.version > intlatest)
-                        {
-                            latestvars[vf.creator + "." + vf.Name] = vf.version;
-                        }
-                    }
-                    else
-                    {
-                        latestvars.Add(vf.creator + "." + vf.Name, vf.version);
-                    }
-
-                    vf.boolTextures = false;
-                    vf.boolMorphs = false;
-                    vf.boolPreloadMorphs = false;
-                    vf.boolLooks = false;
-                    vf.boolLookPresets = false;
-                    vf.boolScenes = false;
-                    vf.boolPoses = false;
-                    vf.boolPosePresets = false;
-                    vf.boolHair = false;
-                    vf.boolClothing = false;
-                    vf.boolScripts = false;
-
-                    lstVars.Add(vf);
                 }
-                catch(Exception ex)
+                catch
                 {
-                    MessageBox.Show(fi.Name, "Skipping file, incorrect .var file naming format",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                    lstErrorvars.Add(fi.Name);
+                    vf.version = 1;
                 }
+
+                try 
+                {
+                    var = ZipFile.Open(fi.FullName, ZipArchiveMode.Read);
+
+                    var objReader = new StreamReader(var.GetEntry("meta.json").Open());
+                    varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
+
+                    vf.creator = metaJS.creatorName;
+                    vf.Name = metaJS.creatorName + "." + metaJS.packageName;
+
+                    objReader.Close();
+                    objReader.Dispose();
+
+                    var.Dispose();
+                }
+                catch 
+                {
+                    if (vf.creator == "")
+                    { try { vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")); } catch { vf.creator = ""; } }
+
+                    if (vf.Name == "")
+                    { try { vf.Name = fi.Name.Replace(".var", "").Replace("." + vf.version, ""); } catch { vf.Name = ""; } }
+                }
+
+                if (latestvars.TryGetValue(vf.creator + "." + vf.Name, out intlatest))
+                {
+                    if (vf.version > intlatest)
+                    {
+                        latestvars[vf.creator + "." + vf.Name] = vf.version;
+                    }
+                }
+                else
+                {
+                    latestvars.Add(vf.creator + "." + vf.Name, vf.version);
+                }
+
+                lstVars.Add(vf);
             }
+
+            //var message = string.Join(Environment.NewLine, lstErrorvars);
+            //MessageBox.Show("These .vars have incorrect file names, though should not cause issues:" + Environment.NewLine + message, "Warning: Incorrectly named files.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             var creators = (from v in lstVars
                            select v.creator).Distinct().ToList();
