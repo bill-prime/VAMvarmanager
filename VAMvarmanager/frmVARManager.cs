@@ -31,6 +31,14 @@ namespace VAMvarmanager
             InitializeComponent();
             txtVamfolder.Enabled = false;
             txtBackupfolder.Enabled = false;
+            txtCreatorFilter.Enabled = false;
+            txtFolderFilter.Enabled = false;
+            cbAllCreators.Enabled = false;
+            cbInvertCreators.Enabled = false;
+            cbAllFolders.Enabled = false;
+            cbInvertFolders.Enabled = false;
+            cbAllSpec.Enabled = false;
+            cbInvertSpec.Enabled = false;
 
             //Reset settings
             //Properties.Settings.Default["vamfolder"] = null;
@@ -89,6 +97,8 @@ namespace VAMvarmanager
 
         private void setfunctionstatus() 
         {
+            Cursor = Cursors.WaitCursor;
+
             if (_enabled)
             {
                 _vm = new varmanager(_strVamdir, _strBackupdir);
@@ -154,6 +164,15 @@ namespace VAMvarmanager
                 this.btnRestoreRef.Enabled = true;
                 this.btnRestoreSpec.Enabled = true;
                 this.btnRestoreAll.Enabled = true;
+
+                this.txtCreatorFilter.Enabled = true;
+                this.txtFolderFilter.Enabled = true;
+                this.cbAllCreators.Enabled = true;
+                this.cbInvertCreators.Enabled = true;
+                this.cbAllFolders.Enabled = true;
+                this.cbInvertFolders.Enabled = true;
+                this.cbAllSpec.Enabled = true;
+                this.cbInvertSpec.Enabled = true;
             }
             else
             {
@@ -167,7 +186,19 @@ namespace VAMvarmanager
                 this.clbCreators.Hide();
                 this.clbFolders.Enabled = false;
                 this.clbFolders.Hide();
+
+                this.txtCreatorFilter.Enabled = false;
+                this.txtFolderFilter.Enabled = false;
+                this.cbAllCreators.Enabled = false;
+                this.cbInvertCreators.Enabled = false;
+                this.cbAllFolders.Enabled = false;
+                this.cbInvertFolders.Enabled = false;
+                this.cbAllSpec.Enabled = false;
+                this.cbInvertSpec.Enabled = false;
             }
+
+            Cursor = Cursors.Default;
+
         }
 
         private bool checkValiddirs()
