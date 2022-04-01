@@ -33,6 +33,14 @@ namespace VAMvarmanager
             //Properties.Settings.Default["backupfolder"] = null;
             //Properties.Settings.Default.Save();
 
+            // Copy user settings from previous application version if necessary
+            if (Properties.Settings.Default.UpdateSettings)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.UpdateSettings = false;
+                Properties.Settings.Default.Save();
+            }
+
             this.clbFolders.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbFolders_ItemCheck);
             this.clbCreators.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbCreators_ItemCheck);
 
