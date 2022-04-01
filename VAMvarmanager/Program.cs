@@ -465,167 +465,182 @@ namespace VAMvarmanager
 
         private varconfig GetVarconfig(string strDir)
         {
-            ZipArchive var;
             var diFolder = new DirectoryInfo(strDir);
             varfile vf;
             var lstVars = new List<varfile>();
             var lstDepvars = new List<string>();
             var latestvars = new Dictionary<string, int>();
             int intlatest;
+            bool boolSkip = false;
 
-            var lstErrorvars = new List<string>();
+            var lstErrorsFilename = new List<string>();
+            var lstErrorsJson = new List<string>();
+            var lstErrorsZipFile = new List<string>();
 
             foreach (FileInfo fi in diFolder.GetFiles("*.var", SearchOption.AllDirectories))
             {
                 vf = new varfile();
                 vf.fi = fi;
+                boolSkip = false;
 
                 try
                 { 
                     vf.version = Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]);
                 }
-                catch 
+                catch (Exception exFilename)
                 {
-                    lstErrorvars.Add(fi.Name);
+                    lstErrorsFilename.Add(fi.Name);
                     vf.version = 1;
                 }
 
-                var = ZipFile.Open(fi.FullName, ZipArchiveMode.Read);
-
                 // Read file contents
-                foreach (ZipArchiveEntry e in var.Entries)
+                try
                 {
-                    if (e.FullName.IndexOf("custom/atom/person/textures/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolTextures = true;
-                    }
+                    ZipArchive varZip = ZipFile.Open(fi.FullName, ZipArchiveMode.Read);
 
-                    if (e.FullName.IndexOf("custom/atom/person/morphs/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    foreach (ZipArchiveEntry e in varZip.Entries)
                     {
-                        vf.boolMorphs = true;
-                    }
-
-                    if (e.FullName.IndexOf("custom/assets/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolAssets = true;
-                    }
-
-                    if (e.FullName.IndexOf("saves/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolLooks = true;
-                    }
-
-                    if (e.FullName.IndexOf("custom/atom/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolLookPresets = true;
-                    }
-
-                    if (e.FullName.IndexOf("saves/scene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolScenes = true;
-                    }
-
-                    if (e.FullName.IndexOf("custom/subscene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolSubScenes = true;
-                    }
-
-                    if (e.FullName.IndexOf("saves/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolPoses = true;
-                    }
-
-                    if (e.FullName.IndexOf("custom/atom/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolPosePresets = true;
-                    }
-
-                    if (e.FullName.IndexOf("custom/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolHair = true;
-                    }
-
-                    if (e.FullName.IndexOf("custom/atom/person/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolHairPreset = true;
-                    }
-
-                    if (e.FullName.IndexOf("custom/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolClothing = true;
-                    }
-
-                    if (e.FullName.IndexOf("custom/atom/person/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolClothingPreset = true;
-                    }
-
-                    if (e.FullName.IndexOf("custom/scripts/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                    {
-                        vf.boolScripts = true;
-                    }
-
-                    if (e.FullName == "meta.json")
-                    {
-                        var objReader = new StreamReader(e.Open());
-                        try
+                        if (e.FullName.IndexOf("custom/atom/person/textures/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
                         {
-                            varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
+                            vf.boolTextures = true;
+                        }
 
-                            vf.creator = metaJS.creatorName;
-                            vf.Name = metaJS.creatorName + "." + metaJS.packageName;
+                        if (e.FullName.IndexOf("custom/atom/person/morphs/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolMorphs = true;
+                        }
 
-                            if (metaJS.dependencies != null)
+                        if (e.FullName.IndexOf("custom/assets/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolAssets = true;
+                        }
+
+                        if (e.FullName.IndexOf("saves/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolLooks = true;
+                        }
+
+                        if (e.FullName.IndexOf("custom/atom/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolLookPresets = true;
+                        }
+
+                        if (e.FullName.IndexOf("saves/scene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolScenes = true;
+                        }
+
+                        if (e.FullName.IndexOf("custom/subscene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolSubScenes = true;
+                        }
+
+                        if (e.FullName.IndexOf("saves/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolPoses = true;
+                        }
+
+                        if (e.FullName.IndexOf("custom/atom/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolPosePresets = true;
+                        }
+
+                        if (e.FullName.IndexOf("custom/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolHair = true;
+                        }
+
+                        if (e.FullName.IndexOf("custom/atom/person/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolHairPreset = true;
+                        }
+
+                        if (e.FullName.IndexOf("custom/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolClothing = true;
+                        }
+
+                        if (e.FullName.IndexOf("custom/atom/person/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolClothingPreset = true;
+                        }
+
+                        if (e.FullName.IndexOf("custom/scripts/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                        {
+                            vf.boolScripts = true;
+                        }
+
+                        if (e.FullName == "meta.json")
+                        {
+                            var objReader = new StreamReader(e.Open());
+                            try
                             {
-                                var dependencies = metaJS.dependencies;
-                                foreach (string dep in dependencies.Keys)
+                                varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
+
+                                vf.creator = metaJS.creatorName;
+                                vf.Name = metaJS.creatorName + "." + metaJS.packageName;
+
+                                if (metaJS.dependencies != null)
                                 {
-                                    if (!lstDepvars.Contains(dep.Split(".")[0] + "." + dep.Split(".")[1]))
+                                    var dependencies = metaJS.dependencies;
+                                    foreach (string dep in dependencies.Keys)
                                     {
-                                        lstDepvars.Add(dep.Split(".")[0] + "." + dep.Split(".")[1]);
+                                        if (!lstDepvars.Contains(dep.Split(".")[0] + "." + dep.Split(".")[1]))
+                                        {
+                                            lstDepvars.Add(dep.Split(".")[0] + "." + dep.Split(".")[1]);
+                                        }
+                                    }
+                                }
+
+                                if ((metaJS.customOptions != null) && (metaJS.customOptions.preloadMorphs != null))
+                                {
+                                    if (metaJS.customOptions.preloadMorphs.HasValue && metaJS.customOptions.preloadMorphs.ToString() == "true")
+                                    {
+                                        vf.boolPreloadMorphs = true;
                                     }
                                 }
                             }
-
-                            if ((metaJS.customOptions != null) && (metaJS.customOptions.preloadMorphs != null))
+                            catch (Exception exJson)
                             {
-                                if (metaJS.customOptions.preloadMorphs.HasValue && metaJS.customOptions.preloadMorphs.ToString() == "true")
-                                {
-                                    vf.boolPreloadMorphs = true;
-                                }
+                                Debug.Print(fi.FullName);
+                                lstErrorsJson.Add(fi.Name);
+
+                                if (vf.creator == "")
+                                { try { vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")); } catch { vf.creator = ""; } }
+
+                                if (vf.Name == "")
+                                { try { vf.Name = fi.Name.Replace(".var", "").Replace("." + vf.version, ""); } catch { vf.Name = ""; } }
                             }
-                        }
-                        catch (Exception)
-                        {
-                            Debug.Print(fi.FullName);
-                            if(vf.creator == "") 
-                            { try { vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")); } catch { vf.creator = ""; } }
 
-                            if (vf.Name == "")
-                            { try { vf.Name = fi.Name.Replace(".var", "").Replace("." + vf.version, ""); } catch { vf.Name = ""; } }
+                            objReader.Close();
+                            objReader.Dispose();
                         }
-
-                        objReader.Close();
-                        objReader.Dispose();
                     }
+
+                    varZip.Dispose();
+                }
+                catch (Exception exZip) //broken or unreadable zip file, skip
+                {
+                    lstErrorsZipFile.Add(fi.Name);
+                    boolSkip = true;
                 }
 
-                if (latestvars.TryGetValue(vf.creator + "." + vf.Name, out intlatest))
+                if (!boolSkip)
                 {
-                    if (vf.version > intlatest)
+                    if (latestvars.TryGetValue(vf.creator + "." + vf.Name, out intlatest))
                     {
-                        latestvars[vf.creator + "." + vf.Name] = vf.version;
+                        if (vf.version > intlatest)
+                        {
+                            latestvars[vf.creator + "." + vf.Name] = vf.version;
+                        }
                     }
+                    else
+                    {
+                        latestvars.Add(vf.creator + "." + vf.Name, vf.version);
+                    }
+
+                    lstVars.Add(vf);
                 }
-                else
-                {
-                    latestvars.Add(vf.creator + "." + vf.Name, vf.version);
-                }
-
-                var.Dispose();
-
-                lstVars.Add(vf);
-
             }
 
             varconfig vc = new varconfig();
@@ -633,19 +648,25 @@ namespace VAMvarmanager
             vc.deps = lstDepvars;
             vc.latestvars = latestvars;
 
-            if(lstErrorvars.Count > 0) 
+            if(lstErrorsZipFile.Count > 0) 
             {
-                //var message = string.Join(Environment.NewLine, lstErrorvars);
+                //var message = string.Join(Environment.NewLine, lstErrorsFilename);
                 //MessageBox.Show("These .vars have incorrect file names, though should not cause issues:" + Environment.NewLine + message, "Warning: Incorrectly named files.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                var message = string.Join(Environment.NewLine, lstErrorsZipFile);
+                MessageBox.Show("Broken/Unreadable .vars were skipped." + Environment.NewLine + "Manually remove or try re-zipping these files:" + Environment.NewLine + message, "Broken/Unreadable .vars Detected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             return vc;
         }
 
-        public List<string> GetCreatorList()
+        public List<string> GetCreatorList(bool backupdir = false)
         {
             ZipArchive var;
-            var diFolder = new DirectoryInfo(_strVAMdir + @"\AddonPackages");
+            DirectoryInfo diFolder;
+            if (!backupdir) { diFolder = new DirectoryInfo(_strVAMdir + @"\AddonPackages"); }
+            else { diFolder = new DirectoryInfo(_strVAMbackupdir); }
+
             varfile vf;
             var lstVars = new List<varfile>();
             var lstDepvars = new List<string>();
@@ -653,7 +674,8 @@ namespace VAMvarmanager
             var intlatest = default(int);
             string curFile;
 
-            var lstErrorvars = new List<string>();
+            var lstErrorsFilename = new List<string>();
+            var lstErrorsZipFile = new List<string>();
 
             foreach (FileInfo fi in diFolder.GetFiles("*.var", SearchOption.AllDirectories))
             {
@@ -666,7 +688,7 @@ namespace VAMvarmanager
                 }
                 catch
                 {
-                    lstErrorvars.Add(fi.Name);
+                    lstErrorsFilename.Add(fi.Name);
                     vf.version = 1;
                 }
 
@@ -687,6 +709,7 @@ namespace VAMvarmanager
                 }
                 catch 
                 {
+                    lstErrorsZipFile.Add(fi.Name);
                     if (vf.creator == "")
                     { try { vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")); } catch { vf.creator = ""; } }
 

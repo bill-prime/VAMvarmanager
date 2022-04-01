@@ -35,6 +35,7 @@ namespace VAMvarmanager
             this.txtVamfolder = new System.Windows.Forms.TextBox();
             this.btnBackupUnref = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnResetSettings = new System.Windows.Forms.Button();
             this.cbEx = new System.Windows.Forms.CheckBox();
             this.lblBackupcount = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -48,15 +49,16 @@ namespace VAMvarmanager
             this.btnRestoreSpec = new System.Windows.Forms.Button();
             this.btnRestoreAll = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.txtCreatorFilter = new System.Windows.Forms.TextBox();
             this.clbCreators = new System.Windows.Forms.CheckedListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.txtFolderFilter = new System.Windows.Forms.TextBox();
             this.clbFolders = new System.Windows.Forms.CheckedListBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.clbTypes = new System.Windows.Forms.CheckedListBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.btnRestoreRef = new System.Windows.Forms.Button();
-            this.btnResetSettings = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -130,6 +132,16 @@ namespace VAMvarmanager
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Config";
+            // 
+            // btnResetSettings
+            // 
+            this.btnResetSettings.Location = new System.Drawing.Point(615, 85);
+            this.btnResetSettings.Name = "btnResetSettings";
+            this.btnResetSettings.Size = new System.Drawing.Size(160, 38);
+            this.btnResetSettings.TabIndex = 12;
+            this.btnResetSettings.Text = "Reset Settings";
+            this.btnResetSettings.UseVisualStyleBackColor = true;
+            this.btnResetSettings.Click += new System.EventHandler(this.btnResetSettings_Click);
             // 
             // cbEx
             // 
@@ -263,48 +275,66 @@ namespace VAMvarmanager
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.txtCreatorFilter);
             this.groupBox3.Controls.Add(this.clbCreators);
             this.groupBox3.Location = new System.Drawing.Point(237, 158);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(274, 480);
+            this.groupBox3.Size = new System.Drawing.Size(274, 558);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Creator Exceptions";
+            // 
+            // txtCreatorFilter
+            // 
+            this.txtCreatorFilter.Location = new System.Drawing.Point(9, 27);
+            this.txtCreatorFilter.Name = "txtCreatorFilter";
+            this.txtCreatorFilter.Size = new System.Drawing.Size(259, 23);
+            this.txtCreatorFilter.TabIndex = 12;
+            this.txtCreatorFilter.TextChanged += new System.EventHandler(this.txtCreatorFilter_TextChanged);
             // 
             // clbCreators
             // 
             this.clbCreators.CheckOnClick = true;
             this.clbCreators.FormattingEnabled = true;
-            this.clbCreators.Location = new System.Drawing.Point(6, 22);
+            this.clbCreators.Location = new System.Drawing.Point(6, 56);
             this.clbCreators.Name = "clbCreators";
-            this.clbCreators.Size = new System.Drawing.Size(262, 454);
+            this.clbCreators.Size = new System.Drawing.Size(262, 490);
             this.clbCreators.TabIndex = 8;
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.txtFolderFilter);
             this.groupBox4.Controls.Add(this.clbFolders);
             this.groupBox4.Location = new System.Drawing.Point(517, 158);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(274, 480);
+            this.groupBox4.Size = new System.Drawing.Size(274, 558);
             this.groupBox4.TabIndex = 9;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Folder Exceptions";
+            // 
+            // txtFolderFilter
+            // 
+            this.txtFolderFilter.Location = new System.Drawing.Point(9, 27);
+            this.txtFolderFilter.Name = "txtFolderFilter";
+            this.txtFolderFilter.Size = new System.Drawing.Size(259, 23);
+            this.txtFolderFilter.TabIndex = 13;
+            this.txtFolderFilter.TextChanged += new System.EventHandler(this.txtFolderFilter_TextChanged);
             // 
             // clbFolders
             // 
             this.clbFolders.CheckOnClick = true;
             this.clbFolders.FormattingEnabled = true;
-            this.clbFolders.Location = new System.Drawing.Point(6, 22);
+            this.clbFolders.Location = new System.Drawing.Point(9, 56);
             this.clbFolders.Name = "clbFolders";
-            this.clbFolders.Size = new System.Drawing.Size(259, 454);
+            this.clbFolders.Size = new System.Drawing.Size(259, 490);
             this.clbFolders.TabIndex = 8;
             // 
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.clbTypes);
-            this.groupBox5.Location = new System.Drawing.Point(797, 158);
+            this.groupBox5.Location = new System.Drawing.Point(797, 444);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(274, 480);
+            this.groupBox5.Size = new System.Drawing.Size(274, 272);
             this.groupBox5.TabIndex = 10;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Specific-Type Backup/Restore";
@@ -315,7 +345,7 @@ namespace VAMvarmanager
             this.clbTypes.FormattingEnabled = true;
             this.clbTypes.Location = new System.Drawing.Point(6, 22);
             this.clbTypes.Name = "clbTypes";
-            this.clbTypes.Size = new System.Drawing.Size(259, 454);
+            this.clbTypes.Size = new System.Drawing.Size(259, 238);
             this.clbTypes.TabIndex = 8;
             // 
             // groupBox6
@@ -341,21 +371,11 @@ namespace VAMvarmanager
             this.btnRestoreRef.UseVisualStyleBackColor = true;
             this.btnRestoreRef.Click += new System.EventHandler(this.btnRestoreRef_Click);
             // 
-            // btnResetSettings
-            // 
-            this.btnResetSettings.Location = new System.Drawing.Point(615, 85);
-            this.btnResetSettings.Name = "btnResetSettings";
-            this.btnResetSettings.Size = new System.Drawing.Size(160, 38);
-            this.btnResetSettings.TabIndex = 12;
-            this.btnResetSettings.Text = "Reset Settings";
-            this.btnResetSettings.UseVisualStyleBackColor = true;
-            this.btnResetSettings.Click += new System.EventHandler(this.btnResetSettings_Click);
-            // 
             // frmVARManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1080, 650);
+            this.ClientSize = new System.Drawing.Size(1080, 728);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
@@ -370,7 +390,9 @@ namespace VAMvarmanager
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -406,6 +428,8 @@ namespace VAMvarmanager
         private System.Windows.Forms.Button btnBackupUnrefSpec;
         private System.Windows.Forms.Button btnRestoreRef;
         private System.Windows.Forms.Button btnResetSettings;
+        private System.Windows.Forms.TextBox txtCreatorFilter;
+        private System.Windows.Forms.TextBox txtFolderFilter;
     }
 }
 

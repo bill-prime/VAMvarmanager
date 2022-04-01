@@ -21,6 +21,10 @@ namespace VAMvarmanager
         private string _strBackupdir;
         private System.Collections.Specialized.StringCollection _creatorex;
         private System.Collections.Specialized.StringCollection _folderex;
+        private List<string> _creatorListvam;
+        private List<string> _creatorListbak;
+        private List<string> _folderListvam;
+        private List<string> _folderListbak;
 
         public frmVARManager()
         {
@@ -94,7 +98,9 @@ namespace VAMvarmanager
                 lblBackupcount.Text = vc.countBackupvars.ToString();
 
                 clbCreators.Items.Clear();
-                foreach (string c in _vm.GetCreatorList())
+                _creatorListvam = _vm.GetCreatorList();
+
+                foreach (string c in _creatorListvam)
                 {
                     if (_creatorex == null)
                     {
@@ -108,24 +114,35 @@ namespace VAMvarmanager
                 }
                 this.clbCreators.Enabled = true;
                 this.clbCreators.Show();
-                
                 clbFolders.Items.Clear();
-                if (_folderex != null && _folderex.Contains("AddonPackages")) { clbFolders.Items.Add("AddonPackages", true); }
-                else { clbFolders.Items.Add("AddonPackages", false); }
 
-                var arrFolders = Directory.GetDirectories(_strVamdir + @"\AddonPackages", "*", SearchOption.AllDirectories);
-                Array.Sort(arrFolders);
-                
-                foreach (string f in arrFolders)
+                var dirs = from f in Directory.GetDirectories(_strVamdir + @"\AddonPackages", "*", SearchOption.AllDirectories)
+                                     select f.Replace(_strVamdir + @"\AddonPackages\", "");
+
+                _folderListvam = dirs.ToList<string>();
+                _folderListvam.Add("AddonPackages");
+
+                foreach (string f in _folderListvam)
                 {
                     if (_folderex == null)
                     {
-                        clbFolders.Items.Add(f.Replace(_strVamdir + @"\AddonPackages\", ""), false);
+                        clbFolders.Items.Add(f, false);
                     }
                     else
                     {
-                        if (_folderex.Contains(f.Replace(_strVamdir + @"\AddonPackages\", ""))) { clbFolders.Items.Add(f.Replace(_strVamdir + @"\AddonPackages\", ""), true); }
-                        else { clbFolders.Items.Add(f.Replace(_strVamdir + @"\AddonPackages\", ""), false); }
+                        if (_folderex.Contains(f)) { clbFolders.Items.Add(f, true); }
+                        else { clbFolders.Items.Add(f, false); }
+                    }
+                }
+                
+                this.clbFolders.Sorted = true;
+                for (int i = clbFolders.Items.Count - 1; i >= 0; i--)
+                {
+                    if (clbFolders.Items[i].ToString() == "AddonPackages" && i != 0)
+                    {
+                        var temp = clbFolders.Items[0];
+                        clbFolders.Items[0] = clbFolders.Items[i];
+                        clbFolders.Items[i] = temp;
                     }
                 }
                 this.clbFolders.Enabled = true;
@@ -378,6 +395,58 @@ namespace VAMvarmanager
             _enabled = false;
 
             setfunctionstatus();
+        }
+
+        private void txtCreatorFilter_TextChanged(object sender, EventArgs e)
+        {
+            clbFilter(ref clbCreators, txtCreatorFilter.Text, _creatorListvam, _creatorex);
+        }
+
+        private void txtFolderFilter_TextChanged(object sender, EventArgs e)
+        {
+            clbFilter(ref clbFolders, txtFolderFilter.Text, _folderListvam, _folderex);
+        }
+
+        private void clbFilter(ref CheckedListBox clb, string strfilter, List<string> fulllist, System.Collections.Specialized.StringCollection checkedlist)
+        {
+            var itemsNeeded = from strItem in fulllist
+                              where strItem.Contains(strfilter,StringComparison.OrdinalIgnoreCase)
+                              select strItem;
+
+            //Add Items
+            foreach (var i in itemsNeeded)
+            {
+                if (!clb.Items.Contains(i))
+                {
+                    if (checkedlist !=  null)
+                    {
+                        if (checkedlist.Contains(i)) { clb.Items.Add(i, true); }
+                        else { clb.Items.Add(i, false); }
+                    }
+                    else { clb.Items.Add(i, false); }
+                }
+            }
+
+            //Remove Iitems
+            for (int i = clb.Items.Count -1; i >=0; i--)
+            {
+                if (!itemsNeeded.Contains(clb.Items[i].ToString()))
+                {
+                    clb.Items.RemoveAt(i);
+                }
+            }
+
+            clb.Sorted = true;
+
+            for (int i = clb.Items.Count - 1; i >= 0; i--)
+            {
+                if (clb.Items[i].ToString() == "AddonPackages" && i != 0)
+                {
+                    var temp = clb.Items[0];
+                    clb.Items[0] = clb.Items[i];
+                    clb.Items[i] = temp;
+                }
+            }
         }
     }
 }
