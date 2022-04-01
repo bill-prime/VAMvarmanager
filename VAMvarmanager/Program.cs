@@ -350,11 +350,24 @@ namespace VAMvarmanager
 
             DirectoryInfo diBackup = new DirectoryInfo(_strVAMbackupdir);
 
-            IEnumerable<FileInfo> neededFiles;
-            
-            neededFiles = diBackup
-                .GetFiles("*.var", SearchOption.AllDirectories)
-                .Where(file => vc.deps.Contains(file.Name.Replace(".var", "").Substring(0, file.Name.Replace(".var", "").LastIndexOf(".")), StringComparer.OrdinalIgnoreCase));
+            var neededFiles = new List<FileInfo>();
+
+            //IEnumerable<FileInfo> neededFiles;
+            //neededFiles = diBackup
+            //    .GetFiles("*.var", SearchOption.AllDirectories)
+            //    .Where(file => vc.deps.Contains(file.Name.Replace(".var", "").Substring(0, file.Name.Replace(".var", "").LastIndexOf(".")), StringComparer.OrdinalIgnoreCase));
+
+            foreach (FileInfo f in diBackup.GetFiles("*.var", SearchOption.AllDirectories))
+            {
+                try
+                {
+                    if (vc.deps.Contains(f.Name.Replace(".var", "").Substring(0, f.Name.Replace(".var", "").LastIndexOf(".")), StringComparer.OrdinalIgnoreCase))
+                    { neededFiles.Add(f); }
+                }
+                catch
+                { MessageBox.Show("Please manually remove file from VAM/backup folders:" + Environment.NewLine + f.Name, "Skipping Restore file, incorrect .var file naming format.", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
+                
+            }
 
             while (neededFiles.Count() > 0)
             {
@@ -371,9 +384,17 @@ namespace VAMvarmanager
 
                 vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
 
-                neededFiles = diBackup
-                    .GetFiles("*.var", SearchOption.AllDirectories)
-                    .Where(file => vc.deps.Contains(file.Name.Replace(".var", "").Substring(0, file.Name.Replace(".var", "").LastIndexOf(".")), StringComparer.OrdinalIgnoreCase));
+                foreach (FileInfo f in diBackup.GetFiles("*.var", SearchOption.AllDirectories))
+                {
+                    try
+                    {
+                        if (vc.deps.Contains(f.Name.Replace(".var", "").Substring(0, f.Name.Replace(".var", "").LastIndexOf(".")), StringComparer.OrdinalIgnoreCase))
+                        { neededFiles.Add(f); }
+                    }
+                    catch
+                    { MessageBox.Show(f.Name, "Skipping file, incorrect .var file naming format", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
+
+                }
             }
             
             return GetVarCounts();
