@@ -386,6 +386,7 @@ namespace VAMvarmanager
 
                 vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
                 vcbakup = GetVarconfig(_strVAMbackupdir);
+                neededFiles = new List<FileInfo>();
 
                 foreach (varfile f in vcbakup.vars)
                 {
