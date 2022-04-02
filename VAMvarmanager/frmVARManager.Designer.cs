@@ -65,12 +65,16 @@ namespace VAMvarmanager
             this.clbTypes = new System.Windows.Forms.CheckedListBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.btnRestoreRef = new System.Windows.Forms.Button();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.btnRevertpreloadmorphs = new System.Windows.Forms.Button();
+            this.btnDisablepreloadmorphs = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            this.groupBox7.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnVamfolder
@@ -285,7 +289,7 @@ namespace VAMvarmanager
             this.groupBox3.Controls.Add(this.cbAllCreators);
             this.groupBox3.Controls.Add(this.txtCreatorFilter);
             this.groupBox3.Controls.Add(this.clbCreators);
-            this.groupBox3.Location = new System.Drawing.Point(237, 158);
+            this.groupBox3.Location = new System.Drawing.Point(240, 158);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(274, 577);
             this.groupBox3.TabIndex = 7;
@@ -337,7 +341,7 @@ namespace VAMvarmanager
             this.groupBox4.Controls.Add(this.cbAllFolders);
             this.groupBox4.Controls.Add(this.txtFolderFilter);
             this.groupBox4.Controls.Add(this.clbFolders);
-            this.groupBox4.Location = new System.Drawing.Point(517, 158);
+            this.groupBox4.Location = new System.Drawing.Point(520, 158);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(274, 577);
             this.groupBox4.TabIndex = 9;
@@ -370,7 +374,7 @@ namespace VAMvarmanager
             // 
             this.txtFolderFilter.Location = new System.Drawing.Point(9, 63);
             this.txtFolderFilter.Name = "txtFolderFilter";
-            this.txtFolderFilter.Size = new System.Drawing.Size(259, 23);
+            this.txtFolderFilter.Size = new System.Drawing.Size(258, 23);
             this.txtFolderFilter.TabIndex = 13;
             this.txtFolderFilter.TextChanged += new System.EventHandler(this.txtFolderFilter_TextChanged);
             // 
@@ -380,7 +384,7 @@ namespace VAMvarmanager
             this.clbFolders.FormattingEnabled = true;
             this.clbFolders.Location = new System.Drawing.Point(9, 92);
             this.clbFolders.Name = "clbFolders";
-            this.clbFolders.Size = new System.Drawing.Size(259, 472);
+            this.clbFolders.Size = new System.Drawing.Size(258, 472);
             this.clbFolders.TabIndex = 8;
             // 
             // groupBox5
@@ -388,9 +392,9 @@ namespace VAMvarmanager
             this.groupBox5.Controls.Add(this.cbInvertSpec);
             this.groupBox5.Controls.Add(this.cbAllSpec);
             this.groupBox5.Controls.Add(this.clbTypes);
-            this.groupBox5.Location = new System.Drawing.Point(797, 425);
+            this.groupBox5.Location = new System.Drawing.Point(800, 425);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(274, 310);
+            this.groupBox5.Size = new System.Drawing.Size(271, 310);
             this.groupBox5.TabIndex = 10;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Specific-Type Backup/Restore";
@@ -423,7 +427,7 @@ namespace VAMvarmanager
             this.clbTypes.FormattingEnabled = true;
             this.clbTypes.Location = new System.Drawing.Point(6, 59);
             this.clbTypes.Name = "clbTypes";
-            this.clbTypes.Size = new System.Drawing.Size(259, 238);
+            this.clbTypes.Size = new System.Drawing.Size(256, 238);
             this.clbTypes.TabIndex = 8;
             // 
             // groupBox6
@@ -431,7 +435,7 @@ namespace VAMvarmanager
             this.groupBox6.Controls.Add(this.btnRestoreRef);
             this.groupBox6.Controls.Add(this.btnRestoreAll);
             this.groupBox6.Controls.Add(this.btnRestoreSpec);
-            this.groupBox6.Location = new System.Drawing.Point(12, 442);
+            this.groupBox6.Location = new System.Drawing.Point(12, 539);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(219, 196);
             this.groupBox6.TabIndex = 11;
@@ -449,11 +453,45 @@ namespace VAMvarmanager
             this.btnRestoreRef.UseVisualStyleBackColor = true;
             this.btnRestoreRef.Click += new System.EventHandler(this.btnRestoreRef_Click);
             // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.btnRevertpreloadmorphs);
+            this.groupBox7.Controls.Add(this.btnDisablepreloadmorphs);
+            this.groupBox7.Location = new System.Drawing.Point(800, 158);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(271, 138);
+            this.groupBox7.TabIndex = 12;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Preload Morphs";
+            // 
+            // btnRevertpreloadmorphs
+            // 
+            this.btnRevertpreloadmorphs.ForeColor = System.Drawing.Color.BlueViolet;
+            this.btnRevertpreloadmorphs.Location = new System.Drawing.Point(6, 79);
+            this.btnRevertpreloadmorphs.Name = "btnRevertpreloadmorphs";
+            this.btnRevertpreloadmorphs.Size = new System.Drawing.Size(256, 51);
+            this.btnRevertpreloadmorphs.TabIndex = 14;
+            this.btnRevertpreloadmorphs.Text = "Revert Preload Morphs Settings";
+            this.btnRevertpreloadmorphs.UseVisualStyleBackColor = true;
+            this.btnRevertpreloadmorphs.Click += new System.EventHandler(this.btnRevertpreloadmorphs_Click);
+            // 
+            // btnDisablepreloadmorphs
+            // 
+            this.btnDisablepreloadmorphs.ForeColor = System.Drawing.Color.BlueViolet;
+            this.btnDisablepreloadmorphs.Location = new System.Drawing.Point(6, 22);
+            this.btnDisablepreloadmorphs.Name = "btnDisablepreloadmorphs";
+            this.btnDisablepreloadmorphs.Size = new System.Drawing.Size(256, 51);
+            this.btnDisablepreloadmorphs.TabIndex = 13;
+            this.btnDisablepreloadmorphs.Text = "Disable Preload Morphs";
+            this.btnDisablepreloadmorphs.UseVisualStyleBackColor = true;
+            this.btnDisablepreloadmorphs.Click += new System.EventHandler(this.btnDisablepreloadmorphs_Click);
+            // 
             // frmVARManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1080, 747);
+            this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
@@ -474,6 +512,7 @@ namespace VAMvarmanager
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox6.ResumeLayout(false);
+            this.groupBox7.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -515,6 +554,9 @@ namespace VAMvarmanager
         private System.Windows.Forms.CheckBox cbAllFolders;
         private System.Windows.Forms.CheckBox cbInvertSpec;
         private System.Windows.Forms.CheckBox cbAllSpec;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.Button btnDisablepreloadmorphs;
+        private System.Windows.Forms.Button btnRevertpreloadmorphs;
     }
 }
 

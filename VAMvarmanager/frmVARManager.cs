@@ -33,6 +33,7 @@ namespace VAMvarmanager
             txtBackupfolder.Enabled = false;
             txtCreatorFilter.Enabled = false;
             txtFolderFilter.Enabled = false;
+
             cbAllCreators.Enabled = false;
             cbInvertCreators.Enabled = false;
             cbAllFolders.Enabled = false;
@@ -164,9 +165,11 @@ namespace VAMvarmanager
                 this.btnRestoreRef.Enabled = true;
                 this.btnRestoreSpec.Enabled = true;
                 this.btnRestoreAll.Enabled = true;
+                this.btnDisablepreloadmorphs.Enabled = true;
 
                 this.txtCreatorFilter.Enabled = true;
                 this.txtFolderFilter.Enabled = true;
+
                 this.cbAllCreators.Enabled = true;
                 this.cbInvertCreators.Enabled = true;
                 this.cbAllFolders.Enabled = true;
@@ -176,19 +179,22 @@ namespace VAMvarmanager
             }
             else
             {
+                this.clbCreators.Enabled = false;
+                this.clbCreators.Hide();
+                this.clbFolders.Enabled = false;
+                this.clbFolders.Hide();
+
                 this.btnBackupUnref.Enabled = false;
                 this.btnBackupUnrefSpec.Enabled = false;
                 this.btnBackupSpec.Enabled = false;
                 this.btnRestoreRef.Enabled = false;
                 this.btnRestoreSpec.Enabled = false;
                 this.btnRestoreAll.Enabled = false;
-                this.clbCreators.Enabled = false;
-                this.clbCreators.Hide();
-                this.clbFolders.Enabled = false;
-                this.clbFolders.Hide();
+                this.btnDisablepreloadmorphs.Enabled = false;
 
                 this.txtCreatorFilter.Enabled = false;
                 this.txtFolderFilter.Enabled = false;
+
                 this.cbAllCreators.Enabled = false;
                 this.cbInvertCreators.Enabled = false;
                 this.cbAllFolders.Enabled = false;
@@ -532,6 +538,20 @@ namespace VAMvarmanager
                     clb.Items[i] = temp;
                 }
             }
+        }
+
+        private void btnDisablepreloadmorphs_Click(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+            int test = _vm.DisablePreloadMorphs();
+            Cursor = Cursors.Default;
+        }
+
+        private void btnRevertpreloadmorphs_Click(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+            int test = _vm.RevertPreloadMorphs();
+            Cursor = Cursors.Default;
         }
     }
 }

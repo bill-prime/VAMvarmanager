@@ -128,6 +128,11 @@ namespace VAMvarmanager
             public customOptions? customOptions { get; set; }
             //public dynamic hadReferenceIssues { get; set; }
         }
+        public partial class varUserPrefFile
+        {
+            public string? userNotes { get; set; }
+            public customOptions customOptions { get; set; }
+        }
 
         private partial class varconfig
         {
@@ -462,6 +467,98 @@ namespace VAMvarmanager
             vcount.countVAMvars = Directory.GetFiles(_strVAMdir + @"\AddonPackages", "*.var", SearchOption.AllDirectories).Count();
             vcount.countBackupvars = Directory.GetFiles(_strVAMbackupdir, "*.var", SearchOption.AllDirectories).Count();
             return vcount;
+        }
+
+        public int DisablePreloadMorphs()
+        {
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+            string strFileuserpref;
+            string strUserPrefContents;
+            string strLine;
+            bool boolOverwrite;
+
+            var morphvars = from v in vc.vars
+                            where v.boolPreloadMorphs && v.boolMorphs
+                            select v;
+
+            foreach (varfile vf in morphvars)
+            {
+                try
+                {
+                    strFileuserpref = _strVAMdir + @"\AddonPackagesUserPrefs\" + Strings.Left(vf.fi.Name, vf.fi.Name.IndexOf(".", vf.fi.Name.IndexOf(".") + 1)) + ".prefs";
+                    strUserPrefContents = "";
+
+                    if (File.Exists(strFileuserpref))
+                    {
+                        boolOverwrite = false;
+                        var objReader = new StreamReader(strFileuserpref);
+
+                        while (!objReader.EndOfStream)
+                        {
+                            strLine = objReader.ReadLine();
+                            if (strLine.Contains("preloadMorphs") && strLine.Contains("true"))
+                            {
+                                strLine = strLine.Replace("true", "false");
+                                boolOverwrite = true;
+                            }
+                            strUserPrefContents += strLine + Environment.NewLine;
+                        }
+
+                        objReader.Close();
+                        objReader.Dispose();
+
+                        if (boolOverwrite)
+                        {
+                            File.WriteAllText(strFileuserpref, strUserPrefContents);
+                        }
+                    }
+                    else
+                    {
+                        strUserPrefContents = "{ " + Environment.NewLine + @"   ""userNotes"" : """", " + Environment.NewLine + @"   ""customOptions"" : { " + Environment.NewLine + @"      ""preloadMorphs"" : ""false""" + Environment.NewLine + "   }" + Environment.NewLine + "}";
+
+                        File.WriteAllText(strFileuserpref, strUserPrefContents);
+                    }
+                }
+                catch 
+                { 
+                
+                }
+            }
+
+            return 1;
+        }
+
+        public int RevertPreloadMorphs()
+        {
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+            string strFileuserpref;
+            string strUserPrefContents;
+            string strLine;
+            bool boolOverwrite;
+
+            var morphvars = from v in vc.vars
+                            where v.boolPreloadMorphs && v.boolMorphs
+                            select v;
+
+            foreach (varfile vf in morphvars)
+            {
+                try
+                {
+                    strFileuserpref = _strVAMdir + @"\AddonPackagesUserPrefs\" + Strings.Left(vf.fi.Name, vf.fi.Name.IndexOf(".", vf.fi.Name.IndexOf(".") + 1)) + ".prefs";
+                    strUserPrefContents = "";
+
+                    if (File.Exists(strFileuserpref))
+                    {
+                        File.Move(strFileuserpref, strFileuserpref + ".bak",true);
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+
+            return 1;
         }
 
         private varconfig GetVarconfig(string strDir)
