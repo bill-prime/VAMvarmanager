@@ -166,6 +166,7 @@ namespace VAMvarmanager
                 this.btnRestoreSpec.Enabled = true;
                 this.btnRestoreAll.Enabled = true;
                 this.btnDisablepreloadmorphs.Enabled = true;
+                this.btnRevertpreloadmorphs.Enabled = true;
 
                 this.txtCreatorFilter.Enabled = true;
                 this.txtFolderFilter.Enabled = true;
@@ -191,6 +192,7 @@ namespace VAMvarmanager
                 this.btnRestoreSpec.Enabled = false;
                 this.btnRestoreAll.Enabled = false;
                 this.btnDisablepreloadmorphs.Enabled = false;
+                this.btnRevertpreloadmorphs.Enabled = false;
 
                 this.txtCreatorFilter.Enabled = false;
                 this.txtFolderFilter.Enabled = false;
