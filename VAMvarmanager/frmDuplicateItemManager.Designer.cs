@@ -119,7 +119,7 @@
             // txtCreatorName
             // 
             this.txtCreatorName.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.txtCreatorName.Location = new System.Drawing.Point(122, 40);
+            this.txtCreatorName.Location = new System.Drawing.Point(120, 40);
             this.txtCreatorName.Name = "txtCreatorName";
             this.txtCreatorName.Size = new System.Drawing.Size(276, 25);
             this.txtCreatorName.TabIndex = 6;
@@ -203,7 +203,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label4.Location = new System.Drawing.Point(17, 75);
+            this.label4.Location = new System.Drawing.Point(15, 75);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(99, 21);
             this.label4.TabIndex = 9;
@@ -213,7 +213,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(6, 44);
+            this.label3.Location = new System.Drawing.Point(4, 44);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(110, 21);
             this.label3.TabIndex = 8;

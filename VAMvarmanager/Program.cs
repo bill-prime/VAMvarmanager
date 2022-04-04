@@ -184,9 +184,9 @@ namespace VAMvarmanager
 
 
         #region "var Management"
-        public varCounts BackupUnrefVars()
+        public varCounts BackupUnrefVars(List<string> lstLocalFiles)
         {
-            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
 
             var unusedVars = from v in vc.vars
                              where
@@ -207,9 +207,9 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
+        public varCounts BackupUnrefVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles)
         {
-            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
 
             var unusedVars = from v in vc.vars
                              where
@@ -233,9 +233,9 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefSpecVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes)
+        public varCounts BackupUnrefSpecVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, List<string> lstLocalFiles)
         {
-            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
 
             var backupvars = from v in vc.vars
                              where
@@ -269,9 +269,9 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefSpecVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
+        public varCounts BackupUnrefSpecVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles)
         {
-            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
 
             var backupvars = from v in vc.vars
                              where
@@ -378,9 +378,9 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts RestoreNeededVars()
+        public varCounts RestoreNeededVars(List<string> lstLocalFiles)
         {
-            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
             varconfig vcbakup = GetVarconfig(_strVAMbackupdir);
             DirectoryInfo diBackup = new DirectoryInfo(_strVAMbackupdir);
             var neededFiles = new List<FileInfo>();
@@ -415,8 +415,8 @@ namespace VAMvarmanager
                     if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))) { File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))); }
                 }
 
-                vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
-                vcbakup = GetVarconfig(_strVAMbackupdir);
+                vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
+                vcbakup = GetVarconfig(_strVAMbackupdir, new List<string>());
                 neededFiles = new List<FileInfo>();
 
                 foreach (varfile f in vcbakup.vars)
@@ -558,9 +558,6 @@ namespace VAMvarmanager
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
             string strFileuserpref;
-            string strUserPrefContents;
-            string strLine;
-            bool boolOverwrite;
 
             var morphvars = from v in vc.vars
                             where v.boolPreloadMorphs && v.boolMorphs
@@ -571,7 +568,6 @@ namespace VAMvarmanager
                 try
                 {
                     strFileuserpref = _strVAMdir + @"\AddonPackagesUserPrefs\" + Strings.Left(vf.fi.Name, vf.fi.Name.IndexOf(".", vf.fi.Name.IndexOf(".") + 1)) + ".prefs";
-                    strUserPrefContents = "";
 
                     if (File.Exists(strFileuserpref))
                     {
@@ -587,7 +583,7 @@ namespace VAMvarmanager
             return 1;
         }
 
-        private varconfig GetVarconfig(string strDir)
+        private varconfig GetVarconfig(string strDir, List<string> lstLocalFiles = null)
         {
             var diFolder = new DirectoryInfo(strDir);
             varfile vf;
@@ -766,6 +762,14 @@ namespace VAMvarmanager
                 }
             }
 
+            if(lstLocalFiles != null)
+            {
+                foreach (var s in lstLocalFiles)
+                {
+                    lstDepvars = ScanJsonForDependencies(_strVAMdir + s, (s.Contains("Saves") ? "json" : "vap"), lstDepvars);
+                }
+            }
+
             varconfig vc = new varconfig();
             vc.vars = lstVars;
             vc.deps = lstDepvars;
@@ -781,6 +785,36 @@ namespace VAMvarmanager
             }
 
             return vc;
+        }
+
+        private List<string> ScanJsonForDependencies(string strDirectory,string strExtension, List<string> lstDepvars)
+        {
+            string strLine;
+            string strDepvar;
+
+            foreach (var fi in Directory.GetFiles(strDirectory, "*." + strExtension, SearchOption.AllDirectories))
+            {
+                var objReader = new StreamReader(fi);
+
+                while (!objReader.EndOfStream)
+                {
+                    strLine = objReader.ReadLine();
+
+                    if (strLine.Contains(":/Custom") && !strLine.Contains("SELF:/"))
+                    {
+                        //"customTexture_SpecTex" : "SupaRioAmateur.Wearable_Manicures.5:/Custom/Clothing/Female/SupaRioAmateur/Wearable Manicure/Tex/Glitter/Wearable Manicure Paint_Fingernails.Long_Specular.jpg", 
+                        strDepvar = strLine.Substring(0, strLine.IndexOf(":/"));
+                        strDepvar = strDepvar.Substring(strDepvar.LastIndexOf(@"""") + 1, strDepvar.Length - strDepvar.LastIndexOf(@"""") - 1);
+                        strDepvar = strDepvar.Split(".")[0].Replace(" ", "_") + "." + strDepvar.Split(".")[1].Replace(" ", "_");
+                        if (!lstDepvars.Contains(strDepvar))
+                        {
+                            lstDepvars.Add(strDepvar);
+                        }
+                    }
+                }
+            }
+
+            return lstDepvars;
         }
 
         public List<string> GetCreatorList(bool backupdir = false)
@@ -1092,6 +1126,8 @@ namespace VAMvarmanager
                                 }
                             }
                         }
+
+                        zipVar.Dispose();
                     }
                     catch 
                     { 

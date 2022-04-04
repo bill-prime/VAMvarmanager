@@ -39,6 +39,9 @@ namespace VAMvarmanager
             cbAllSpec.Enabled = false;
             cbInvertSpec.Enabled = false;
 
+            cbSavesScene.Enabled = false;
+            gbPresets.Enabled = false;
+
             btnMorphPresets.Enabled = false;
             //Reset settings
             //Properties.Settings.Default["vamfolder"] = null;
@@ -178,6 +181,9 @@ namespace VAMvarmanager
                 this.cbInvertFolders.Enabled = true;
                 this.cbAllSpec.Enabled = true;
                 this.cbInvertSpec.Enabled = true;
+
+                this.cbSavesScene.Enabled = true;
+                this.gbPresets.Enabled = true;
             }
             else
             {
@@ -206,6 +212,9 @@ namespace VAMvarmanager
                 this.cbInvertFolders.Enabled = false;
                 this.cbAllSpec.Enabled = false;
                 this.cbInvertSpec.Enabled = false;
+
+                this.cbSavesScene.Enabled = false;
+                this.gbPresets.Enabled = false;
             }
 
             Cursor = Cursors.Default;
@@ -321,13 +330,13 @@ namespace VAMvarmanager
             
             if (cbEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupUnrefVarsEx(clbFolders.CheckedItems, clbCreators.CheckedItems);
+                varmanager.varCounts vc = vm.BackupUnrefVarsEx(clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters());
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupUnrefVars();
+                varmanager.varCounts vc = vm.BackupUnrefVars(getLocalFileFilters());
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -341,13 +350,13 @@ namespace VAMvarmanager
 
             if (cbEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupUnrefSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems);
+                varmanager.varCounts vc = vm.BackupUnrefSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters());
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupUnrefSpecVars(clbTypes.CheckedItems);
+                varmanager.varCounts vc = vm.BackupUnrefSpecVars(clbTypes.CheckedItems, getLocalFileFilters());
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -379,7 +388,7 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
-            varmanager.varCounts vc = vm.RestoreNeededVars();
+            varmanager.varCounts vc = vm.RestoreNeededVars(getLocalFileFilters());
             lblVamcount.Text = vc.countVAMvars.ToString();
             lblBackupcount.Text = vc.countBackupvars.ToString();
 
@@ -568,6 +577,26 @@ namespace VAMvarmanager
             frmDuplicateItemManager frmDIM = new frmDuplicateItemManager(this);
             this.Hide();
             frmDIM.Show();
+        }
+
+        private List<string> getLocalFileFilters()
+        {
+            List<string> lstReturn = new List<string> ();
+
+            if (cbSavesScene.Checked) { lstReturn.Add(@"\Saves\scene"); }
+            if (cbAppearance.Checked) { lstReturn.Add(@"\Custom\Atom\Person\Appearance"); }
+            if (cbClothing.Checked) { lstReturn.Add(@"\Custom\Atom\Person\Clothing"); }
+            if (cbHair.Checked) { lstReturn.Add(@"\Custom\Atom\Person\Hair"); }
+            if (cbMorphs.Checked) { lstReturn.Add(@"\Custom\Atom\Person\Morphs"); }
+            if (cbPlugins.Checked) { lstReturn.Add(@"\Custom\Atom\Person\Plugins"); }
+            if (cbSkin.Checked) { lstReturn.Add(@"\Custom\Atom\Person\Skin"); }
+
+            return lstReturn;
+        }
+
+        private void cbSavesScene_MouseHover(object sender, EventArgs e)
+        {
+            toolTipSaves.Show(@"Scans all scenes in Saves\Scene\ and all sub-folders for dependencies." + Environment.NewLine + "May take some time to complete for many files/large scenes.", cbSavesScene);
         }
     }
 }

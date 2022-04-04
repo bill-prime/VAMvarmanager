@@ -29,6 +29,7 @@ namespace VAMvarmanager
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.btnVamfolder = new System.Windows.Forms.Button();
             this.btnBackupfolder = new System.Windows.Forms.Button();
             this.txtBackupfolder = new System.Windows.Forms.TextBox();
@@ -66,11 +67,20 @@ namespace VAMvarmanager
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.btnRestoreRef = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.btnMorphPresets = new System.Windows.Forms.Button();
             this.btnRevertpreloadmorphs = new System.Windows.Forms.Button();
             this.btnDisablepreloadmorphs = new System.Windows.Forms.Button();
             this.btnDisableClothing = new System.Windows.Forms.Button();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.btnMorphPresets = new System.Windows.Forms.Button();
+            this.gbPresets = new System.Windows.Forms.GroupBox();
+            this.cbSkin = new System.Windows.Forms.CheckBox();
+            this.cbPlugins = new System.Windows.Forms.CheckBox();
+            this.cbMorphs = new System.Windows.Forms.CheckBox();
+            this.cbHair = new System.Windows.Forms.CheckBox();
+            this.cbClothing = new System.Windows.Forms.CheckBox();
+            this.cbAppearance = new System.Windows.Forms.CheckBox();
+            this.cbSavesScene = new System.Windows.Forms.CheckBox();
+            this.toolTipSaves = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -79,6 +89,7 @@ namespace VAMvarmanager
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox8.SuspendLayout();
+            this.gbPresets.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnVamfolder
@@ -236,7 +247,7 @@ namespace VAMvarmanager
             this.groupBox2.Controls.Add(this.cbEx);
             this.groupBox2.Controls.Add(this.btnBackupSpec);
             this.groupBox2.Controls.Add(this.btnBackupUnref);
-            this.groupBox2.Location = new System.Drawing.Point(12, 158);
+            this.groupBox2.Location = new System.Drawing.Point(12, 313);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(219, 220);
             this.groupBox2.TabIndex = 6;
@@ -469,6 +480,17 @@ namespace VAMvarmanager
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Morphs";
             // 
+            // btnMorphPresets
+            // 
+            this.btnMorphPresets.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnMorphPresets.ForeColor = System.Drawing.Color.BlueViolet;
+            this.btnMorphPresets.Location = new System.Drawing.Point(6, 136);
+            this.btnMorphPresets.Name = "btnMorphPresets";
+            this.btnMorphPresets.Size = new System.Drawing.Size(259, 51);
+            this.btnMorphPresets.TabIndex = 15;
+            this.btnMorphPresets.Text = "Morph Preset Creator";
+            this.btnMorphPresets.UseVisualStyleBackColor = true;
+            // 
             // btnRevertpreloadmorphs
             // 
             this.btnRevertpreloadmorphs.ForeColor = System.Drawing.Color.BlueViolet;
@@ -513,22 +535,99 @@ namespace VAMvarmanager
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Duplicate Item Resolver";
             // 
-            // btnMorphPresets
+            // gbPresets
             // 
-            this.btnMorphPresets.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnMorphPresets.ForeColor = System.Drawing.Color.BlueViolet;
-            this.btnMorphPresets.Location = new System.Drawing.Point(6, 136);
-            this.btnMorphPresets.Name = "btnMorphPresets";
-            this.btnMorphPresets.Size = new System.Drawing.Size(259, 51);
-            this.btnMorphPresets.TabIndex = 15;
-            this.btnMorphPresets.Text = "Morph Preset Creator";
-            this.btnMorphPresets.UseVisualStyleBackColor = true;
+            this.gbPresets.Controls.Add(this.cbSkin);
+            this.gbPresets.Controls.Add(this.cbPlugins);
+            this.gbPresets.Controls.Add(this.cbMorphs);
+            this.gbPresets.Controls.Add(this.cbHair);
+            this.gbPresets.Controls.Add(this.cbClothing);
+            this.gbPresets.Controls.Add(this.cbAppearance);
+            this.gbPresets.Location = new System.Drawing.Point(12, 202);
+            this.gbPresets.Name = "gbPresets";
+            this.gbPresets.Size = new System.Drawing.Size(219, 105);
+            this.gbPresets.TabIndex = 16;
+            this.gbPresets.TabStop = false;
+            this.gbPresets.Text = "Scan Local Presets for References";
+            // 
+            // cbSkin
+            // 
+            this.cbSkin.AutoSize = true;
+            this.cbSkin.Location = new System.Drawing.Point(6, 72);
+            this.cbSkin.Name = "cbSkin";
+            this.cbSkin.Size = new System.Drawing.Size(48, 19);
+            this.cbSkin.TabIndex = 6;
+            this.cbSkin.Text = "Skin";
+            this.cbSkin.UseVisualStyleBackColor = true;
+            // 
+            // cbPlugins
+            // 
+            this.cbPlugins.AutoSize = true;
+            this.cbPlugins.Location = new System.Drawing.Point(124, 72);
+            this.cbPlugins.Name = "cbPlugins";
+            this.cbPlugins.Size = new System.Drawing.Size(65, 19);
+            this.cbPlugins.TabIndex = 5;
+            this.cbPlugins.Text = "Plugins";
+            this.cbPlugins.UseVisualStyleBackColor = true;
+            // 
+            // cbMorphs
+            // 
+            this.cbMorphs.AutoSize = true;
+            this.cbMorphs.Location = new System.Drawing.Point(124, 47);
+            this.cbMorphs.Name = "cbMorphs";
+            this.cbMorphs.Size = new System.Drawing.Size(67, 19);
+            this.cbMorphs.TabIndex = 4;
+            this.cbMorphs.Text = "Morphs";
+            this.cbMorphs.UseVisualStyleBackColor = true;
+            // 
+            // cbHair
+            // 
+            this.cbHair.AutoSize = true;
+            this.cbHair.Location = new System.Drawing.Point(6, 47);
+            this.cbHair.Name = "cbHair";
+            this.cbHair.Size = new System.Drawing.Size(48, 19);
+            this.cbHair.TabIndex = 3;
+            this.cbHair.Text = "Hair";
+            this.cbHair.UseVisualStyleBackColor = true;
+            // 
+            // cbClothing
+            // 
+            this.cbClothing.AutoSize = true;
+            this.cbClothing.Location = new System.Drawing.Point(124, 22);
+            this.cbClothing.Name = "cbClothing";
+            this.cbClothing.Size = new System.Drawing.Size(72, 19);
+            this.cbClothing.TabIndex = 2;
+            this.cbClothing.Text = "Clothing";
+            this.cbClothing.UseVisualStyleBackColor = true;
+            // 
+            // cbAppearance
+            // 
+            this.cbAppearance.AutoSize = true;
+            this.cbAppearance.Location = new System.Drawing.Point(6, 22);
+            this.cbAppearance.Name = "cbAppearance";
+            this.cbAppearance.Size = new System.Drawing.Size(89, 19);
+            this.cbAppearance.TabIndex = 1;
+            this.cbAppearance.Text = "Appearence";
+            this.cbAppearance.UseVisualStyleBackColor = true;
+            // 
+            // cbSavesScene
+            // 
+            this.cbSavesScene.AutoSize = true;
+            this.cbSavesScene.Location = new System.Drawing.Point(18, 168);
+            this.cbSavesScene.Name = "cbSavesScene";
+            this.cbSavesScene.Size = new System.Drawing.Size(197, 19);
+            this.cbSavesScene.TabIndex = 0;
+            this.cbSavesScene.Text = "Scan Saves\\Scene for References";
+            this.cbSavesScene.UseVisualStyleBackColor = true;
+            this.cbSavesScene.MouseHover += new System.EventHandler(this.cbSavesScene_MouseHover);
             // 
             // frmVARManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1080, 747);
+            this.Controls.Add(this.gbPresets);
+            this.Controls.Add(this.cbSavesScene);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox6);
@@ -554,7 +653,10 @@ namespace VAMvarmanager
             this.groupBox6.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
             this.groupBox8.ResumeLayout(false);
+            this.gbPresets.ResumeLayout(false);
+            this.gbPresets.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -601,6 +703,15 @@ namespace VAMvarmanager
         private System.Windows.Forms.Button btnDisableClothing;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.Button btnMorphPresets;
+        private System.Windows.Forms.GroupBox gbPresets;
+        private System.Windows.Forms.CheckBox cbAppearance;
+        private System.Windows.Forms.CheckBox cbSavesScene;
+        private System.Windows.Forms.CheckBox cbSkin;
+        private System.Windows.Forms.CheckBox cbPlugins;
+        private System.Windows.Forms.CheckBox cbMorphs;
+        private System.Windows.Forms.CheckBox cbHair;
+        private System.Windows.Forms.CheckBox cbClothing;
+        private System.Windows.Forms.ToolTip toolTipSaves;
     }
 }
 
