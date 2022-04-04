@@ -68,6 +68,7 @@ namespace VAMvarmanager
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.btnRevertpreloadmorphs = new System.Windows.Forms.Button();
             this.btnDisablepreloadmorphs = new System.Windows.Forms.Button();
+            this.btnDisableClothing = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -114,7 +115,7 @@ namespace VAMvarmanager
             // btnBackupUnref
             // 
             this.btnBackupUnref.ForeColor = System.Drawing.Color.DarkGreen;
-            this.btnBackupUnref.Location = new System.Drawing.Point(6, 22);
+            this.btnBackupUnref.Location = new System.Drawing.Point(6, 49);
             this.btnBackupUnref.Name = "btnBackupUnref";
             this.btnBackupUnref.Size = new System.Drawing.Size(207, 51);
             this.btnBackupUnref.TabIndex = 4;
@@ -125,7 +126,6 @@ namespace VAMvarmanager
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.btnResetSettings);
-            this.groupBox1.Controls.Add(this.cbEx);
             this.groupBox1.Controls.Add(this.lblBackupcount);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.lblVamcount);
@@ -157,7 +157,7 @@ namespace VAMvarmanager
             // 
             this.cbEx.AutoSize = true;
             this.cbEx.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.cbEx.Location = new System.Drawing.Point(6, 111);
+            this.cbEx.Location = new System.Drawing.Point(6, 22);
             this.cbEx.Name = "cbEx";
             this.cbEx.Size = new System.Drawing.Size(86, 19);
             this.cbEx.TabIndex = 11;
@@ -230,11 +230,12 @@ namespace VAMvarmanager
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.btnBackupUnrefSpec);
+            this.groupBox2.Controls.Add(this.cbEx);
             this.groupBox2.Controls.Add(this.btnBackupSpec);
             this.groupBox2.Controls.Add(this.btnBackupUnref);
             this.groupBox2.Location = new System.Drawing.Point(12, 158);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(219, 198);
+            this.groupBox2.Size = new System.Drawing.Size(219, 220);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Backup";
@@ -242,7 +243,7 @@ namespace VAMvarmanager
             // btnBackupUnrefSpec
             // 
             this.btnBackupUnrefSpec.ForeColor = System.Drawing.Color.DarkGreen;
-            this.btnBackupUnrefSpec.Location = new System.Drawing.Point(6, 79);
+            this.btnBackupUnrefSpec.Location = new System.Drawing.Point(6, 106);
             this.btnBackupUnrefSpec.Name = "btnBackupUnrefSpec";
             this.btnBackupUnrefSpec.Size = new System.Drawing.Size(207, 51);
             this.btnBackupUnrefSpec.TabIndex = 7;
@@ -253,7 +254,7 @@ namespace VAMvarmanager
             // btnBackupSpec
             // 
             this.btnBackupSpec.ForeColor = System.Drawing.Color.DarkGreen;
-            this.btnBackupSpec.Location = new System.Drawing.Point(6, 136);
+            this.btnBackupSpec.Location = new System.Drawing.Point(6, 163);
             this.btnBackupSpec.Name = "btnBackupSpec";
             this.btnBackupSpec.Size = new System.Drawing.Size(207, 51);
             this.btnBackupSpec.TabIndex = 6;
@@ -486,11 +487,22 @@ namespace VAMvarmanager
             this.btnDisablepreloadmorphs.UseVisualStyleBackColor = true;
             this.btnDisablepreloadmorphs.Click += new System.EventHandler(this.btnDisablepreloadmorphs_Click);
             // 
+            // btnDisableClothing
+            // 
+            this.btnDisableClothing.Location = new System.Drawing.Point(806, 317);
+            this.btnDisableClothing.Name = "btnDisableClothing";
+            this.btnDisableClothing.Size = new System.Drawing.Size(256, 51);
+            this.btnDisableClothing.TabIndex = 13;
+            this.btnDisableClothing.Text = "Disable Duplicate Clothing";
+            this.btnDisableClothing.UseVisualStyleBackColor = true;
+            this.btnDisableClothing.Click += new System.EventHandler(this.btnDisableClothing_Click);
+            // 
             // frmVARManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1080, 747);
+            this.Controls.Add(this.btnDisableClothing);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
@@ -505,6 +517,7 @@ namespace VAMvarmanager
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -557,6 +570,7 @@ namespace VAMvarmanager
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Button btnDisablepreloadmorphs;
         private System.Windows.Forms.Button btnRevertpreloadmorphs;
+        private System.Windows.Forms.Button btnDisableClothing;
     }
 }
 

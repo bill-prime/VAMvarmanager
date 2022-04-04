@@ -22,12 +22,10 @@ namespace VAMvarmanager
         private System.Collections.Specialized.StringCollection _creatorex;
         private System.Collections.Specialized.StringCollection _folderex;
         private List<string> _creatorListvam;
-        private List<string> _creatorListbak;
         private List<string> _folderListvam;
-        private List<string> _folderListbak;
 
         public frmVARManager()
-        {
+        { 
             InitializeComponent();
             txtVamfolder.Enabled = false;
             txtBackupfolder.Enabled = false;
@@ -554,6 +552,17 @@ namespace VAMvarmanager
             Cursor = Cursors.WaitCursor;
             int test = _vm.RevertPreloadMorphs();
             Cursor = Cursors.Default;
+        }
+
+        private void btnDisableClothing_Click(object sender, EventArgs e)
+        {
+            //Cursor = Cursors.WaitCursor;
+            //Cursor = Cursors.Default;
+            //_vm.GetDuplicateItems("clothing","female",true);
+
+            frmDuplicateItemManager frmDIM = new frmDuplicateItemManager(this);
+            this.Hide();
+            frmDIM.Show();
         }
     }
 }
