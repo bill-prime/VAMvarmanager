@@ -869,7 +869,7 @@ namespace VAMvarmanager
 
         #region "Item Management"
         
-        public List<varItemReplacement> GetDuplicateItems(string strType, string strSex = "female", bool boolTesting = false)
+        public List<varItemReplacement> GetDuplicateItems(string strType, string strSex, List<string> lstMasterVars, List<string> lstMasterVarItems)
         {
             Dictionary<string,string> lstSpecialCaseReplacements = GetItemReplacements(strType);
             List<varItemReplacement> lstDuplicates = new List<varItemReplacement>();
@@ -916,15 +916,14 @@ namespace VAMvarmanager
                     {
                         //Check if hide file already created
                         var matchesVarCreatorActiveFiles = from viMatch in matchesVarCreator
-                                                           where !File.Exists(strDirAddonFilePrefs + @"\" + viMatch.var.fi.Name.Replace(".var", "") + @"\" + viMatch.FullName.Replace(" / ", @"\") + ".hide")
+                                                           where !File.Exists(strDirAddonFilePrefs + @"\" + viMatch.var.fi.Name.Replace(".var", "") + @"\" + viMatch.FullName.Replace("/", @"\") + ".hide")
                                                            select viMatch;
                         
                         if (matchesVarCreatorActiveFiles.Count() > 1)
                         {
-                            //Duplicates files with the same .var creator, need to manually fix/disable these
-                            //Debug.Print((itemDistinct.displayName == "" ? itemDistinct.uid : itemDistinct.displayName) + "|" + itemDistinct.creatorName);
+                            //Duplicates files where the .var creater matches the .vam item creator, need to manually fix/disable these first
                             vir = new varItemReplacement(varItemReplacement.SAMECREATOR, strType);
-                            vir.itemname = (itemDistinct.displayName == "" ? itemDistinct.uid : itemDistinct.displayName);
+                            vir.itemname = (itemDistinct.displayName == "" ? (itemDistinct.uid.IndexOf(":") > 0 ? itemDistinct.uid.Substring(itemDistinct.uid.IndexOf(":") + 1, itemDistinct.uid.Length - itemDistinct.uid.IndexOf(":") - 1) : itemDistinct.uid) : itemDistinct.displayName);
                             vir.creator = itemDistinct.creatorName;
 
                             foreach (var fix in matchesVarCreatorActiveFiles)
@@ -951,55 +950,39 @@ namespace VAMvarmanager
                 {
                     //Get list of active files for current distinct item
                     var matchesActiveFiles = from viMatch in matches 
-                                             where (viMatch.var.creator.ToLower() != viMatch.Properties.creatorName.ToLower()) &&
-                                             !File.Exists(strDirAddonFilePrefs + @"\" + viMatch.var.fi.Name.Replace(".var", "") + @"\" + viMatch.FullName.Replace(" / ", @"\") + ".hide")
+                                             where (viMatch.var.creator.ToLower().Replace(" ", "_") != viMatch.Properties.creatorName.ToLower().Replace(" ", "_")) &&
+                                             !File.Exists(strDirAddonFilePrefs + @"\" + viMatch.var.fi.Name.Replace(".var", "") + @"\" + viMatch.FullName.Replace("/", @"\") + ".hide")
                                              select viMatch;
 
                     if (matchesActiveFiles.Any())
                     {
-                        if(boolTesting)
-                        {
-                            //Print master found
-                            //Debug.Print(viMaster.var.fi.Name + "|" + (itemDistinct.displayName == "" ? itemDistinct.uid : itemDistinct.displayName));
-                            vir = new varItemReplacement(varItemReplacement.DISABLE, strType);
-                            vir.itemname = (itemDistinct.displayName == "" ? itemDistinct.uid : itemDistinct.displayName);
-                            vir.creator = itemDistinct.creatorName;
-                            vir.mastervar = viMaster.var.Name;
+                        //Print master found
+                        vir = new varItemReplacement(varItemReplacement.DISABLE, strType);
+                        vir.itemname = (itemDistinct.displayName == "" ? (itemDistinct.uid.IndexOf(":") > 0 ? itemDistinct.uid.Substring(itemDistinct.uid.IndexOf(":") + 1, itemDistinct.uid.Length - itemDistinct.uid.IndexOf(":") - 1) : itemDistinct.uid) : itemDistinct.displayName);
+                        vir.creator = itemDistinct.creatorName;
+                        vir.mastervar = viMaster.var.Name;
                             
-                            foreach (var match in matchesActiveFiles)
-                            {
-                                //Print match to be disabled
-                                //Debug.Print("    " + match.var.fi.Name);
-                                vir.lstVi.Add(match);
-                            }
-
-                            lstDuplicates.Add(vir);
-                        }
-                        else
+                        foreach (var match in matchesActiveFiles)
                         {
-                            foreach(var match in matchesActiveFiles)
-                            {
-                                strFileHide = strDirAddonFilePrefs + @"\" + match.var.fi.Name.Replace(".var", "") + @"\" + match.FullName.Replace(" / ", @"\") + ".hide";
-
-                                if (!Directory.Exists(Path.GetDirectoryName(strFileHide))) { Directory.CreateDirectory(Path.GetDirectoryName(strFileHide)); }
-                                File.Create(strFileHide).Close();
-                            }
+                            vir.lstVi.Add(match);
                         }
+
+                        lstDuplicates.Add(vir);
                     }
                 }
                 else //No Master item & var found, need to fix these manually
                 {
                     //Get list of active files for current distinct item
                     var matchesActiveFiles = from viMatch in matches
-                                             where (viMatch.var.creator.ToLower() != viMatch.Properties.creatorName.ToLower()) &&
-                                             !File.Exists(strDirAddonFilePrefs + @"\" + viMatch.var.fi.Name.Replace(".var", "") + @"\" + viMatch.FullName.Replace(" / ", @"\") + ".hide")
+                                             where (viMatch.var.creator.ToLower().Replace(" ", "_") != viMatch.Properties.creatorName.ToLower().Replace(" ", "_")) &&
+                                             !File.Exists(strDirAddonFilePrefs + @"\" + viMatch.var.fi.Name.Replace(".var", "") + @"\" + viMatch.FullName.Replace("/", @"\") + ".hide")
                                              select viMatch;
 
                     if (matchesActiveFiles.Count() > 1)
                     {
                         //Debug.Print((itemDistinct.displayName == "" ? itemDistinct.uid : itemDistinct.displayName) + "|" + itemDistinct.creatorName);
                         vir = new varItemReplacement(varItemReplacement.NOMASTER, strType);
-                        vir.itemname = (itemDistinct.displayName == "" ? itemDistinct.uid : itemDistinct.displayName);
+                        vir.itemname = (itemDistinct.displayName == "" ? (itemDistinct.uid.IndexOf(":") > 0 ? itemDistinct.uid.Substring(itemDistinct.uid.IndexOf(":") + 1, itemDistinct.uid.Length - itemDistinct.uid.IndexOf(":") - 1) : itemDistinct.uid) : itemDistinct.displayName);
                         vir.creator = itemDistinct.creatorName;
 
                         foreach (var match in matchesActiveFiles)
@@ -1013,41 +996,47 @@ namespace VAMvarmanager
                 }
             }
 
-            Debug.Print("-------------Duplicates with same creator-------------");
-            foreach (var v in lstDuplicates.Where(v => v.varItemReplacementType == varItemReplacement.SAMECREATOR))
-            {
-                Debug.Print(v.creator + "." + v.itemname);
-                foreach (var dup in v.lstVi) 
-                { 
-                    Debug.Print("    " + dup.var.fi.Name); 
-                }
-            }
-            Debug.Print("-------------Duplicates no master-------------");
-            foreach (var v in lstDuplicates.Where(v => v.varItemReplacementType == varItemReplacement.NOMASTER))
-            {
-                Debug.Print(v.creator + "." + v.itemname);
-                foreach (var dup in v.lstVi) 
-                { 
-                    Debug.Print("    " + dup.var.fi.Name); 
-                }
-            }
-            Debug.Print("-------------Master Found-------------");
-            foreach (var v in lstDuplicates.Where(v => v.varItemReplacementType == varItemReplacement.DISABLE))
-            {
-                Debug.Print(v.creator + "." + v.itemname + "|Master = " + v.mastervar + "|");
-                foreach (var dup in v.lstVi) 
-                {
-                    strFileHide = strDirAddonFilePrefs + @"\" + dup.var.fi.Name.Replace(".var", "") + @"\" + dup.FullName.Replace(" / ", @"\") + ".hide";
-                    Debug.Print("    " + dup.var.fi.Name);
-                }
-            }
+            //Debug.Print("-------------Duplicates with same creator-------------");
+            //foreach (var v in lstDuplicates.Where(v => v.varItemReplacementType == varItemReplacement.SAMECREATOR))
+            //{
+            //    Debug.Print(v.creator + "." + v.itemname);
+            //    foreach (var dup in v.lstVi) 
+            //    { 
+            //        Debug.Print("    " + dup.var.fi.Name); 
+            //    }
+            //}
+            //Debug.Print("-------------Duplicates no master-------------");
+            //foreach (var v in lstDuplicates.Where(v => v.varItemReplacementType == varItemReplacement.NOMASTER))
+            //{
+            //    Debug.Print(v.creator + "." + v.itemname);
+            //    foreach (var dup in v.lstVi) 
+            //    { 
+            //        Debug.Print("    " + dup.var.fi.Name); 
+            //    }
+            //}
+            //Debug.Print("-------------Master Found-------------");
+            //foreach (var v in lstDuplicates.Where(v => v.varItemReplacementType == varItemReplacement.DISABLE))
+            //{
+            //    Debug.Print(v.creator + "." + v.itemname + "|Master = " + v.mastervar + "|");
+            //    foreach (var dup in v.lstVi) 
+            //    {
+            //        strFileHide = strDirAddonFilePrefs + @"\" + dup.var.fi.Name.Replace(".var", "") + @"\" + dup.FullName.Replace("/", @"\") + ".hide";
+            //        Debug.Print("    " + dup.var.fi.Name);
+            //    }
+            //}
 
             return lstDuplicates;
         }
 
-        private void DisableDuplicateItems(List<varItemReplacement> lstVir)
+        public void DisableDuplicateItem(string varname, string itemfullpath)
         {
+            string strDirAddonFilePrefs = _strVAMdir + @"\AddonPackagesFilePrefs";
+            string strFileHide;
 
+            strFileHide = strDirAddonFilePrefs + @"\" + varname.Replace(".var", "") + @"\" + itemfullpath.Replace("/", @"\") + ".hide";
+
+            if (!Directory.Exists(Path.GetDirectoryName(strFileHide))) { Directory.CreateDirectory(Path.GetDirectoryName(strFileHide)); }
+            File.Create(strFileHide).Close();
         }
 
         private List<varItem> GetLatestVarItems(varconfig vc, string strType, string strSex = "female")
@@ -1102,7 +1091,6 @@ namespace VAMvarmanager
                                     objReader.Close();
                                 }
                             }
-                            else { }
                         }
                     }
                     catch 

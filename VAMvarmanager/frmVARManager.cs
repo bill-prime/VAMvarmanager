@@ -13,11 +13,11 @@ namespace VAMvarmanager
 {
     public partial class frmVARManager : Form
     {
-        private varmanager _vm;
+        public varmanager vm;
         private FolderBrowserDialog fbVam;
         private FolderBrowserDialog fbBackup;
         private bool _enabled = false;
-        private string _strVamdir;
+        public string _strVamdir;
         private string _strBackupdir;
         private System.Collections.Specialized.StringCollection _creatorex;
         private System.Collections.Specialized.StringCollection _folderex;
@@ -39,6 +39,7 @@ namespace VAMvarmanager
             cbAllSpec.Enabled = false;
             cbInvertSpec.Enabled = false;
 
+            btnMorphPresets.Enabled = false;
             //Reset settings
             //Properties.Settings.Default["vamfolder"] = null;
             //Properties.Settings.Default["backupfolder"] = null;
@@ -100,14 +101,14 @@ namespace VAMvarmanager
 
             if (_enabled)
             {
-                _vm = new varmanager(_strVamdir, _strBackupdir);
+                vm = new varmanager(_strVamdir, _strBackupdir);
 
-                varmanager.varCounts vc = _vm.GetVarCounts();
+                varmanager.varCounts vc = vm.GetVarCounts();
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
 
                 clbCreators.Items.Clear();
-                _creatorListvam = _vm.GetCreatorList();
+                _creatorListvam = vm.GetCreatorList();
 
                 foreach (string c in _creatorListvam)
                 {
@@ -165,6 +166,8 @@ namespace VAMvarmanager
                 this.btnRestoreAll.Enabled = true;
                 this.btnDisablepreloadmorphs.Enabled = true;
                 this.btnRevertpreloadmorphs.Enabled = true;
+                this.btnDisableClothing.Enabled = true;
+                //this.btnMorphPresets.Enabled = true;
 
                 this.txtCreatorFilter.Enabled = true;
                 this.txtFolderFilter.Enabled = true;
@@ -191,6 +194,8 @@ namespace VAMvarmanager
                 this.btnRestoreAll.Enabled = false;
                 this.btnDisablepreloadmorphs.Enabled = false;
                 this.btnRevertpreloadmorphs.Enabled = false;
+                this.btnDisableClothing.Enabled = false;
+                //this.btnMorphPresets.Enabled = false;
 
                 this.txtCreatorFilter.Enabled = false;
                 this.txtFolderFilter.Enabled = false;
@@ -316,13 +321,13 @@ namespace VAMvarmanager
             
             if (cbEx.Checked)
             {
-                varmanager.varCounts vc = _vm.BackupUnrefVarsEx(clbFolders.CheckedItems, clbCreators.CheckedItems);
+                varmanager.varCounts vc = vm.BackupUnrefVarsEx(clbFolders.CheckedItems, clbCreators.CheckedItems);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = _vm.BackupUnrefVars();
+                varmanager.varCounts vc = vm.BackupUnrefVars();
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -336,13 +341,13 @@ namespace VAMvarmanager
 
             if (cbEx.Checked)
             {
-                varmanager.varCounts vc = _vm.BackupUnrefSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems);
+                varmanager.varCounts vc = vm.BackupUnrefSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = _vm.BackupUnrefSpecVars(clbTypes.CheckedItems);
+                varmanager.varCounts vc = vm.BackupUnrefSpecVars(clbTypes.CheckedItems);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -356,13 +361,13 @@ namespace VAMvarmanager
 
             if (cbEx.Checked)
             {
-                varmanager.varCounts vc = _vm.BackupSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems);
+                varmanager.varCounts vc = vm.BackupSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = _vm.BackupSpecVars(clbTypes.CheckedItems);
+                varmanager.varCounts vc = vm.BackupSpecVars(clbTypes.CheckedItems);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -374,7 +379,7 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
-            varmanager.varCounts vc = _vm.RestoreNeededVars();
+            varmanager.varCounts vc = vm.RestoreNeededVars();
             lblVamcount.Text = vc.countVAMvars.ToString();
             lblBackupcount.Text = vc.countBackupvars.ToString();
 
@@ -387,7 +392,7 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
-            varmanager.varCounts vc = _vm.RestoreSpecificVars(clbTypes.CheckedItems);
+            varmanager.varCounts vc = vm.RestoreSpecificVars(clbTypes.CheckedItems);
             lblVamcount.Text = vc.countVAMvars.ToString();
             lblBackupcount.Text = vc.countBackupvars.ToString();
 
@@ -400,7 +405,7 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
-            varmanager.varCounts vc = _vm.RestoreAllvars();
+            varmanager.varCounts vc = vm.RestoreAllvars();
             lblVamcount.Text = vc.countVAMvars.ToString();
             lblBackupcount.Text = vc.countBackupvars.ToString();
 
@@ -543,14 +548,14 @@ namespace VAMvarmanager
         private void btnDisablepreloadmorphs_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
-            int test = _vm.DisablePreloadMorphs();
+            int test = vm.DisablePreloadMorphs();
             Cursor = Cursors.Default;
         }
 
         private void btnRevertpreloadmorphs_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
-            int test = _vm.RevertPreloadMorphs();
+            int test = vm.RevertPreloadMorphs();
             Cursor = Cursors.Default;
         }
 
