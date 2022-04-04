@@ -50,15 +50,15 @@ namespace VAMvarmanager
             this.btnRestoreSpec = new System.Windows.Forms.Button();
             this.btnRestoreAll = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.clbCreators = new System.Windows.Forms.CheckedListBox();
             this.cbInvertCreators = new System.Windows.Forms.CheckBox();
             this.cbAllCreators = new System.Windows.Forms.CheckBox();
             this.txtCreatorFilter = new System.Windows.Forms.TextBox();
-            this.clbCreators = new System.Windows.Forms.CheckedListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.clbFolders = new System.Windows.Forms.CheckedListBox();
             this.cbInvertFolders = new System.Windows.Forms.CheckBox();
             this.cbAllFolders = new System.Windows.Forms.CheckBox();
             this.txtFolderFilter = new System.Windows.Forms.TextBox();
-            this.clbFolders = new System.Windows.Forms.CheckedListBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.cbInvertSpec = new System.Windows.Forms.CheckBox();
@@ -81,6 +81,8 @@ namespace VAMvarmanager
             this.cbAppearance = new System.Windows.Forms.CheckBox();
             this.cbSavesScene = new System.Windows.Forms.CheckBox();
             this.toolTipSaves = new System.Windows.Forms.ToolTip(this.components);
+            this.gbCreatorFilters = new System.Windows.Forms.GroupBox();
+            this.gbFolderFilters = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -90,6 +92,8 @@ namespace VAMvarmanager
             this.groupBox7.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.gbPresets.SuspendLayout();
+            this.gbCreatorFilters.SuspendLayout();
+            this.gbFolderFilters.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnVamfolder
@@ -300,21 +304,30 @@ namespace VAMvarmanager
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.cbInvertCreators);
-            this.groupBox3.Controls.Add(this.cbAllCreators);
-            this.groupBox3.Controls.Add(this.txtCreatorFilter);
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox3.Controls.Add(this.clbCreators);
-            this.groupBox3.Location = new System.Drawing.Point(240, 158);
+            this.groupBox3.Location = new System.Drawing.Point(240, 241);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(274, 577);
+            this.groupBox3.Size = new System.Drawing.Size(274, 503);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Creator Exceptions";
             // 
+            // clbCreators
+            // 
+            this.clbCreators.CheckOnClick = true;
+            this.clbCreators.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.clbCreators.FormattingEnabled = true;
+            this.clbCreators.Location = new System.Drawing.Point(3, 19);
+            this.clbCreators.Name = "clbCreators";
+            this.clbCreators.Size = new System.Drawing.Size(268, 481);
+            this.clbCreators.TabIndex = 8;
+            // 
             // cbInvertCreators
             // 
             this.cbInvertCreators.AutoSize = true;
-            this.cbInvertCreators.Location = new System.Drawing.Point(65, 34);
+            this.cbInvertCreators.Location = new System.Drawing.Point(65, 25);
             this.cbInvertCreators.Name = "cbInvertCreators";
             this.cbInvertCreators.Size = new System.Drawing.Size(56, 19);
             this.cbInvertCreators.TabIndex = 15;
@@ -325,7 +338,7 @@ namespace VAMvarmanager
             // cbAllCreators
             // 
             this.cbAllCreators.AutoSize = true;
-            this.cbAllCreators.Location = new System.Drawing.Point(9, 34);
+            this.cbAllCreators.Location = new System.Drawing.Point(9, 25);
             this.cbAllCreators.Name = "cbAllCreators";
             this.cbAllCreators.Size = new System.Drawing.Size(40, 19);
             this.cbAllCreators.TabIndex = 14;
@@ -335,38 +348,40 @@ namespace VAMvarmanager
             // 
             // txtCreatorFilter
             // 
-            this.txtCreatorFilter.Location = new System.Drawing.Point(6, 63);
+            this.txtCreatorFilter.Location = new System.Drawing.Point(6, 54);
             this.txtCreatorFilter.Name = "txtCreatorFilter";
             this.txtCreatorFilter.Size = new System.Drawing.Size(262, 23);
             this.txtCreatorFilter.TabIndex = 12;
             this.txtCreatorFilter.TextChanged += new System.EventHandler(this.txtCreatorFilter_TextChanged);
             // 
-            // clbCreators
-            // 
-            this.clbCreators.CheckOnClick = true;
-            this.clbCreators.FormattingEnabled = true;
-            this.clbCreators.Location = new System.Drawing.Point(6, 92);
-            this.clbCreators.Name = "clbCreators";
-            this.clbCreators.Size = new System.Drawing.Size(262, 472);
-            this.clbCreators.TabIndex = 8;
-            // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.cbInvertFolders);
-            this.groupBox4.Controls.Add(this.cbAllFolders);
-            this.groupBox4.Controls.Add(this.txtFolderFilter);
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.clbFolders);
-            this.groupBox4.Location = new System.Drawing.Point(520, 158);
+            this.groupBox4.Location = new System.Drawing.Point(520, 241);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(274, 577);
+            this.groupBox4.Size = new System.Drawing.Size(273, 503);
             this.groupBox4.TabIndex = 9;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Folder Exceptions";
             // 
+            // clbFolders
+            // 
+            this.clbFolders.CheckOnClick = true;
+            this.clbFolders.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.clbFolders.FormattingEnabled = true;
+            this.clbFolders.HorizontalScrollbar = true;
+            this.clbFolders.Location = new System.Drawing.Point(3, 19);
+            this.clbFolders.Name = "clbFolders";
+            this.clbFolders.Size = new System.Drawing.Size(267, 481);
+            this.clbFolders.TabIndex = 8;
+            // 
             // cbInvertFolders
             // 
             this.cbInvertFolders.AutoSize = true;
-            this.cbInvertFolders.Location = new System.Drawing.Point(68, 34);
+            this.cbInvertFolders.Location = new System.Drawing.Point(65, 25);
             this.cbInvertFolders.Name = "cbInvertFolders";
             this.cbInvertFolders.Size = new System.Drawing.Size(56, 19);
             this.cbInvertFolders.TabIndex = 17;
@@ -377,7 +392,7 @@ namespace VAMvarmanager
             // cbAllFolders
             // 
             this.cbAllFolders.AutoSize = true;
-            this.cbAllFolders.Location = new System.Drawing.Point(12, 34);
+            this.cbAllFolders.Location = new System.Drawing.Point(9, 25);
             this.cbAllFolders.Name = "cbAllFolders";
             this.cbAllFolders.Size = new System.Drawing.Size(40, 19);
             this.cbAllFolders.TabIndex = 16;
@@ -387,29 +402,21 @@ namespace VAMvarmanager
             // 
             // txtFolderFilter
             // 
-            this.txtFolderFilter.Location = new System.Drawing.Point(9, 63);
+            this.txtFolderFilter.Location = new System.Drawing.Point(6, 54);
             this.txtFolderFilter.Name = "txtFolderFilter";
             this.txtFolderFilter.Size = new System.Drawing.Size(258, 23);
             this.txtFolderFilter.TabIndex = 13;
             this.txtFolderFilter.TextChanged += new System.EventHandler(this.txtFolderFilter_TextChanged);
             // 
-            // clbFolders
-            // 
-            this.clbFolders.CheckOnClick = true;
-            this.clbFolders.FormattingEnabled = true;
-            this.clbFolders.Location = new System.Drawing.Point(9, 92);
-            this.clbFolders.Name = "clbFolders";
-            this.clbFolders.Size = new System.Drawing.Size(258, 472);
-            this.clbFolders.TabIndex = 8;
-            // 
             // groupBox5
             // 
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox5.Controls.Add(this.cbInvertSpec);
             this.groupBox5.Controls.Add(this.cbAllSpec);
             this.groupBox5.Controls.Add(this.clbTypes);
             this.groupBox5.Location = new System.Drawing.Point(800, 455);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(271, 280);
+            this.groupBox5.Size = new System.Drawing.Size(271, 289);
             this.groupBox5.TabIndex = 10;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Specific-Type Backup/Restore";
@@ -452,7 +459,7 @@ namespace VAMvarmanager
             this.groupBox6.Controls.Add(this.btnRestoreSpec);
             this.groupBox6.Location = new System.Drawing.Point(12, 539);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(219, 196);
+            this.groupBox6.Size = new System.Drawing.Size(219, 205);
             this.groupBox6.TabIndex = 11;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Restore";
@@ -470,6 +477,7 @@ namespace VAMvarmanager
             // 
             // groupBox7
             // 
+            this.groupBox7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox7.Controls.Add(this.btnMorphPresets);
             this.groupBox7.Controls.Add(this.btnRevertpreloadmorphs);
             this.groupBox7.Controls.Add(this.btnDisablepreloadmorphs);
@@ -527,6 +535,7 @@ namespace VAMvarmanager
             // 
             // groupBox8
             // 
+            this.groupBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox8.Controls.Add(this.btnDisableClothing);
             this.groupBox8.Location = new System.Drawing.Point(800, 365);
             this.groupBox8.Name = "groupBox8";
@@ -621,11 +630,39 @@ namespace VAMvarmanager
             this.cbSavesScene.UseVisualStyleBackColor = true;
             this.cbSavesScene.MouseHover += new System.EventHandler(this.cbSavesScene_MouseHover);
             // 
+            // gbCreatorFilters
+            // 
+            this.gbCreatorFilters.Controls.Add(this.txtCreatorFilter);
+            this.gbCreatorFilters.Controls.Add(this.cbAllCreators);
+            this.gbCreatorFilters.Controls.Add(this.cbInvertCreators);
+            this.gbCreatorFilters.Location = new System.Drawing.Point(240, 158);
+            this.gbCreatorFilters.Name = "gbCreatorFilters";
+            this.gbCreatorFilters.Size = new System.Drawing.Size(274, 83);
+            this.gbCreatorFilters.TabIndex = 9;
+            this.gbCreatorFilters.TabStop = false;
+            this.gbCreatorFilters.Text = "Creator Filters";
+            // 
+            // gbFolderFilters
+            // 
+            this.gbFolderFilters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbFolderFilters.Controls.Add(this.txtFolderFilter);
+            this.gbFolderFilters.Controls.Add(this.cbInvertFolders);
+            this.gbFolderFilters.Controls.Add(this.cbAllFolders);
+            this.gbFolderFilters.Location = new System.Drawing.Point(520, 158);
+            this.gbFolderFilters.Name = "gbFolderFilters";
+            this.gbFolderFilters.Size = new System.Drawing.Size(274, 83);
+            this.gbFolderFilters.TabIndex = 16;
+            this.gbFolderFilters.TabStop = false;
+            this.gbFolderFilters.Text = "Folder Filters";
+            // 
             // frmVARManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1080, 747);
+            this.Controls.Add(this.gbFolderFilters);
+            this.Controls.Add(this.gbCreatorFilters);
             this.Controls.Add(this.gbPresets);
             this.Controls.Add(this.cbSavesScene);
             this.Controls.Add(this.groupBox8);
@@ -636,8 +673,8 @@ namespace VAMvarmanager
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(1096, 786);
             this.Name = "frmVARManager";
             this.Text = "VAR Manager";
             this.groupBox1.ResumeLayout(false);
@@ -645,9 +682,7 @@ namespace VAMvarmanager
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -655,6 +690,10 @@ namespace VAMvarmanager
             this.groupBox8.ResumeLayout(false);
             this.gbPresets.ResumeLayout(false);
             this.gbPresets.PerformLayout();
+            this.gbCreatorFilters.ResumeLayout(false);
+            this.gbCreatorFilters.PerformLayout();
+            this.gbFolderFilters.ResumeLayout(false);
+            this.gbFolderFilters.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -712,6 +751,8 @@ namespace VAMvarmanager
         private System.Windows.Forms.CheckBox cbHair;
         private System.Windows.Forms.CheckBox cbClothing;
         private System.Windows.Forms.ToolTip toolTipSaves;
+        private System.Windows.Forms.GroupBox gbCreatorFilters;
+        private System.Windows.Forms.GroupBox gbFolderFilters;
     }
 }
 
