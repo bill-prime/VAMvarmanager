@@ -1148,7 +1148,21 @@ namespace VAMvarmanager
 
             return lstVarItems; 
         }
-        
+
+        public List<varfile> GetMorphVars()
+        {
+            List<varItem> lstVarItems = new List<varItem>();
+
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+
+            var latestVars = (from v in vc.vars
+                             where v.boolMorphs && vc.latestvars[v.Name] == v.version
+                             select v).ToList();
+
+
+            return latestVars;
+        }
+
         private Dictionary<string, string> GetItemReplacements(string strType)
         {
             Dictionary<string, string> itemReplacements = new Dictionary<string, string>();

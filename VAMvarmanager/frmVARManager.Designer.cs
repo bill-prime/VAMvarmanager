@@ -496,8 +496,9 @@ namespace VAMvarmanager
             this.btnMorphPresets.Name = "btnMorphPresets";
             this.btnMorphPresets.Size = new System.Drawing.Size(259, 51);
             this.btnMorphPresets.TabIndex = 15;
-            this.btnMorphPresets.Text = "Morph Preset Creator";
+            this.btnMorphPresets.Text = "Morph Preset Maker";
             this.btnMorphPresets.UseVisualStyleBackColor = true;
+            this.btnMorphPresets.Click += new System.EventHandler(this.btnMorphPresets_Click);
             // 
             // btnRevertpreloadmorphs
             // 

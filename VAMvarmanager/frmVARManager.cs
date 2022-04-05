@@ -598,5 +598,10 @@ namespace VAMvarmanager
         {
             toolTipSaves.Show(@"Scans all scenes in Saves\Scene\ and all sub-folders for dependencies." + Environment.NewLine + "May take some time to complete for many files/large scenes.", cbSavesScene);
         }
+
+        private void btnMorphPresets_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
