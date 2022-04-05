@@ -802,16 +802,26 @@ namespace VAMvarmanager
 
                     if (strLine.Contains(":/Custom") && !strLine.Contains("SELF:/"))
                     {
-                        //"customTexture_SpecTex" : "SupaRioAmateur.Wearable_Manicures.5:/Custom/Clothing/Female/SupaRioAmateur/Wearable Manicure/Tex/Glitter/Wearable Manicure Paint_Fingernails.Long_Specular.jpg", 
-                        strDepvar = strLine.Substring(0, strLine.IndexOf(":/"));
-                        strDepvar = strDepvar.Substring(strDepvar.LastIndexOf(@"""") + 1, strDepvar.Length - strDepvar.LastIndexOf(@"""") - 1);
-                        strDepvar = strDepvar.Split(".")[0].Replace(" ", "_") + "." + strDepvar.Split(".")[1].Replace(" ", "_");
-                        if (!lstDepvars.Contains(strDepvar))
+                        try
                         {
-                            lstDepvars.Add(strDepvar);
+                            strDepvar = strLine.Substring(0, strLine.IndexOf(":/"));
+                            strDepvar = strDepvar.Substring(strDepvar.LastIndexOf(@"""") + 1, strDepvar.Length - strDepvar.LastIndexOf(@"""") - 1);
+                            strDepvar = strDepvar.Split(".")[0].Replace(" ", "_") + "." + strDepvar.Split(".")[1].Replace(" ", "_");
+                            if (!lstDepvars.Contains(strDepvar))
+                            {
+                                lstDepvars.Add(strDepvar);
+                            }
+                        }
+                        catch
+                        {
+                            //reference is messed up, skip
+                            Debug.Print(strLine);
                         }
                     }
                 }
+
+                objReader.Close();
+                objReader.Dispose();
             }
 
             return lstDepvars;
