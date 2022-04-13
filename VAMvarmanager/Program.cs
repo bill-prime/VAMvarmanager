@@ -765,7 +765,10 @@ namespace VAMvarmanager
                         if (e.FullName.IndexOf("custom/atom/person/morphs/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
                         {
                             vf.boolMorphs = true;
-                            vf.countMorphs += 1;
+                            if (e.FullName.EndsWith("vmi"))
+                            {
+                                vf.countMorphs += 1;
+                            }
                         }
 
                         if (e.FullName.IndexOf("custom/assets/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
