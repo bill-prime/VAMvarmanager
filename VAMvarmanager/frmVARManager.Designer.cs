@@ -43,7 +43,6 @@ namespace VAMvarmanager
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.cbEx = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnBackupUnrefSpec = new System.Windows.Forms.Button();
             this.btnBackupSpec = new System.Windows.Forms.Button();
@@ -85,8 +84,8 @@ namespace VAMvarmanager
             this.toolTipSaves = new System.Windows.Forms.ToolTip(this.components);
             this.gbCreatorFilters = new System.Windows.Forms.GroupBox();
             this.gbFolderFilters = new System.Windows.Forms.GroupBox();
-            this.cbBackup = new System.Windows.Forms.CheckBox();
-            this.cbRestore = new System.Windows.Forms.CheckBox();
+            this.cbRestoreEx = new System.Windows.Forms.CheckBox();
+            this.cbBackupEx = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbCreatorEx.SuspendLayout();
@@ -236,18 +235,6 @@ namespace VAMvarmanager
             this.label1.Size = new System.Drawing.Size(99, 15);
             this.label1.TabIndex = 4;
             this.label1.Text = "VAM Root Folder:";
-            // 
-            // cbEx
-            // 
-            this.cbEx.AutoSize = true;
-            this.cbEx.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.cbEx.Location = new System.Drawing.Point(139, 340);
-            this.cbEx.Name = "cbEx";
-            this.cbEx.Size = new System.Drawing.Size(86, 19);
-            this.cbEx.TabIndex = 11;
-            this.cbEx.Text = "Exceptions";
-            this.cbEx.UseVisualStyleBackColor = true;
-            this.cbEx.CheckedChanged += new System.EventHandler(this.cbEx_CheckedChanged);
             // 
             // groupBox2
             // 
@@ -683,41 +670,40 @@ namespace VAMvarmanager
             this.gbFolderFilters.TabStop = false;
             this.gbFolderFilters.Text = "Folder Filters";
             // 
-            // cbBackup
+            // cbRestoreEx
             // 
-            this.cbBackup.AutoSize = true;
-            this.cbBackup.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.cbBackup.ForeColor = System.Drawing.Color.DarkGreen;
-            this.cbBackup.Location = new System.Drawing.Point(18, 313);
-            this.cbBackup.Name = "cbBackup";
-            this.cbBackup.Size = new System.Drawing.Size(67, 19);
-            this.cbBackup.TabIndex = 17;
-            this.cbBackup.Text = "Backup";
-            this.cbBackup.UseVisualStyleBackColor = true;
-            this.cbBackup.CheckedChanged += new System.EventHandler(this.cbBackup_CheckedChanged);
+            this.cbRestoreEx.AutoSize = true;
+            this.cbRestoreEx.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.cbRestoreEx.ForeColor = System.Drawing.Color.DarkBlue;
+            this.cbRestoreEx.Location = new System.Drawing.Point(18, 356);
+            this.cbRestoreEx.Name = "cbRestoreEx";
+            this.cbRestoreEx.Size = new System.Drawing.Size(133, 19);
+            this.cbRestoreEx.TabIndex = 18;
+            this.cbRestoreEx.Text = "Restore Exceptions";
+            this.cbRestoreEx.UseVisualStyleBackColor = true;
+            this.cbRestoreEx.CheckedChanged += new System.EventHandler(this.cbRestoreEx_CheckedChanged);
             // 
-            // cbRestore
+            // cbBackupEx
             // 
-            this.cbRestore.AutoSize = true;
-            this.cbRestore.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.cbRestore.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbRestore.Location = new System.Drawing.Point(18, 356);
-            this.cbRestore.Name = "cbRestore";
-            this.cbRestore.Size = new System.Drawing.Size(70, 19);
-            this.cbRestore.TabIndex = 18;
-            this.cbRestore.Text = "Restore";
-            this.cbRestore.UseVisualStyleBackColor = true;
-            this.cbRestore.CheckedChanged += new System.EventHandler(this.cbRestore_CheckedChanged);
+            this.cbBackupEx.AutoSize = true;
+            this.cbBackupEx.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.cbBackupEx.ForeColor = System.Drawing.Color.DarkGreen;
+            this.cbBackupEx.Location = new System.Drawing.Point(18, 313);
+            this.cbBackupEx.Name = "cbBackupEx";
+            this.cbBackupEx.Size = new System.Drawing.Size(130, 19);
+            this.cbBackupEx.TabIndex = 11;
+            this.cbBackupEx.Text = "Backup Exceptions";
+            this.cbBackupEx.UseVisualStyleBackColor = true;
+            this.cbBackupEx.CheckedChanged += new System.EventHandler(this.cbBackupEx_CheckedChanged);
             // 
             // frmVARManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1080, 747);
-            this.Controls.Add(this.cbRestore);
-            this.Controls.Add(this.cbBackup);
+            this.Controls.Add(this.cbRestoreEx);
             this.Controls.Add(this.gbFolderFilters);
-            this.Controls.Add(this.cbEx);
+            this.Controls.Add(this.cbBackupEx);
             this.Controls.Add(this.gbCreatorFilters);
             this.Controls.Add(this.gbPresets);
             this.Controls.Add(this.cbSavesScene);
@@ -779,7 +765,6 @@ namespace VAMvarmanager
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnBackupSpec;
         private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.CheckBox cbEx;
         private System.Windows.Forms.Button btnBackupUnrefSpec;
         private System.Windows.Forms.Button btnRestoreRef;
         private System.Windows.Forms.Button btnResetSettings;
@@ -810,8 +795,8 @@ namespace VAMvarmanager
         private System.Windows.Forms.GroupBox gbFolderFilters;
         private System.Windows.Forms.CheckedListBox clbCreatorsRestore;
         private System.Windows.Forms.CheckedListBox clbFoldersRestore;
-        private System.Windows.Forms.CheckBox cbBackup;
-        private System.Windows.Forms.CheckBox cbRestore;
+        private System.Windows.Forms.CheckBox cbRestoreEx;
+        private System.Windows.Forms.CheckBox cbBackupEx;
     }
 }
 

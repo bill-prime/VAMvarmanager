@@ -48,12 +48,10 @@ namespace VAMvarmanager
 
             btnMorphPresets.Enabled = false;
 
-            cbBackup.Checked = true;
-            cbBackup.Enabled = false;
-            cbRestore.Checked = false;
-            cbRestore.Enabled = false;
-            cbEx.Checked = true;
-            cbEx.Enabled = false;
+            cbBackupEx.Checked = true;
+            cbBackupEx.Enabled = false;
+            cbRestoreEx.Checked = false;
+            cbRestoreEx.Enabled = false;
 
             //Reset settings
             //Properties.Settings.Default["vamfolder"] = null;
@@ -96,7 +94,7 @@ namespace VAMvarmanager
             _creatorRestoreex = new System.Collections.Specialized.StringCollection();
             _folderRestoreex = new System.Collections.Specialized.StringCollection();
 
-            cbEx.Checked = true;
+            cbBackupEx.Checked = true;
 
             clbTypes.Items.Add("Assets");
             clbTypes.Items.Add("Clothing");
@@ -198,7 +196,7 @@ namespace VAMvarmanager
 
                 this.clbFoldersRestore.Sorted = true;
                 
-                if(cbRestore.Checked)
+                if(cbRestoreEx.Checked)
                 {
                     this.clbCreatorsRestore.Enabled = true;
                     this.clbCreatorsRestore.Show();
@@ -244,9 +242,8 @@ namespace VAMvarmanager
                 this.cbAllSpec.Enabled = true;
                 this.cbInvertSpec.Enabled = true;
 
-                this.cbRestore.Enabled = true;
-                this.cbBackup.Enabled = true;
-                this.cbEx.Enabled = true;
+                this.cbBackupEx.Enabled = true;
+                this.cbRestoreEx.Enabled = true;
 
                 this.cbSavesScene.Enabled = true;
                 this.gbPresets.Enabled = true;
@@ -284,9 +281,8 @@ namespace VAMvarmanager
                 this.cbAllSpec.Enabled = false;
                 this.cbInvertSpec.Enabled = false;
 
-                this.cbRestore.Enabled = false;
-                this.cbBackup.Enabled = false;
-                this.cbEx.Enabled = false;
+                this.cbBackupEx.Enabled = false;
+                this.cbRestoreEx.Enabled = false;
 
                 this.cbSavesScene.Enabled = false;
                 this.gbPresets.Enabled = false;
@@ -450,7 +446,7 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
             
-            if (cbEx.Checked)
+            if (cbBackupEx.Checked)
             {
                 varmanager.varCounts vc = vm.BackupUnrefVarsEx(clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters());
                 lblVamcount.Text = vc.countVAMvars.ToString();
@@ -470,7 +466,7 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
-            if (cbEx.Checked)
+            if (cbBackupEx.Checked)
             {
                 varmanager.varCounts vc = vm.BackupUnrefSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters());
                 lblVamcount.Text = vc.countVAMvars.ToString();
@@ -490,7 +486,7 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
-            if (cbEx.Checked)
+            if (cbBackupEx.Checked)
             {
                 varmanager.varCounts vc = vm.BackupSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems);
                 lblVamcount.Text = vc.countVAMvars.ToString();
@@ -510,7 +506,7 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
-            if (cbEx.Checked && cbRestore.Checked)
+            if (cbRestoreEx.Checked)
             {
                 varmanager.varCounts vc = vm.RestoreNeededVarsEx(getLocalFileFilters(), clbFoldersRestore.CheckedItems, clbCreatorsRestore.CheckedItems);
                 lblVamcount.Text = vc.countVAMvars.ToString();
@@ -532,7 +528,7 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
-            if (cbEx.Checked && cbRestore.Checked)
+            if (cbRestoreEx.Checked)
             {
                 varmanager.varCounts vc = vm.RestoreSpecificVarsEx(clbTypes.CheckedItems, clbFoldersRestore.CheckedItems, clbCreatorsRestore.CheckedItems);
                 lblVamcount.Text = vc.countVAMvars.ToString();
@@ -554,7 +550,7 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
-            if (cbEx.Checked && cbRestore.Checked)
+            if (cbRestoreEx.Checked)
             {
                 varmanager.varCounts vc = vm.RestoreAllvarsEx(clbFoldersRestore.CheckedItems, clbCreatorsRestore.CheckedItems);
                 lblVamcount.Text = vc.countVAMvars.ToString();
@@ -570,36 +566,6 @@ namespace VAMvarmanager
             setfunctionstatus();
 
             Cursor = Cursors.Default;
-        }
-
-        private void cbEx_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbEx.Checked) 
-            { 
-                if(cbBackup.Checked)
-                {
-                    clbCreators.Enabled = true;
-                    clbFolders.Enabled = true;
-                }
-                else if(cbRestore.Checked)
-                {
-                    clbCreatorsRestore.Enabled = true;
-                    clbFoldersRestore.Enabled = true;
-                }
-            }
-            else 
-            {
-                if (cbBackup.Checked)
-                {
-                    clbCreators.Enabled = false;
-                    clbFolders.Enabled = false;
-                }
-                else if (cbRestore.Checked)
-                {
-                    clbCreatorsRestore.Enabled = false;
-                    clbFoldersRestore.Enabled = false;
-                }
-            }
         }
 
         private void btnResetSettings_Click(object sender, EventArgs e)
@@ -623,7 +589,7 @@ namespace VAMvarmanager
 
         private void txtCreatorFilter_TextChanged(object sender, EventArgs e)
         {
-            if (cbBackup.Checked)
+            if (cbBackupEx.Checked)
             {
                 clbFilter(ref clbCreators, txtCreatorFilter.Text, _creatorListvam, _creatorex);
             }
@@ -635,7 +601,7 @@ namespace VAMvarmanager
 
         private void txtFolderFilter_TextChanged(object sender, EventArgs e)
         {
-            if (cbBackup.Checked)
+            if (cbBackupEx.Checked)
             {
                 clbFilter(ref clbFolders, txtFolderFilter.Text, _folderListvam, _folderex);
             }
@@ -648,7 +614,7 @@ namespace VAMvarmanager
         private void cbAllCreators_CheckedChanged(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
-            if (cbBackup.Checked)
+            if (cbBackupEx.Checked)
             {
                 clbSetAll(ref clbCreators, cbAllCreators.Checked);
             }
@@ -662,7 +628,7 @@ namespace VAMvarmanager
         private void cbInvertCreators_CheckedChanged(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
-            if (cbBackup.Checked)
+            if (cbBackupEx.Checked)
             {
                 clbInvert(ref clbCreators);
             }
@@ -676,7 +642,7 @@ namespace VAMvarmanager
         private void cbAllFolders_CheckedChanged(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
-            if (cbBackup.Checked)
+            if (cbBackupEx.Checked)
             {
                 clbSetAll(ref clbFolders, cbAllFolders.Checked);
             }
@@ -690,7 +656,7 @@ namespace VAMvarmanager
         private void cbInvertFolders_CheckedChanged(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
-            if (cbBackup.Checked)
+            if (cbBackupEx.Checked)
             {
                 clbInvert(ref clbFolders);
             }
@@ -823,12 +789,11 @@ namespace VAMvarmanager
             Cursor = Cursors.Default;
         }
 
-        private void cbBackup_CheckedChanged(object sender, EventArgs e)
+        private void cbBackupEx_CheckedChanged(object sender, EventArgs e)
         {
-            if (cbBackup.Checked)
+            if (cbBackupEx.Checked)
             {
-                this.cbRestore.Checked = false;
-                this.cbEx.Checked = true;
+                this.cbRestoreEx.Checked = false;
 
                 this.clbCreatorsRestore.Enabled = false;
                 this.clbCreatorsRestore.Hide();
@@ -842,14 +807,6 @@ namespace VAMvarmanager
             }
             else
             {
-                this.cbRestore.Checked = true;
-                this.cbEx.Checked = false;
-
-                this.clbCreatorsRestore.Enabled = false;
-                this.clbCreatorsRestore.Show();
-                this.clbFoldersRestore.Enabled = false;
-                this.clbFoldersRestore.Show();
-
                 this.clbCreators.Enabled = false;
                 this.clbCreators.Hide();
                 this.clbFolders.Enabled = false;
@@ -857,16 +814,15 @@ namespace VAMvarmanager
             }
         }
 
-        private void cbRestore_CheckedChanged(object sender, EventArgs e)
+        private void cbRestoreEx_CheckedChanged(object sender, EventArgs e)
         {
-            if (cbRestore.Checked)
+            if (cbRestoreEx.Checked)
             {
-                this.cbBackup.Checked = false;
-                this.cbEx.Checked = false;
+                this.cbBackupEx.Checked = false;
 
-                this.clbCreatorsRestore.Enabled = false;
+                this.clbCreatorsRestore.Enabled = true;
                 this.clbCreatorsRestore.Show();
-                this.clbFoldersRestore.Enabled = false;
+                this.clbFoldersRestore.Enabled = true;
                 this.clbFoldersRestore.Show();
 
                 this.clbCreators.Enabled = false;
@@ -876,18 +832,10 @@ namespace VAMvarmanager
             }
             else
             {
-                this.cbBackup.Checked = true;
-                this.cbEx.Checked = true;
-
                 this.clbCreatorsRestore.Enabled = false;
                 this.clbCreatorsRestore.Hide();
                 this.clbFoldersRestore.Enabled = false;
                 this.clbFoldersRestore.Hide();
-
-                this.clbCreators.Enabled = true;
-                this.clbCreators.Show();
-                this.clbFolders.Enabled = true;
-                this.clbFolders.Show();
             }
         }
     }
