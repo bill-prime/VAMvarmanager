@@ -52,6 +52,8 @@ namespace VAMvarmanager
             cbBackup.Enabled = false;
             cbRestore.Checked = false;
             cbRestore.Enabled = false;
+            cbEx.Checked = true;
+            cbEx.Enabled = false;
 
             //Reset settings
             //Properties.Settings.Default["vamfolder"] = null;
@@ -244,6 +246,7 @@ namespace VAMvarmanager
 
                 this.cbRestore.Enabled = true;
                 this.cbBackup.Enabled = true;
+                this.cbEx.Enabled = true;
 
                 this.cbSavesScene.Enabled = true;
                 this.gbPresets.Enabled = true;
@@ -283,6 +286,7 @@ namespace VAMvarmanager
 
                 this.cbRestore.Enabled = false;
                 this.cbBackup.Enabled = false;
+                this.cbEx.Enabled = false;
 
                 this.cbSavesScene.Enabled = false;
                 this.gbPresets.Enabled = false;
