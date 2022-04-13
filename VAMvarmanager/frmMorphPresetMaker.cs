@@ -224,5 +224,11 @@ namespace VAMvarmanager
             _frmVM.Show();
             this.Close();
         }
+
+        private void frmMorphPresetMaker_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Hide();
+            _frmVM.Show();
+        }
     }
 }

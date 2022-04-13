@@ -218,6 +218,7 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Morph Preset Maker";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMorphPresetMaker_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.gbMorphvars.ResumeLayout(false);
