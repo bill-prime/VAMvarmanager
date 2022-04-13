@@ -40,8 +40,10 @@
             this.cbPreloadMorphs = new System.Windows.Forms.CheckBox();
             this.gbMorphvars = new System.Windows.Forms.GroupBox();
             this.gbFilters = new System.Windows.Forms.GroupBox();
+            this.cbSortNumMorphs = new System.Windows.Forms.CheckBox();
             this.txtNameFilter = new System.Windows.Forms.TextBox();
             this.btnReturnToVM = new System.Windows.Forms.Button();
+            this.sfdMorphPreset = new System.Windows.Forms.SaveFileDialog();
             this.groupBox1.SuspendLayout();
             this.gbMorphvars.SuspendLayout();
             this.gbFilters.SuspendLayout();
@@ -53,7 +55,7 @@
             this.clbMorphvars.FormattingEnabled = true;
             this.clbMorphvars.Location = new System.Drawing.Point(6, 22);
             this.clbMorphvars.Name = "clbMorphvars";
-            this.clbMorphvars.Size = new System.Drawing.Size(314, 472);
+            this.clbMorphvars.Size = new System.Drawing.Size(379, 454);
             this.clbMorphvars.TabIndex = 0;
             // 
             // txtPresetName
@@ -146,34 +148,48 @@
             this.cbPreloadMorphs.TabIndex = 3;
             this.cbPreloadMorphs.Text = "Show Only vars with PreloadMorphs";
             this.cbPreloadMorphs.UseVisualStyleBackColor = true;
+            this.cbPreloadMorphs.CheckedChanged += new System.EventHandler(this.cbPreloadMorphs_CheckedChanged);
             // 
             // gbMorphvars
             // 
             this.gbMorphvars.Controls.Add(this.clbMorphvars);
-            this.gbMorphvars.Location = new System.Drawing.Point(323, 103);
+            this.gbMorphvars.Location = new System.Drawing.Point(323, 119);
             this.gbMorphvars.Name = "gbMorphvars";
-            this.gbMorphvars.Size = new System.Drawing.Size(326, 499);
+            this.gbMorphvars.Size = new System.Drawing.Size(391, 483);
             this.gbMorphvars.TabIndex = 4;
             this.gbMorphvars.TabStop = false;
             this.gbMorphvars.Text = "Choose vars to include in Morph Preset";
             // 
             // gbFilters
             // 
+            this.gbFilters.Controls.Add(this.cbSortNumMorphs);
             this.gbFilters.Controls.Add(this.txtNameFilter);
             this.gbFilters.Controls.Add(this.cbPreloadMorphs);
             this.gbFilters.Location = new System.Drawing.Point(323, 12);
             this.gbFilters.Name = "gbFilters";
-            this.gbFilters.Size = new System.Drawing.Size(326, 85);
+            this.gbFilters.Size = new System.Drawing.Size(391, 101);
             this.gbFilters.TabIndex = 5;
             this.gbFilters.TabStop = false;
             this.gbFilters.Text = "Filters";
             // 
+            // cbSortNumMorphs
+            // 
+            this.cbSortNumMorphs.AutoSize = true;
+            this.cbSortNumMorphs.Location = new System.Drawing.Point(6, 47);
+            this.cbSortNumMorphs.Name = "cbSortNumMorphs";
+            this.cbSortNumMorphs.Size = new System.Drawing.Size(168, 19);
+            this.cbSortNumMorphs.TabIndex = 4;
+            this.cbSortNumMorphs.Text = "Sort by Number of Morphs";
+            this.cbSortNumMorphs.UseVisualStyleBackColor = true;
+            this.cbSortNumMorphs.CheckedChanged += new System.EventHandler(this.cbSortNumMorphs_CheckedChanged);
+            // 
             // txtNameFilter
             // 
-            this.txtNameFilter.Location = new System.Drawing.Point(6, 48);
+            this.txtNameFilter.Location = new System.Drawing.Point(6, 72);
             this.txtNameFilter.Name = "txtNameFilter";
-            this.txtNameFilter.Size = new System.Drawing.Size(314, 23);
+            this.txtNameFilter.Size = new System.Drawing.Size(379, 23);
             this.txtNameFilter.TabIndex = 0;
+            this.txtNameFilter.TextChanged += new System.EventHandler(this.txtNameFilter_TextChanged);
             // 
             // btnReturnToVM
             // 
@@ -191,7 +207,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(657, 614);
+            this.ClientSize = new System.Drawing.Size(726, 614);
             this.Controls.Add(this.btnReturnToVM);
             this.Controls.Add(this.gbFilters);
             this.Controls.Add(this.gbMorphvars);
@@ -227,5 +243,7 @@
         private System.Windows.Forms.Button btnSaveMorphPreset;
         private System.Windows.Forms.ComboBox comboSex;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox cbSortNumMorphs;
+        private System.Windows.Forms.SaveFileDialog sfdMorphPreset;
     }
 }

@@ -51,6 +51,7 @@ namespace VAMvarmanager
             public bool boolClothing;
             public bool boolClothingPreset;
             public bool boolScripts;
+            public int countMorphs;
 
             public varfile()
             {
@@ -72,6 +73,8 @@ namespace VAMvarmanager
                 boolClothing = false;
                 boolClothingPreset = false;
                 boolScripts = false;
+
+                countMorphs = 0;
             }
         }
 
@@ -436,6 +439,76 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
+        public varCounts RestoreNeededVarsEx(List<string> lstLocalFiles, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
+        {
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
+            varconfig vcbakup = GetVarconfig(_strVAMbackupdir);
+            DirectoryInfo diBackup = new DirectoryInfo(_strVAMbackupdir);
+            var neededFiles = new List<FileInfo>();
+            var lstErrorvars = new List<string>();
+
+            //IEnumerable<FileInfo> neededFiles;
+            //neededFiles = diBackup
+            //    .GetFiles("*.var", SearchOption.AllDirectories)
+            //    .Where(file => vc.deps.Contains(file.Name.Replace(".var", "").Substring(0, file.Name.Replace(".var", "").LastIndexOf(".")), StringComparer.OrdinalIgnoreCase));
+
+            var backupvars = from v in vcbakup.vars
+                             where
+                                !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
+                                !lstCreatorEx.Contains(Convert.ToString(v.creator))
+                             select v;
+
+            foreach (varfile f in backupvars)
+            {
+                try
+                {
+                    if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase))
+                    { neededFiles.Add(f.fi); }
+                }
+                catch
+                { lstErrorvars.Add(f.fi.Name); }
+            }
+
+            while (neededFiles.Count() > 0)
+            {
+                foreach (FileInfo f in neededFiles)
+                {
+
+                    if (!Directory.Exists(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                    }
+
+                    if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))) { File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))); }
+                }
+
+                vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
+                vcbakup = GetVarconfig(_strVAMbackupdir, new List<string>());
+                neededFiles = new List<FileInfo>();
+
+                backupvars = from v in vcbakup.vars
+                             where
+                             !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
+                             !lstCreatorEx.Contains(Convert.ToString(v.creator))
+                             select v;
+
+                foreach (varfile f in backupvars)
+                {
+                    try
+                    {
+                        if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase))
+                        { neededFiles.Add(f.fi); }
+                    }
+                    catch
+                    { lstErrorvars.Add(f.fi.Name); }
+                }
+            }
+
+            //MessageBox.Show("Please manually remove file from VAM/backup folders:" + Environment.NewLine + f.Name, "Skipping Restore file, incorrect .var file naming format.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            return GetVarCounts();
+        }
+
         public varCounts RestoreSpecificVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes)
         {
             varconfig vc = GetVarconfig(_strVAMbackupdir);
@@ -470,6 +543,44 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
+        public varCounts RestoreSpecificVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
+        {
+            varconfig vc = GetVarconfig(_strVAMbackupdir);
+
+            var backupvars = from v in vc.vars
+                             where
+                             (
+                                (v.boolAssets && lstTypes.Contains("Assets")) ||
+                                (v.boolClothing && lstTypes.Contains("Clothing")) ||
+                                (v.boolClothingPreset && lstTypes.Contains("Clothing Presets")) ||
+                                (v.boolHair && lstTypes.Contains("Hair")) ||
+                                (v.boolHairPreset && lstTypes.Contains("Hair Presets")) ||
+                                ((v.boolLooks || v.boolLookPresets) && lstTypes.Contains("Looks")) ||
+                                (v.boolMorphs && lstTypes.Contains("Morphs")) ||
+                                ((v.boolPoses || v.boolPosePresets) && lstTypes.Contains("Poses")) ||
+                                (v.boolScenes && lstTypes.Contains("Scenes")) ||
+                                (v.boolSubScenes && lstTypes.Contains("SubScenes")) ||
+                                (v.boolScripts && lstTypes.Contains("Scripts")) ||
+                                (v.boolTextures && lstTypes.Contains("Skin Textures"))
+                            ) &&
+                            !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
+                            !lstCreatorEx.Contains(Convert.ToString(v.creator))
+                             select v;
+
+            foreach (var f in backupvars)
+            {
+
+                if (!Directory.Exists(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                }
+
+                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))); }
+            }
+
+            return GetVarCounts();
+        }
+
         public varCounts RestoreAllvars()
         {
             DirectoryInfo diBackup = new DirectoryInfo(_strVAMbackupdir);
@@ -482,6 +593,30 @@ namespace VAMvarmanager
                 }
 
                 if (!File.Exists(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))){ File.Move(f.FullName, f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"), false); }
+            }
+
+            return GetVarCounts();
+        }
+
+        public varCounts RestoreAllvarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
+        {
+            varconfig vc = GetVarconfig(_strVAMbackupdir);
+
+            var backupvars = from v in vc.vars
+                             where
+                             !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
+                             !lstCreatorEx.Contains(Convert.ToString(v.creator))
+                             select v;
+
+            foreach (var f in backupvars)
+            {
+
+                if (!Directory.Exists(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                }
+
+                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))); }
             }
 
             return GetVarCounts();
@@ -630,6 +765,7 @@ namespace VAMvarmanager
                         if (e.FullName.IndexOf("custom/atom/person/morphs/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
                         {
                             vf.boolMorphs = true;
+                            vf.countMorphs += 1;
                         }
 
                         if (e.FullName.IndexOf("custom/assets/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
@@ -1157,6 +1293,7 @@ namespace VAMvarmanager
 
             var latestVars = (from v in vc.vars
                              where v.boolMorphs && vc.latestvars[v.Name] == v.version
+                             orderby v.fi.Name
                              select v).ToList();
 
 
