@@ -398,8 +398,10 @@ namespace VAMvarmanager
             {
                 try
                 {
-                    if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase))
-                    { neededFiles.Add(f.fi); }
+                    if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase) && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                    {
+                        neededFiles.Add(f.fi);
+                    }
                 }
                 catch
                 { lstErrorvars.Add(f.fi.Name); }
@@ -426,8 +428,10 @@ namespace VAMvarmanager
                 {
                     try
                     {
-                        if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase))
-                        { neededFiles.Add(f.fi); }
+                        if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase) && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                        {
+                            neededFiles.Add(f.fi); 
+                        }
                     }
                     catch
                     { lstErrorvars.Add(f.fi.Name); }
@@ -462,8 +466,10 @@ namespace VAMvarmanager
             {
                 try
                 {
-                    if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase))
-                    { neededFiles.Add(f.fi); }
+                    if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase) && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                    {
+                        neededFiles.Add(f.fi);
+                    }
                 }
                 catch
                 { lstErrorvars.Add(f.fi.Name); }
@@ -496,8 +502,10 @@ namespace VAMvarmanager
                 {
                     try
                     {
-                        if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase))
-                        { neededFiles.Add(f.fi); }
+                        if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase) && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                        {
+                            neededFiles.Add(f.fi);
+                        }
                     }
                     catch
                     { lstErrorvars.Add(f.fi.Name); }
