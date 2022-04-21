@@ -218,7 +218,7 @@ namespace VAMvarmanager
                              where
                                 !vc.deps.Contains(Convert.ToString(v.Name), StringComparer.OrdinalIgnoreCase) &&
                                 !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
-                                !lstFolderEx.Contains(Path.GetDirectoryName(v.fi.FullName).Replace(_strVAMdir + @"\AddonPackages\", "")) &&
+                                !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages") &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator))
                              select v;
 
@@ -294,7 +294,7 @@ namespace VAMvarmanager
                                 ) &&
                                 !vc.deps.Contains(Convert.ToString(v.Name), StringComparer.OrdinalIgnoreCase) &&
                                 !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
-                                !lstFolderEx.Contains(Path.GetDirectoryName(v.fi.FullName).Replace(_strVAMdir + @"\AddonPackages\", "")) &&
+                                !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages") &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator))
                              select v;
 
@@ -364,7 +364,7 @@ namespace VAMvarmanager
                                     (v.boolTextures && lstTypes.Contains("Skin Textures"))
                                 ) &&
                                 !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
-                                !lstFolderEx.Contains(Path.GetDirectoryName(v.fi.FullName).Replace(_strVAMdir + @"\AddonPackages\", "")) &&
+                                !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages") &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator))
                              select v;
 
@@ -459,6 +459,7 @@ namespace VAMvarmanager
             var backupvars = from v in vcbakup.vars
                              where
                                 !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
+                                !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMbackupdir) &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator))
                              select v;
 
@@ -495,6 +496,7 @@ namespace VAMvarmanager
                 backupvars = from v in vcbakup.vars
                              where
                              !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
+                             !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMbackupdir) &&
                              !lstCreatorEx.Contains(Convert.ToString(v.creator))
                              select v;
 
@@ -572,6 +574,7 @@ namespace VAMvarmanager
                                 (v.boolTextures && lstTypes.Contains("Skin Textures"))
                             ) &&
                             !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
+                            !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMbackupdir) &&
                             !lstCreatorEx.Contains(Convert.ToString(v.creator))
                              select v;
 
@@ -613,6 +616,7 @@ namespace VAMvarmanager
             var backupvars = from v in vc.vars
                              where
                              !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
+                             !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMbackupdir) &&
                              !lstCreatorEx.Contains(Convert.ToString(v.creator))
                              select v;
 

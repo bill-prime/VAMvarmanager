@@ -151,11 +151,13 @@ namespace VAMvarmanager
 
                 clbFolders.Items.Clear();
 
+                _folderListvam = new List<string>();
+
                 var dirs = from f in Directory.GetDirectories(_strVamdir + @"\AddonPackages", "*", SearchOption.AllDirectories)
                                      select f.Replace(_strVamdir + @"\AddonPackages\", "");
 
-                _folderListvam = dirs.ToList<string>();
-                _folderListvam.Add("AddonPackages");
+                _folderListvam.Add(@"\root\");
+                _folderListvam.AddRange(dirs.ToList<string>());
 
                 foreach (string f in _folderListvam)
                 {
@@ -165,38 +167,61 @@ namespace VAMvarmanager
                     }
                     else
                     {
-                        if (_folderex.Contains(f)) { clbFolders.Items.Add(f, true); }
+                        if (_folderex.Contains(f)) { 
+                            clbFolders.Items.Add(f, true); 
+                        }
                         else { clbFolders.Items.Add(f, false); }
                     }
                 }
-                
-                this.clbFolders.Sorted = true;
+
+                clbFolders.Sorted = true;
 
                 for (int i = clbFolders.Items.Count - 1; i >= 0; i--)
                 {
-                    if (clbFolders.Items[i].ToString() == "AddonPackages" && i != 0)
+                    if (clbFolders.Items[i].ToString() == @"\root\" && i != 0)
                     {
-                        var temp = clbFolders.Items[0];
-                        clbFolders.Items[0] = clbFolders.Items[i];
-                        clbFolders.Items[i] = temp;
+                        var temp = clbFolders.Items[i];
+                        bool tempChecked = clbFolders.GetItemChecked(i);
+                        clbFolders.Sorted = false;
+                        clbFolders.Items.RemoveAt(i);
+                        clbFolders.Items.Insert(0, temp);
+                        clbFolders.SetItemChecked(0, tempChecked);
+                        break;
                     }
                 }
 
                 clbFoldersRestore.Items.Clear();
 
+                _folderListbak = new List<string>();
+
                 var dirsRestore = from f in Directory.GetDirectories(_strBackupdir, "*", SearchOption.AllDirectories)
                                   select f.Replace(_strBackupdir + @"\", "");
 
-                _folderListbak = dirsRestore.ToList<string>();
+                _folderListbak.Add(@"\root\");
+                _folderListbak.AddRange(dirsRestore.ToList<string>());
 
                 foreach (string f in _folderListbak)
                 {
                     clbFoldersRestore.Items.Add(f, false);
                 }
 
-                this.clbFoldersRestore.Sorted = true;
-                
-                if(cbRestoreEx.Checked)
+                clbFoldersRestore.Sorted = true;
+
+                for (int i = clbFoldersRestore.Items.Count - 1; i >= 0; i--)
+                {
+                    if (clbFoldersRestore.Items[i].ToString() == @"\root\" && i != 0)
+                    {
+                        var temp = clbFoldersRestore.Items[i];
+                        bool tempChecked = clbFoldersRestore.GetItemChecked(i);
+                        clbFoldersRestore.Sorted = false;
+                        clbFoldersRestore.Items.RemoveAt(i);
+                        clbFoldersRestore.Items.Insert(0, temp);
+                        clbFoldersRestore.SetItemChecked(0, tempChecked);
+                        break;
+                    }
+                }
+
+                if (cbRestoreEx.Checked)
                 {
                     this.clbCreatorsRestore.Enabled = true;
                     this.clbCreatorsRestore.Show();
@@ -699,6 +724,8 @@ namespace VAMvarmanager
                               where strItem.Contains(strfilter,StringComparison.OrdinalIgnoreCase)
                               select strItem;
 
+            clb.BeginUpdate();
+
             //Add Items
             foreach (var i in itemsNeeded)
             {
@@ -726,13 +753,19 @@ namespace VAMvarmanager
 
             for (int i = clb.Items.Count - 1; i >= 0; i--)
             {
-                if (clb.Items[i].ToString() == "AddonPackages" && i != 0)
+                if (clb.Items[i].ToString() == @"\root\" && i != 0)
                 {
-                    var temp = clb.Items[0];
-                    clb.Items[0] = clb.Items[i];
-                    clb.Items[i] = temp;
+                    var temp = clb.Items[i];
+                    bool tempChecked = clb.GetItemChecked(i);
+                    clb.Sorted = false;
+                    clb.Items.RemoveAt(i);
+                    clb.Items.Insert(0, temp);
+                    clb.SetItemChecked(0, tempChecked);
+                    break;
                 }
             }
+
+            clb.EndUpdate();
         }
 
         private void btnDisablepreloadmorphs_Click(object sender, EventArgs e)
