@@ -300,92 +300,97 @@ namespace VAMvarmanager
                         }
                     }
 
+                    NextManualResolveItem();
+
+                }
+            }));
+        }
+
+        private void NextManualResolveItem()
+        {
+            _lstVirManualResolve.RemoveAt(0);
+            _intManualIndex += 1;
+
+            if (_lstVirManualResolve.Any())
+            {
+                //Check master lists for var/item and automatically disable
+                var matchMasterLists = from vir in _lstVirManualResolve[0].lstVi
+                                       where _lstmastervars.Contains(comboType.Text + "|" + comboSex.Text + "|" + vir.var.Name) || _lstmasteritems.Contains(comboType.Text + "|" + comboSex.Text + "|" + vir.var.Name + "|" + _lstVirManualResolve[0].creator + "|" + _lstVirManualResolve[0].itemname)
+                                       select vir;
+
+                while (matchMasterLists != null && matchMasterLists.Any())
+                {
+                    //Match found in master lists, update main list
+                    for (int i = 0; i < _lstVirAll.Count(); i++)
+                    {
+                        if (_lstVirAll[i].varItemReplacementType != varmanager.varItemReplacement.DISABLE && _lstVirAll[i].creator == _lstVirManualResolve[0].creator && _lstVirAll[i].itemname == _lstVirManualResolve[0].itemname)
+                        {
+                            _lstVirAll[i].mastervar = matchMasterLists.First().var.Name;
+                            _lstVirAll[i].varItemReplacementType = varmanager.varItemReplacement.DISABLE;
+                        }
+                    }
+
                     _lstVirManualResolve.RemoveAt(0);
                     _intManualIndex += 1;
 
                     if (_lstVirManualResolve.Any())
                     {
-                        //Check master lists for var/item and automatically disable
-                        var matchMasterLists = from vir in _lstVirManualResolve[0].lstVi
-                                               where _lstmastervars.Contains(comboType.Text + "|" + comboSex.Text + "|" + vir.var.Name) || _lstmasteritems.Contains(comboType.Text + "|" + comboSex.Text + "|" + vir.var.Name + "|" + _lstVirManualResolve[0].creator + "|" + _lstVirManualResolve[0].itemname)
-                                               select vir;
-
-                        while (matchMasterLists != null && matchMasterLists.Any())
-                        {
-                            //Update main list
-                            for (int i = 0; i < _lstVirAll.Count(); i++)
-                            {
-                                if (_lstVirAll[i].varItemReplacementType != varmanager.varItemReplacement.DISABLE && _lstVirAll[i].creator == _lstVirManualResolve[0].creator && _lstVirAll[i].itemname == _lstVirManualResolve[0].itemname)
-                                {
-                                    _lstVirAll[i].mastervar = matchMasterLists.First().var.Name;
-                                    _lstVirAll[i].varItemReplacementType = varmanager.varItemReplacement.DISABLE;
-                                }
-                            }
-
-                            _lstVirManualResolve.RemoveAt(0);
-                            _intManualIndex += 1;
-
-                            if (_lstVirManualResolve.Any())
-                            {
-                                matchMasterLists = from vir in _lstVirManualResolve[0].lstVi
-                                                   where _lstmastervars.Contains(comboType.Text + "|" + comboSex.Text + "|" + vir.var.Name) || _lstmasteritems.Contains(comboType.Text + "|" + comboSex.Text + "|" + vir.var.Name + "|" + _lstVirManualResolve[0].creator + "|" + _lstVirManualResolve[0].itemname)
-                                                   select vir;
-                            }
-                            else
-                            {
-                                matchMasterLists = null;
-                            }
-                        }
-
-                        //continue manual resolve
-                        if (_lstVirManualResolve.Any())
-                        {
-                            lblDuplicateManualCount.Text = "Item " + _intManualIndex.ToString() + " of " + _intManualTotal.ToString();
-
-                            txtCreatorName.Text = _lstVirManualResolve[0].creator;
-                            txtItemName.Text = _lstVirManualResolve[0].itemname;
-                            clbDuplicatesManual.ClearSelected();
-                            clbDuplicatesManual.Items.Clear();
-
-                            foreach (var virVar in _lstVirManualResolve[0].lstVi)
-                            {
-                                clbDuplicatesManual.Items.Add(virVar.var.Name, false);
-                            }
-
-                            clbDuplicatesManual.Enabled = true;
-                        }
-                        else
-                        {
-                            //Done
-                            gbManualResolve.Enabled = false;
-                            txtCreatorName.Text = "";
-                            txtItemName.Text = "";
-                            clbDuplicatesManual.Enabled = false;
-                            clbDuplicatesManual.ClearSelected();
-                            clbDuplicatesManual.Items.Clear();
-                            lblDuplicateManualCount.Hide();
-                            lblDuplicateManualCount.Text = "";
-
-                            checkManualResolveNeeded();
-                        }
+                        matchMasterLists = from vir in _lstVirManualResolve[0].lstVi
+                                           where _lstmastervars.Contains(comboType.Text + "|" + comboSex.Text + "|" + vir.var.Name) || _lstmasteritems.Contains(comboType.Text + "|" + comboSex.Text + "|" + vir.var.Name + "|" + _lstVirManualResolve[0].creator + "|" + _lstVirManualResolve[0].itemname)
+                                           select vir;
                     }
                     else
                     {
-                        //Done
-                        gbManualResolve.Enabled = false;
-                        txtCreatorName.Text = "";
-                        txtItemName.Text = "";
-                        clbDuplicatesManual.Enabled = false;
-                        clbDuplicatesManual.ClearSelected();
-                        clbDuplicatesManual.Items.Clear();
-                        lblDuplicateManualCount.Hide();
-                        lblDuplicateManualCount.Text = "";
-                        
-                        checkManualResolveNeeded();
+                        matchMasterLists = null;
+                    }
+                }
+
+                //continue manual resolve
+                if (_lstVirManualResolve.Any())
+                {
+                    lblDuplicateManualCount.Text = "Item " + _intManualIndex.ToString() + " of " + _intManualTotal.ToString();
+
+                    txtCreatorName.Text = _lstVirManualResolve[0].creator;
+                    txtItemName.Text = _lstVirManualResolve[0].itemname;
+                    clbDuplicatesManual.ClearSelected();
+                    clbDuplicatesManual.Items.Clear();
+
+                    foreach (var virVar in _lstVirManualResolve[0].lstVi)
+                    {
+                        clbDuplicatesManual.Items.Add(virVar.var.Name, false);
                     }
 
+                    clbDuplicatesManual.Enabled = true;
                 }
-            }));
+                else
+                {
+                    //Done
+                    gbManualResolve.Enabled = false;
+                    txtCreatorName.Text = "";
+                    txtItemName.Text = "";
+                    clbDuplicatesManual.Enabled = false;
+                    clbDuplicatesManual.ClearSelected();
+                    clbDuplicatesManual.Items.Clear();
+                    lblDuplicateManualCount.Hide();
+                    lblDuplicateManualCount.Text = "";
+
+                    checkManualResolveNeeded();
+                }
+            }
+            else
+            {
+                //Done
+                gbManualResolve.Enabled = false;
+                txtCreatorName.Text = "";
+                txtItemName.Text = "";
+                clbDuplicatesManual.Enabled = false;
+                clbDuplicatesManual.ClearSelected();
+                clbDuplicatesManual.Items.Clear();
+                lblDuplicateManualCount.Hide();
+                lblDuplicateManualCount.Text = "";
+
+                checkManualResolveNeeded();
+            }
         }
 
         private void cbSetMasterItem_CheckStateChanged(object sender, EventArgs e)
@@ -455,6 +460,20 @@ namespace VAMvarmanager
 
             _masteritems = null;
             _lstmasteritems = new List<string>();
+        }
+
+        private void btnSkipItem_Click(object sender, EventArgs e)
+        {
+            //Skip item
+            for (int i = 0; i < _lstVirAll.Count(); i++)
+            {
+                if (_lstVirAll[i].varItemReplacementType != varmanager.varItemReplacement.DISABLE && _lstVirAll[i].creator == _lstVirManualResolve[0].creator && _lstVirAll[i].itemname == _lstVirManualResolve[0].itemname)
+                {
+                    _lstVirAll.RemoveAt(i);
+                }
+            }
+
+            NextManualResolveItem();
         }
     }
 }

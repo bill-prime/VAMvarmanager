@@ -52,6 +52,7 @@
             this.lblDuplicatesUnique = new System.Windows.Forms.Label();
             this.btnDisableDuplicates = new System.Windows.Forms.Button();
             this.btnReturnToVM = new System.Windows.Forms.Button();
+            this.btnSkipItem = new System.Windows.Forms.Button();
             this.gbManualResolve.SuspendLayout();
             this.gbConfig.SuspendLayout();
             this.gbDisable.SuspendLayout();
@@ -134,6 +135,7 @@
             // 
             // gbManualResolve
             // 
+            this.gbManualResolve.Controls.Add(this.btnSkipItem);
             this.gbManualResolve.Controls.Add(this.cbSetMasterItem);
             this.gbManualResolve.Controls.Add(this.lblDuplicateManualCount);
             this.gbManualResolve.Controls.Add(this.label5);
@@ -304,6 +306,18 @@
             this.btnReturnToVM.UseVisualStyleBackColor = true;
             this.btnReturnToVM.Click += new System.EventHandler(this.btnReturnToVM_Click);
             // 
+            // btnSkipItem
+            // 
+            this.btnSkipItem.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnSkipItem.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnSkipItem.Location = new System.Drawing.Point(290, 109);
+            this.btnSkipItem.Name = "btnSkipItem";
+            this.btnSkipItem.Size = new System.Drawing.Size(103, 54);
+            this.btnSkipItem.TabIndex = 12;
+            this.btnSkipItem.Text = "Skip";
+            this.btnSkipItem.UseVisualStyleBackColor = true;
+            this.btnSkipItem.Click += new System.EventHandler(this.btnSkipItem_Click);
+            // 
             // frmDuplicateItemManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -355,5 +369,6 @@
         private System.Windows.Forms.Button btnDisableDuplicates;
         private System.Windows.Forms.Button btnReturnToVM;
         private System.Windows.Forms.Button btnClearMasterLists;
+        private System.Windows.Forms.Button btnSkipItem;
     }
 }

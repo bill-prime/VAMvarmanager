@@ -86,6 +86,8 @@ namespace VAMvarmanager
             this.gbFolderFilters = new System.Windows.Forms.GroupBox();
             this.cbRestoreEx = new System.Windows.Forms.CheckBox();
             this.cbBackupEx = new System.Windows.Forms.CheckBox();
+            this.btnMoveOldVarVersions = new System.Windows.Forms.Button();
+            this.gbMisc = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbCreatorEx.SuspendLayout();
@@ -97,6 +99,7 @@ namespace VAMvarmanager
             this.gbPresets.SuspendLayout();
             this.gbCreatorFilters.SuspendLayout();
             this.gbFolderFilters.SuspendLayout();
+            this.gbMisc.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnVamfolder
@@ -298,9 +301,9 @@ namespace VAMvarmanager
             | System.Windows.Forms.AnchorStyles.Left)));
             this.gbCreatorEx.Controls.Add(this.clbCreatorsRestore);
             this.gbCreatorEx.Controls.Add(this.clbCreators);
-            this.gbCreatorEx.Location = new System.Drawing.Point(240, 241);
+            this.gbCreatorEx.Location = new System.Drawing.Point(240, 255);
             this.gbCreatorEx.Name = "gbCreatorEx";
-            this.gbCreatorEx.Size = new System.Drawing.Size(274, 503);
+            this.gbCreatorEx.Size = new System.Drawing.Size(274, 489);
             this.gbCreatorEx.TabIndex = 7;
             this.gbCreatorEx.TabStop = false;
             this.gbCreatorEx.Text = "Creator Exceptions";
@@ -312,7 +315,7 @@ namespace VAMvarmanager
             this.clbCreatorsRestore.FormattingEnabled = true;
             this.clbCreatorsRestore.Location = new System.Drawing.Point(3, 19);
             this.clbCreatorsRestore.Name = "clbCreatorsRestore";
-            this.clbCreatorsRestore.Size = new System.Drawing.Size(268, 481);
+            this.clbCreatorsRestore.Size = new System.Drawing.Size(268, 467);
             this.clbCreatorsRestore.TabIndex = 9;
             // 
             // clbCreators
@@ -322,13 +325,13 @@ namespace VAMvarmanager
             this.clbCreators.FormattingEnabled = true;
             this.clbCreators.Location = new System.Drawing.Point(3, 19);
             this.clbCreators.Name = "clbCreators";
-            this.clbCreators.Size = new System.Drawing.Size(268, 481);
+            this.clbCreators.Size = new System.Drawing.Size(268, 467);
             this.clbCreators.TabIndex = 8;
             // 
             // cbInvertCreators
             // 
             this.cbInvertCreators.AutoSize = true;
-            this.cbInvertCreators.Location = new System.Drawing.Point(65, 25);
+            this.cbInvertCreators.Location = new System.Drawing.Point(52, 22);
             this.cbInvertCreators.Name = "cbInvertCreators";
             this.cbInvertCreators.Size = new System.Drawing.Size(56, 19);
             this.cbInvertCreators.TabIndex = 15;
@@ -339,7 +342,7 @@ namespace VAMvarmanager
             // cbAllCreators
             // 
             this.cbAllCreators.AutoSize = true;
-            this.cbAllCreators.Location = new System.Drawing.Point(9, 25);
+            this.cbAllCreators.Location = new System.Drawing.Point(6, 22);
             this.cbAllCreators.Name = "cbAllCreators";
             this.cbAllCreators.Size = new System.Drawing.Size(40, 19);
             this.cbAllCreators.TabIndex = 14;
@@ -349,7 +352,7 @@ namespace VAMvarmanager
             // 
             // txtCreatorFilter
             // 
-            this.txtCreatorFilter.Location = new System.Drawing.Point(6, 54);
+            this.txtCreatorFilter.Location = new System.Drawing.Point(6, 47);
             this.txtCreatorFilter.Name = "txtCreatorFilter";
             this.txtCreatorFilter.Size = new System.Drawing.Size(265, 23);
             this.txtCreatorFilter.TabIndex = 12;
@@ -362,9 +365,9 @@ namespace VAMvarmanager
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gbFolderEx.Controls.Add(this.clbFoldersRestore);
             this.gbFolderEx.Controls.Add(this.clbFolders);
-            this.gbFolderEx.Location = new System.Drawing.Point(520, 241);
+            this.gbFolderEx.Location = new System.Drawing.Point(520, 255);
             this.gbFolderEx.Name = "gbFolderEx";
-            this.gbFolderEx.Size = new System.Drawing.Size(273, 503);
+            this.gbFolderEx.Size = new System.Drawing.Size(273, 489);
             this.gbFolderEx.TabIndex = 9;
             this.gbFolderEx.TabStop = false;
             this.gbFolderEx.Text = "Folder Exceptions";
@@ -377,7 +380,7 @@ namespace VAMvarmanager
             this.clbFoldersRestore.HorizontalScrollbar = true;
             this.clbFoldersRestore.Location = new System.Drawing.Point(3, 19);
             this.clbFoldersRestore.Name = "clbFoldersRestore";
-            this.clbFoldersRestore.Size = new System.Drawing.Size(267, 481);
+            this.clbFoldersRestore.Size = new System.Drawing.Size(267, 467);
             this.clbFoldersRestore.TabIndex = 9;
             // 
             // clbFolders
@@ -388,13 +391,13 @@ namespace VAMvarmanager
             this.clbFolders.HorizontalScrollbar = true;
             this.clbFolders.Location = new System.Drawing.Point(3, 19);
             this.clbFolders.Name = "clbFolders";
-            this.clbFolders.Size = new System.Drawing.Size(267, 481);
+            this.clbFolders.Size = new System.Drawing.Size(267, 467);
             this.clbFolders.TabIndex = 8;
             // 
             // cbInvertFolders
             // 
             this.cbInvertFolders.AutoSize = true;
-            this.cbInvertFolders.Location = new System.Drawing.Point(65, 25);
+            this.cbInvertFolders.Location = new System.Drawing.Point(52, 22);
             this.cbInvertFolders.Name = "cbInvertFolders";
             this.cbInvertFolders.Size = new System.Drawing.Size(56, 19);
             this.cbInvertFolders.TabIndex = 17;
@@ -405,7 +408,7 @@ namespace VAMvarmanager
             // cbAllFolders
             // 
             this.cbAllFolders.AutoSize = true;
-            this.cbAllFolders.Location = new System.Drawing.Point(9, 25);
+            this.cbAllFolders.Location = new System.Drawing.Point(6, 22);
             this.cbAllFolders.Name = "cbAllFolders";
             this.cbAllFolders.Size = new System.Drawing.Size(40, 19);
             this.cbAllFolders.TabIndex = 16;
@@ -415,7 +418,7 @@ namespace VAMvarmanager
             // 
             // txtFolderFilter
             // 
-            this.txtFolderFilter.Location = new System.Drawing.Point(6, 54);
+            this.txtFolderFilter.Location = new System.Drawing.Point(6, 47);
             this.txtFolderFilter.Name = "txtFolderFilter";
             this.txtFolderFilter.Size = new System.Drawing.Size(264, 23);
             this.txtFolderFilter.TabIndex = 13;
@@ -566,7 +569,7 @@ namespace VAMvarmanager
             this.gbPresets.Controls.Add(this.cbHair);
             this.gbPresets.Controls.Add(this.cbClothing);
             this.gbPresets.Controls.Add(this.cbAppearance);
-            this.gbPresets.Location = new System.Drawing.Point(12, 202);
+            this.gbPresets.Location = new System.Drawing.Point(12, 183);
             this.gbPresets.Name = "gbPresets";
             this.gbPresets.Size = new System.Drawing.Size(219, 105);
             this.gbPresets.TabIndex = 16;
@@ -636,7 +639,7 @@ namespace VAMvarmanager
             // cbSavesScene
             // 
             this.cbSavesScene.AutoSize = true;
-            this.cbSavesScene.Location = new System.Drawing.Point(18, 168);
+            this.cbSavesScene.Location = new System.Drawing.Point(18, 158);
             this.cbSavesScene.Name = "cbSavesScene";
             this.cbSavesScene.Size = new System.Drawing.Size(197, 19);
             this.cbSavesScene.TabIndex = 0;
@@ -649,9 +652,9 @@ namespace VAMvarmanager
             this.gbCreatorFilters.Controls.Add(this.txtCreatorFilter);
             this.gbCreatorFilters.Controls.Add(this.cbAllCreators);
             this.gbCreatorFilters.Controls.Add(this.cbInvertCreators);
-            this.gbCreatorFilters.Location = new System.Drawing.Point(240, 158);
+            this.gbCreatorFilters.Location = new System.Drawing.Point(240, 180);
             this.gbCreatorFilters.Name = "gbCreatorFilters";
-            this.gbCreatorFilters.Size = new System.Drawing.Size(274, 83);
+            this.gbCreatorFilters.Size = new System.Drawing.Size(274, 77);
             this.gbCreatorFilters.TabIndex = 9;
             this.gbCreatorFilters.TabStop = false;
             this.gbCreatorFilters.Text = "Creator Filters";
@@ -663,9 +666,9 @@ namespace VAMvarmanager
             this.gbFolderFilters.Controls.Add(this.txtFolderFilter);
             this.gbFolderFilters.Controls.Add(this.cbInvertFolders);
             this.gbFolderFilters.Controls.Add(this.cbAllFolders);
-            this.gbFolderFilters.Location = new System.Drawing.Point(520, 158);
+            this.gbFolderFilters.Location = new System.Drawing.Point(520, 180);
             this.gbFolderFilters.Name = "gbFolderFilters";
-            this.gbFolderFilters.Size = new System.Drawing.Size(274, 83);
+            this.gbFolderFilters.Size = new System.Drawing.Size(274, 77);
             this.gbFolderFilters.TabIndex = 16;
             this.gbFolderFilters.TabStop = false;
             this.gbFolderFilters.Text = "Folder Filters";
@@ -675,7 +678,7 @@ namespace VAMvarmanager
             this.cbRestoreEx.AutoSize = true;
             this.cbRestoreEx.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.cbRestoreEx.ForeColor = System.Drawing.Color.DarkBlue;
-            this.cbRestoreEx.Location = new System.Drawing.Point(18, 356);
+            this.cbRestoreEx.Location = new System.Drawing.Point(382, 158);
             this.cbRestoreEx.Name = "cbRestoreEx";
             this.cbRestoreEx.Size = new System.Drawing.Size(133, 19);
             this.cbRestoreEx.TabIndex = 18;
@@ -688,7 +691,7 @@ namespace VAMvarmanager
             this.cbBackupEx.AutoSize = true;
             this.cbBackupEx.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.cbBackupEx.ForeColor = System.Drawing.Color.DarkGreen;
-            this.cbBackupEx.Location = new System.Drawing.Point(18, 313);
+            this.cbBackupEx.Location = new System.Drawing.Point(246, 158);
             this.cbBackupEx.Name = "cbBackupEx";
             this.cbBackupEx.Size = new System.Drawing.Size(130, 19);
             this.cbBackupEx.TabIndex = 11;
@@ -696,11 +699,34 @@ namespace VAMvarmanager
             this.cbBackupEx.UseVisualStyleBackColor = true;
             this.cbBackupEx.CheckedChanged += new System.EventHandler(this.cbBackupEx_CheckedChanged);
             // 
+            // btnMoveOldVarVersions
+            // 
+            this.btnMoveOldVarVersions.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnMoveOldVarVersions.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnMoveOldVarVersions.Location = new System.Drawing.Point(6, 22);
+            this.btnMoveOldVarVersions.Name = "btnMoveOldVarVersions";
+            this.btnMoveOldVarVersions.Size = new System.Drawing.Size(207, 45);
+            this.btnMoveOldVarVersions.TabIndex = 19;
+            this.btnMoveOldVarVersions.Text = "Move Old Versions of vars\r\n(Unreferenced)";
+            this.btnMoveOldVarVersions.UseVisualStyleBackColor = true;
+            this.btnMoveOldVarVersions.Click += new System.EventHandler(this.btnMoveOldVarVersions_Click);
+            // 
+            // gbMisc
+            // 
+            this.gbMisc.Controls.Add(this.btnMoveOldVarVersions);
+            this.gbMisc.Location = new System.Drawing.Point(12, 294);
+            this.gbMisc.Name = "gbMisc";
+            this.gbMisc.Size = new System.Drawing.Size(219, 81);
+            this.gbMisc.TabIndex = 20;
+            this.gbMisc.TabStop = false;
+            this.gbMisc.Text = "Misc";
+            // 
             // frmVARManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1080, 747);
+            this.Controls.Add(this.gbMisc);
             this.Controls.Add(this.cbRestoreEx);
             this.Controls.Add(this.gbFolderFilters);
             this.Controls.Add(this.cbBackupEx);
@@ -735,6 +761,7 @@ namespace VAMvarmanager
             this.gbCreatorFilters.PerformLayout();
             this.gbFolderFilters.ResumeLayout(false);
             this.gbFolderFilters.PerformLayout();
+            this.gbMisc.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -797,6 +824,8 @@ namespace VAMvarmanager
         private System.Windows.Forms.CheckedListBox clbFoldersRestore;
         private System.Windows.Forms.CheckBox cbRestoreEx;
         private System.Windows.Forms.CheckBox cbBackupEx;
+        private System.Windows.Forms.Button btnMoveOldVarVersions;
+        private System.Windows.Forms.GroupBox gbMisc;
     }
 }
 

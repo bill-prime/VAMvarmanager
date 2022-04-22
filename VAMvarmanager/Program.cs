@@ -193,7 +193,8 @@ namespace VAMvarmanager
 
             var unusedVars = from v in vc.vars
                              where
-                                !vc.deps.Contains(Convert.ToString(v.Name), StringComparer.OrdinalIgnoreCase)
+                                !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) && 
+                                !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name,out int intLatestVer) && intLatestVer == v.version)
                              select v;
 
             foreach (var f in unusedVars)
@@ -216,7 +217,8 @@ namespace VAMvarmanager
 
             var unusedVars = from v in vc.vars
                              where
-                                !vc.deps.Contains(Convert.ToString(v.Name), StringComparer.OrdinalIgnoreCase) &&
+                                !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) &&
+                                !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer == v.version) &&
                                 !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
                                 !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages") &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator))
@@ -256,7 +258,8 @@ namespace VAMvarmanager
                                     (v.boolScripts && lstTypes.Contains("Scripts")) ||
                                     (v.boolTextures && lstTypes.Contains("Skin Textures"))
                                 ) &&
-                                !vc.deps.Contains(Convert.ToString(v.Name), StringComparer.OrdinalIgnoreCase)
+                                !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) &&
+                                !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer == v.version)
                              select v;
 
             foreach (var f in backupvars)
@@ -292,7 +295,8 @@ namespace VAMvarmanager
                                     (v.boolScripts && lstTypes.Contains("Scripts")) ||
                                     (v.boolTextures && lstTypes.Contains("Skin Textures"))
                                 ) &&
-                                !vc.deps.Contains(Convert.ToString(v.Name), StringComparer.OrdinalIgnoreCase) &&
+                                !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) &&
+                                !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer == v.version) &&
                                 !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
                                 !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages") &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator))
@@ -384,7 +388,7 @@ namespace VAMvarmanager
         public varCounts RestoreNeededVars(List<string> lstLocalFiles)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
-            varconfig vcbakup = GetVarconfig(_strVAMbackupdir);
+            varconfig vcbackup = GetVarconfig(_strVAMbackupdir);
             DirectoryInfo diBackup = new DirectoryInfo(_strVAMbackupdir);
             var neededFiles = new List<FileInfo>();
             var lstErrorvars = new List<string>();
@@ -394,11 +398,13 @@ namespace VAMvarmanager
             //    .GetFiles("*.var", SearchOption.AllDirectories)
             //    .Where(file => vc.deps.Contains(file.Name.Replace(".var", "").Substring(0, file.Name.Replace(".var", "").LastIndexOf(".")), StringComparer.OrdinalIgnoreCase));
 
-            foreach (varfile f in vcbakup.vars)
+            foreach (varfile f in vcbackup.vars)
             {
                 try
                 {
-                    if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase) && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                    if ((vc.deps.Contains(f.Name + "." + f.version.ToString(), StringComparer.OrdinalIgnoreCase) || 
+                        ((vc.deps.Contains(f.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVer) && intLatestVer == f.version))) &&
+                        !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
                     {
                         neededFiles.Add(f.fi);
                     }
@@ -421,14 +427,16 @@ namespace VAMvarmanager
                 }
 
                 vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
-                vcbakup = GetVarconfig(_strVAMbackupdir, new List<string>());
+                vcbackup = GetVarconfig(_strVAMbackupdir, new List<string>());
                 neededFiles = new List<FileInfo>();
 
-                foreach (varfile f in vcbakup.vars)
+                foreach (varfile f in vcbackup.vars)
                 {
                     try
                     {
-                        if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase) && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                        if ((vc.deps.Contains(f.Name + "." + f.version.ToString(), StringComparer.OrdinalIgnoreCase) || 
+                            ((vc.deps.Contains(f.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVer) && intLatestVer == f.version))) &&
+                            !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
                         {
                             neededFiles.Add(f.fi); 
                         }
@@ -446,7 +454,7 @@ namespace VAMvarmanager
         public varCounts RestoreNeededVarsEx(List<string> lstLocalFiles, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
-            varconfig vcbakup = GetVarconfig(_strVAMbackupdir);
+            varconfig vcbackup = GetVarconfig(_strVAMbackupdir);
             DirectoryInfo diBackup = new DirectoryInfo(_strVAMbackupdir);
             var neededFiles = new List<FileInfo>();
             var lstErrorvars = new List<string>();
@@ -456,7 +464,7 @@ namespace VAMvarmanager
             //    .GetFiles("*.var", SearchOption.AllDirectories)
             //    .Where(file => vc.deps.Contains(file.Name.Replace(".var", "").Substring(0, file.Name.Replace(".var", "").LastIndexOf(".")), StringComparer.OrdinalIgnoreCase));
 
-            var backupvars = from v in vcbakup.vars
+            var backupvars = from v in vcbackup.vars
                              where
                                 !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
                                 !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMbackupdir) &&
@@ -467,7 +475,9 @@ namespace VAMvarmanager
             {
                 try
                 {
-                    if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase) && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                    if ((vc.deps.Contains(f.Name + "." + f.version.ToString(), StringComparer.OrdinalIgnoreCase) ||
+                            ((vc.deps.Contains(f.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVer) && intLatestVer == f.version))) &&
+                            !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
                     {
                         neededFiles.Add(f.fi);
                     }
@@ -490,10 +500,10 @@ namespace VAMvarmanager
                 }
 
                 vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
-                vcbakup = GetVarconfig(_strVAMbackupdir, new List<string>());
+                vcbackup = GetVarconfig(_strVAMbackupdir, new List<string>());
                 neededFiles = new List<FileInfo>();
 
-                backupvars = from v in vcbakup.vars
+                backupvars = from v in vcbackup.vars
                              where
                              !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
                              !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMbackupdir) &&
@@ -504,7 +514,9 @@ namespace VAMvarmanager
                 {
                     try
                     {
-                        if (vc.deps.Contains(f.Name, StringComparer.OrdinalIgnoreCase) && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                        if ((vc.deps.Contains(f.Name + "." + f.version.ToString(), StringComparer.OrdinalIgnoreCase) ||
+                            ((vc.deps.Contains(f.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVer) && intLatestVer == f.version))) &&
+                            !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
                         {
                             neededFiles.Add(f.fi);
                         }
@@ -629,6 +641,34 @@ namespace VAMvarmanager
                 }
 
                 if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))); }
+            }
+
+            return GetVarCounts();
+        }
+
+        public varCounts MoveOldVarVersions()
+        {
+            string strOldVarDirectory = _strVAMdir + @"\_oldvars";
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+            varconfig vcbackup = GetVarconfig(_strVAMbackupdir);
+
+            var oldvars = from v in vc.vars
+                          where
+                          (vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer != v.version) &&
+                          !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) &&
+                          !vcbackup.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) &&
+                          v.creator != "LO"
+                          select v;
+
+            foreach (var f in oldvars)
+            {
+
+                if (!Directory.Exists(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory))))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory)));
+                }
+
+                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory)))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory))); }
             }
 
             return GetVarCounts();
@@ -861,9 +901,9 @@ namespace VAMvarmanager
                                     var dependencies = metaJS.dependencies;
                                     foreach (string dep in dependencies.Keys)
                                     {
-                                        if (!lstDepvars.Contains(dep.Split(".")[0].Replace(" ", "_") + "." + dep.Split(".")[1].Replace(" ", "_")))
+                                        if (!lstDepvars.Contains(dep.Split(".")[0].Replace(" ", "_") + "." + dep.Split(".")[1].Replace(" ", "_") + "." + dep.Split(".")[2]))
                                         {
-                                            lstDepvars.Add(dep.Split(".")[0].Replace(" ", "_") + "." + dep.Split(".")[1].Replace(" ", "_"));
+                                            lstDepvars.Add(dep.Split(".")[0].Replace(" ", "_") + "." + dep.Split(".")[1].Replace(" ", "_") + "." + dep.Split(".")[2]);
                                         }
                                     }
                                 }
@@ -957,7 +997,7 @@ namespace VAMvarmanager
                         {
                             strDepvar = strLine.Substring(0, strLine.IndexOf(":/"));
                             strDepvar = strDepvar.Substring(strDepvar.LastIndexOf(@"""") + 1, strDepvar.Length - strDepvar.LastIndexOf(@"""") - 1);
-                            strDepvar = strDepvar.Split(".")[0].Replace(" ", "_") + "." + strDepvar.Split(".")[1].Replace(" ", "_");
+                            strDepvar = strDepvar.Split(".")[0].Replace(" ", "_") + "." + strDepvar.Split(".")[1].Replace(" ", "_") + "." + strDepvar.Split(".")[2];
                             if (!lstDepvars.Contains(strDepvar))
                             {
                                 lstDepvars.Add(strDepvar);

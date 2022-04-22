@@ -252,6 +252,7 @@ namespace VAMvarmanager
                 this.btnRestoreRef.Enabled = true;
                 this.btnRestoreSpec.Enabled = true;
                 this.btnRestoreAll.Enabled = true;
+                this.btnMoveOldVarVersions.Enabled = true;
                 this.btnDisablepreloadmorphs.Enabled = true;
                 this.btnRevertpreloadmorphs.Enabled = true;
                 this.btnDisableClothing.Enabled = true;
@@ -291,6 +292,7 @@ namespace VAMvarmanager
                 this.btnRestoreRef.Enabled = false;
                 this.btnRestoreSpec.Enabled = false;
                 this.btnRestoreAll.Enabled = false;
+                this.btnMoveOldVarVersions.Enabled = false;
                 this.btnDisablepreloadmorphs.Enabled = false;
                 this.btnRevertpreloadmorphs.Enabled = false;
                 this.btnDisableClothing.Enabled = false;
@@ -484,6 +486,8 @@ namespace VAMvarmanager
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
 
+            setfunctionstatus();
+
             Cursor = Cursors.Default;
         }
 
@@ -504,6 +508,8 @@ namespace VAMvarmanager
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
 
+            setfunctionstatus();
+
             Cursor = Cursors.Default;
         }
 
@@ -523,6 +529,8 @@ namespace VAMvarmanager
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
+
+            setfunctionstatus();
 
             Cursor = Cursors.Default;
         }
@@ -588,6 +596,19 @@ namespace VAMvarmanager
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             
+            setfunctionstatus();
+
+            Cursor = Cursors.Default;
+        }
+
+        private void btnMoveOldVarVersions_Click(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+
+            varmanager.varCounts vc = vm.MoveOldVarVersions();
+            lblVamcount.Text = vc.countVAMvars.ToString();
+            lblBackupcount.Text = vc.countBackupvars.ToString();
+
             setfunctionstatus();
 
             Cursor = Cursors.Default;
@@ -871,5 +892,6 @@ namespace VAMvarmanager
                 this.clbFoldersRestore.Hide();
             }
         }
+
     }
 }
