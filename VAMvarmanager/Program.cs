@@ -172,6 +172,7 @@ namespace VAMvarmanager
         {
             public int countVAMvars;
             public int countBackupvars;
+            public int countOldvars;
         }
         
         #endregion
@@ -651,6 +652,7 @@ namespace VAMvarmanager
             string strOldVarDirectory = _strVAMdir + @"\_oldvars";
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
             varconfig vcbackup = GetVarconfig(_strVAMbackupdir);
+            int countMoved = 0;
 
             var oldvars = from v in vc.vars
                           where
@@ -668,17 +670,22 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory)));
                 }
 
-                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory)))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory))); }
+                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory)))) 
+                { 
+                    File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory)));
+                    countMoved += 1;
+                }
             }
 
-            return GetVarCounts();
+            return GetVarCounts(countMoved);
         }
 
-        public varCounts GetVarCounts()
+        public varCounts GetVarCounts(int intOldVarVersionsMoved = 0)
         {
             varCounts vcount = new varCounts();
             vcount.countVAMvars = Directory.GetFiles(_strVAMdir + @"\AddonPackages", "*.var", SearchOption.AllDirectories).Count();
             vcount.countBackupvars = Directory.GetFiles(_strVAMbackupdir, "*.var", SearchOption.AllDirectories).Count();
+            vcount.countOldvars = intOldVarVersionsMoved;
             return vcount;
         }
 

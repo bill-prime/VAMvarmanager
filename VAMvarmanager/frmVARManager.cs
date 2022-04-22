@@ -611,6 +611,8 @@ namespace VAMvarmanager
 
             setfunctionstatus();
 
+            MessageBox.Show(vc.countOldvars.ToString() + " old versions of vars moved to:" + Environment.NewLine + _strVamdir + @"\_oldvars", "Old vars Moved", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
             Cursor = Cursors.Default;
         }
 
