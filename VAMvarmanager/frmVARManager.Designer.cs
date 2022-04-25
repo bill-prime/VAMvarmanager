@@ -36,6 +36,8 @@ namespace VAMvarmanager
             this.txtVamfolder = new System.Windows.Forms.TextBox();
             this.btnBackupUnref = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnSaveConfig = new System.Windows.Forms.Button();
+            this.btnRestoreConfig = new System.Windows.Forms.Button();
             this.btnResetSettings = new System.Windows.Forms.Button();
             this.lblBackupcount = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -88,6 +90,8 @@ namespace VAMvarmanager
             this.cbBackupEx = new System.Windows.Forms.CheckBox();
             this.btnMoveOldVarVersions = new System.Windows.Forms.Button();
             this.gbMisc = new System.Windows.Forms.GroupBox();
+            this.sfdVarConfig = new System.Windows.Forms.SaveFileDialog();
+            this.ofdVarConfig = new System.Windows.Forms.OpenFileDialog();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbCreatorEx.SuspendLayout();
@@ -149,6 +153,8 @@ namespace VAMvarmanager
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnSaveConfig);
+            this.groupBox1.Controls.Add(this.btnRestoreConfig);
             this.groupBox1.Controls.Add(this.btnResetSettings);
             this.groupBox1.Controls.Add(this.lblBackupcount);
             this.groupBox1.Controls.Add(this.label5);
@@ -166,6 +172,30 @@ namespace VAMvarmanager
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Config";
+            // 
+            // btnSaveConfig
+            // 
+            this.btnSaveConfig.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnSaveConfig.ForeColor = System.Drawing.Color.OrangeRed;
+            this.btnSaveConfig.Location = new System.Drawing.Point(6, 96);
+            this.btnSaveConfig.Name = "btnSaveConfig";
+            this.btnSaveConfig.Size = new System.Drawing.Size(160, 38);
+            this.btnSaveConfig.TabIndex = 14;
+            this.btnSaveConfig.Text = "Save var Config";
+            this.btnSaveConfig.UseVisualStyleBackColor = true;
+            this.btnSaveConfig.Click += new System.EventHandler(this.btnSaveConfig_Click);
+            // 
+            // btnRestoreConfig
+            // 
+            this.btnRestoreConfig.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnRestoreConfig.ForeColor = System.Drawing.Color.OrangeRed;
+            this.btnRestoreConfig.Location = new System.Drawing.Point(172, 96);
+            this.btnRestoreConfig.Name = "btnRestoreConfig";
+            this.btnRestoreConfig.Size = new System.Drawing.Size(160, 38);
+            this.btnRestoreConfig.TabIndex = 13;
+            this.btnRestoreConfig.Text = "Restore var Config";
+            this.btnRestoreConfig.UseVisualStyleBackColor = true;
+            this.btnRestoreConfig.Click += new System.EventHandler(this.btnRestoreConfig_Click);
             // 
             // btnResetSettings
             // 
@@ -826,6 +856,10 @@ namespace VAMvarmanager
         private System.Windows.Forms.CheckBox cbBackupEx;
         private System.Windows.Forms.Button btnMoveOldVarVersions;
         private System.Windows.Forms.GroupBox gbMisc;
+        private System.Windows.Forms.Button btnSaveConfig;
+        private System.Windows.Forms.Button btnRestoreConfig;
+        private System.Windows.Forms.SaveFileDialog sfdVarConfig;
+        private System.Windows.Forms.OpenFileDialog ofdVarConfig;
     }
 }
 

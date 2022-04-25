@@ -257,6 +257,8 @@ namespace VAMvarmanager
                 this.btnRevertpreloadmorphs.Enabled = true;
                 this.btnDisableClothing.Enabled = true;
                 this.btnMorphPresets.Enabled = true;
+                this.btnSaveConfig.Enabled = true;
+                this.btnRestoreConfig.Enabled = true;
 
                 this.txtCreatorFilter.Enabled = true;
                 this.txtFolderFilter.Enabled = true;
@@ -895,5 +897,37 @@ namespace VAMvarmanager
             }
         }
 
+        private void btnRestoreConfig_Click(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+
+            ofdVarConfig = new OpenFileDialog();
+            ofdVarConfig.InitialDirectory = _strVamdir;
+            ofdVarConfig.DefaultExt = "txt";
+            ofdVarConfig.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            ofdVarConfig.ShowDialog();
+
+            varmanager.varCounts vc = vm.RestoreVarConfig(ofdVarConfig.FileName); ;
+            lblVamcount.Text = vc.countVAMvars.ToString();
+            lblBackupcount.Text = vc.countBackupvars.ToString();
+
+            Cursor = Cursors.Default;
+        }
+
+        private void btnSaveConfig_Click(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+
+            sfdVarConfig = new SaveFileDialog();
+            sfdVarConfig.InitialDirectory = _strVamdir;
+            sfdVarConfig.DefaultExt = "txt";
+            sfdVarConfig.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            sfdVarConfig.AddExtension = true;
+            sfdVarConfig.ShowDialog();
+
+            vm.SaveVarConfig(sfdVarConfig.FileName);
+
+            Cursor = Cursors.Default;
+        }
     }
 }

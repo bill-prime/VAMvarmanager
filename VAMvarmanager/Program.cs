@@ -404,8 +404,10 @@ namespace VAMvarmanager
                 try
                 {
                     if ((vc.deps.Contains(f.Name + "." + f.version.ToString(), StringComparer.OrdinalIgnoreCase) || 
-                        ((vc.deps.Contains(f.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVer) && intLatestVer == f.version))) &&
-                        !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                        ((vc.deps.Contains(f.Name + ".latest", StringComparer.OrdinalIgnoreCase)) && 
+                        (!vc.latestvars.ContainsKey(f.Name) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVerBackup) && intLatestVerBackup == f.version) ||
+                        (vc.latestvars.TryGetValue(f.Name, out int intLatestVer) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVerBackup2) && intLatestVerBackup2 == f.version && intLatestVerBackup2 > intLatestVer)
+                        ) && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))))
                     {
                         neededFiles.Add(f.fi);
                     }
@@ -435,9 +437,11 @@ namespace VAMvarmanager
                 {
                     try
                     {
-                        if ((vc.deps.Contains(f.Name + "." + f.version.ToString(), StringComparer.OrdinalIgnoreCase) || 
-                            ((vc.deps.Contains(f.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVer) && intLatestVer == f.version))) &&
-                            !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                        if ((vc.deps.Contains(f.Name + "." + f.version.ToString(), StringComparer.OrdinalIgnoreCase) ||
+                            ((vc.deps.Contains(f.Name + ".latest", StringComparer.OrdinalIgnoreCase)) &&
+                            (!vc.latestvars.ContainsKey(f.Name) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVerBackup) && intLatestVerBackup == f.version) ||
+                            (vc.latestvars.TryGetValue(f.Name, out int intLatestVer) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVerBackup2) && intLatestVerBackup2 == f.version && intLatestVerBackup2 > intLatestVer)
+                            ) && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))))
                         {
                             neededFiles.Add(f.fi); 
                         }
@@ -678,6 +682,71 @@ namespace VAMvarmanager
             }
 
             return GetVarCounts(countMoved);
+        }
+
+        public void SaveVarConfig(string strFileName)
+        {
+            DirectoryInfo diVam = new DirectoryInfo(_strVAMdir + @"\AddonPackages");
+
+            var activefiles = from f in diVam.GetFiles("*.var", SearchOption.AllDirectories)
+                              orderby f.Name
+                              select f;
+
+            StreamWriter sw = new StreamWriter(strFileName);
+
+            foreach (FileInfo f in activefiles)
+            {
+                sw.WriteLine(f.Name);
+            }
+
+            sw.Close();
+            sw.Dispose();
+        }
+
+        public varCounts RestoreVarConfig(string strFileName)
+        {
+            var activevarconfig = File.ReadLines(strFileName);
+
+            DirectoryInfo diVam = new DirectoryInfo(_strVAMdir + @"\AddonPackages");
+            DirectoryInfo diBackup = new DirectoryInfo(_strVAMbackupdir);
+
+            var varsToBackup = from f in diVam.GetFiles("*.var", SearchOption.AllDirectories)
+                               where !activevarconfig.Contains(f.Name)
+                               select f;
+            
+            var varsToRestore = from f in diBackup.GetFiles("*.var", SearchOption.AllDirectories)
+                                where activevarconfig.Contains(f.Name)
+                                select f;
+
+            foreach (var f in varsToBackup)
+            {
+
+                if (!Directory.Exists(Path.GetDirectoryName(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                }
+
+                if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
+                {
+                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                }
+            }
+
+            foreach (var f in varsToRestore)
+            {
+
+                if (!Directory.Exists(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                }
+
+                if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                {
+                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                }
+            }
+
+            return GetVarCounts();
         }
 
         public varCounts GetVarCounts(int intOldVarVersionsMoved = 0)
