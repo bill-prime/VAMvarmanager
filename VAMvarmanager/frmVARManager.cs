@@ -299,6 +299,8 @@ namespace VAMvarmanager
                 this.btnRevertpreloadmorphs.Enabled = false;
                 this.btnDisableClothing.Enabled = false;
                 this.btnMorphPresets.Enabled = false;
+                this.btnSaveConfig.Enabled = false;
+                this.btnRestoreConfig.Enabled = false;
 
                 this.txtCreatorFilter.Enabled = false;
                 this.txtFolderFilter.Enabled = false;
