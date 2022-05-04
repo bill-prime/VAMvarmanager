@@ -1056,22 +1056,17 @@ namespace VAMvarmanager
 
         private List<string> ScanJsonForDependencies(string strDirectory,string strExtension, List<string> lstDepvars)
         {
-            string strLine;
             string strDepvar;
 
             foreach (var fi in Directory.GetFiles(strDirectory, "*." + strExtension, SearchOption.AllDirectories))
             {
-                var objReader = new StreamReader(fi);
-
-                while (!objReader.EndOfStream)
+                foreach (string line in System.IO.File.ReadLines(fi))
                 {
-                    strLine = objReader.ReadLine();
-
-                    if (strLine.Contains(":/Custom") && !strLine.Contains("SELF:/"))
-                    {
+                    if (line.Contains(":/Custom") && !line.Contains("SELF:/"))
+                    {    
                         try
                         {
-                            strDepvar = strLine.Substring(0, strLine.IndexOf(":/"));
+                            strDepvar = line.Substring(0, line.IndexOf(":/"));
                             strDepvar = strDepvar.Substring(strDepvar.LastIndexOf(@"""") + 1, strDepvar.Length - strDepvar.LastIndexOf(@"""") - 1);
                             strDepvar = strDepvar.Split(".")[0].Replace(" ", "_") + "." + strDepvar.Split(".")[1].Replace(" ", "_") + "." + strDepvar.Split(".")[2];
                             if (!lstDepvars.Contains(strDepvar))
@@ -1081,14 +1076,10 @@ namespace VAMvarmanager
                         }
                         catch
                         {
-                            //reference is messed up, skip
-                            Debug.Print(strLine);
+                            Debug.Print(line);
                         }
                     }
                 }
-
-                objReader.Close();
-                objReader.Dispose();
             }
 
             return lstDepvars;

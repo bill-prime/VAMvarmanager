@@ -12,8 +12,8 @@
 	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 	<PublishReadyToRun>true</PublishReadyToRun>
     <Version>1.0.27</Version>
-    <AssemblyVersion>1.0.27.0</AssemblyVersion>
-    <FileVersion>1.0.27.0</FileVersion>
+    <AssemblyVersion>1.0.28.0</AssemblyVersion>
+    <FileVersion>1.0.28.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

@@ -907,11 +907,13 @@ namespace VAMvarmanager
             ofdVarConfig.InitialDirectory = _strVamdir;
             ofdVarConfig.DefaultExt = "txt";
             ofdVarConfig.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
-            ofdVarConfig.ShowDialog();
 
-            varmanager.varCounts vc = vm.RestoreVarConfig(ofdVarConfig.FileName); ;
-            lblVamcount.Text = vc.countVAMvars.ToString();
-            lblBackupcount.Text = vc.countBackupvars.ToString();
+            if (ofdVarConfig.ShowDialog() == DialogResult.OK)
+            {
+                varmanager.varCounts vc = vm.RestoreVarConfig(ofdVarConfig.FileName); ;
+                lblVamcount.Text = vc.countVAMvars.ToString();
+                lblBackupcount.Text = vc.countBackupvars.ToString();
+            }
 
             Cursor = Cursors.Default;
         }
@@ -925,9 +927,11 @@ namespace VAMvarmanager
             sfdVarConfig.DefaultExt = "txt";
             sfdVarConfig.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
             sfdVarConfig.AddExtension = true;
-            sfdVarConfig.ShowDialog();
 
-            vm.SaveVarConfig(sfdVarConfig.FileName);
+            if(sfdVarConfig.ShowDialog() == DialogResult.OK)
+            {
+                vm.SaveVarConfig(sfdVarConfig.FileName);
+            }
 
             Cursor = Cursors.Default;
         }
