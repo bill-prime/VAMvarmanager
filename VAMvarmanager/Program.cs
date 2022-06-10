@@ -188,14 +188,21 @@ namespace VAMvarmanager
 
 
         #region "var Management"
-        public varCounts BackupUnrefVars(List<string> lstLocalFiles)
+
+        public varCounts BackupUnrefVars(List<string> lstLocalFiles, bool skipFavorites = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
+            string[] lstFilePrefs = null;
+            if (skipFavorites)
+            {
+                lstFilePrefs = Directory.GetFiles(_strVAMdir + @"\AddonPackagesFilePrefs","*.fav",SearchOption.AllDirectories);
+            }
 
             var unusedVars = from v in vc.vars
                              where
                                 !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) && 
-                                !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name,out int intLatestVer) && intLatestVer == v.version)
+                                !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name,out int intLatestVer) && intLatestVer == v.version) &&
+                                (!skipFavorites || !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4))))
                              select v;
 
             foreach (var f in unusedVars)
@@ -212,9 +219,14 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles)
+        public varCounts BackupUnrefVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles, bool skipFavorites = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
+            string[] lstFilePrefs = null;
+            if (skipFavorites)
+            {
+                lstFilePrefs = Directory.GetFiles(_strVAMdir + @"\AddonPackagesFilePrefs", "*.fav", SearchOption.AllDirectories);
+            }
 
             var unusedVars = from v in vc.vars
                              where
@@ -222,7 +234,8 @@ namespace VAMvarmanager
                                 !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer == v.version) &&
                                 !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
                                 !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages") &&
-                                !lstCreatorEx.Contains(Convert.ToString(v.creator))
+                                !lstCreatorEx.Contains(Convert.ToString(v.creator)) &&
+                                (!skipFavorites || !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4))))
                              select v;
 
             foreach (var f in unusedVars)
@@ -239,9 +252,14 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefSpecVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, List<string> lstLocalFiles)
+        public varCounts BackupUnrefSpecVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, List<string> lstLocalFiles, bool skipFavorites = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
+            string[] lstFilePrefs = null;
+            if (skipFavorites)
+            {
+                lstFilePrefs = Directory.GetFiles(_strVAMdir + @"\AddonPackagesFilePrefs", "*.fav", SearchOption.AllDirectories);
+            }
 
             var backupvars = from v in vc.vars
                              where
@@ -260,7 +278,8 @@ namespace VAMvarmanager
                                     (v.boolTextures && lstTypes.Contains("Skin Textures"))
                                 ) &&
                                 !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) &&
-                                !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer == v.version)
+                                !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer == v.version) &&
+                                (!skipFavorites || !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4))))
                              select v;
 
             foreach (var f in backupvars)
@@ -276,9 +295,14 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefSpecVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles)
+        public varCounts BackupUnrefSpecVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles, bool skipFavorites = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
+            string[] lstFilePrefs = null;
+            if (skipFavorites)
+            {
+                lstFilePrefs = Directory.GetFiles(_strVAMdir + @"\AddonPackagesFilePrefs", "*.fav", SearchOption.AllDirectories);
+            }
 
             var backupvars = from v in vc.vars
                              where
@@ -300,7 +324,8 @@ namespace VAMvarmanager
                                 !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer == v.version) &&
                                 !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
                                 !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages") &&
-                                !lstCreatorEx.Contains(Convert.ToString(v.creator))
+                                !lstCreatorEx.Contains(Convert.ToString(v.creator)) &&
+                                (!skipFavorites || !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4))))
                              select v;
 
             foreach (var f in backupvars)
@@ -316,12 +341,18 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupSpecVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes)
+        public varCounts BackupSpecVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, bool skipFavorites = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+            string[] lstFilePrefs = null;
+            if (skipFavorites)
+            {
+                lstFilePrefs = Directory.GetFiles(_strVAMdir + @"\AddonPackagesFilePrefs", "*.fav", SearchOption.AllDirectories);
+            }
 
             var backupvars = from v in vc.vars
                              where
+                               (   
                                 (v.boolAssets && lstTypes.Contains("Assets")) ||
                                 (v.boolClothing && lstTypes.Contains("Clothing")) ||
                                 (v.boolClothingPreset && lstTypes.Contains("Clothing Presets")) ||
@@ -334,6 +365,8 @@ namespace VAMvarmanager
                                 (v.boolSubScenes && lstTypes.Contains("SubScenes")) ||
                                 (v.boolScripts && lstTypes.Contains("Scripts")) ||
                                 (v.boolTextures && lstTypes.Contains("Skin Textures"))
+                               ) &&
+                               (!skipFavorites || !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4))))
                              select v;
 
             foreach (var f in backupvars)
@@ -348,9 +381,14 @@ namespace VAMvarmanager
 
             return GetVarCounts();
         }
-        public varCounts BackupSpecVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
+        public varCounts BackupSpecVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, bool skipFavorites = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+            string[] lstFilePrefs = null;
+            if (skipFavorites)
+            {
+                lstFilePrefs = Directory.GetFiles(_strVAMdir + @"\AddonPackagesFilePrefs", "*.fav", SearchOption.AllDirectories);
+            }
 
             var backupvars = from v in vc.vars
                              where
@@ -370,7 +408,8 @@ namespace VAMvarmanager
                                 ) &&
                                 !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
                                 !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages") &&
-                                !lstCreatorEx.Contains(Convert.ToString(v.creator))
+                                !lstCreatorEx.Contains(Convert.ToString(v.creator)) &&
+                                (!skipFavorites || !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4))))
                              select v;
 
             foreach (var f in backupvars)
@@ -387,6 +426,211 @@ namespace VAMvarmanager
         }
 
         public varCounts RestoreNeededVars(List<string> lstLocalFiles)
+        {
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
+            varconfig vcbackup = GetVarconfig(_strVAMbackupdir);
+            DirectoryInfo diBackup = new DirectoryInfo(_strVAMbackupdir);
+            var neededFiles = new List<FileInfo>();
+            var lstErrorvars = new List<string>();
+
+            foreach (varfile f in vcbackup.vars)
+            {
+                try
+                {
+                    if ((vc.deps.Contains(f.Name + "." + f.version.ToString(), StringComparer.OrdinalIgnoreCase) ||
+                        ((vc.deps.Contains(f.Name + ".latest", StringComparer.OrdinalIgnoreCase)) &&
+                        (!vc.latestvars.ContainsKey(f.Name) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVerBackup) && intLatestVerBackup == f.version) ||
+                        (vc.latestvars.TryGetValue(f.Name, out int intLatestVer) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVerBackup2) && intLatestVerBackup2 == f.version && intLatestVerBackup2 > intLatestVer)
+                        ) && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))))
+                    {
+                        neededFiles.Add(f.fi);
+                    }
+                }
+                catch
+                { lstErrorvars.Add(f.fi.Name); }
+            }
+
+            if (neededFiles.Any())
+            {
+                bool boolNewDeps;
+                bool boolNewFiles;
+
+                while (true)
+                {
+                    varconfig vcNeededFiles = GetVarconfig(_strVAMbackupdir, null, neededFiles);
+
+                    boolNewDeps = false;
+                    boolNewFiles = false;
+
+                    foreach (string d in vcNeededFiles.deps)
+                    {
+                        if (!vc.deps.Contains(d))
+                        {
+                            boolNewDeps = true;
+                            vc.deps.Add(d);
+                        }
+                    }
+
+                    if (boolNewDeps)
+                    {
+                        foreach (varfile f in vcbackup.vars)
+                        {
+                            try
+                            {
+                                if ((vc.deps.Contains(f.Name + "." + f.version.ToString(), StringComparer.OrdinalIgnoreCase) ||
+                                    ((vc.deps.Contains(f.Name + ".latest", StringComparer.OrdinalIgnoreCase)) &&
+                                    (!vc.latestvars.ContainsKey(f.Name) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVerBackup) && intLatestVerBackup == f.version) ||
+                                    (vc.latestvars.TryGetValue(f.Name, out int intLatestVer) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVerBackup2) && intLatestVerBackup2 == f.version && intLatestVerBackup2 > intLatestVer)
+                                    ) 
+                                    && !neededFiles.Any(x => x.FullName == f.fi.FullName)
+                                    && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))))
+                                {
+                                    boolNewFiles = true;
+                                    neededFiles.Add(f.fi);
+                                }
+                            }
+                            catch
+                            { lstErrorvars.Add(f.fi.Name); }
+                        }
+                        if (!boolNewFiles)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                foreach (FileInfo f in neededFiles)
+                {
+
+                    if (!Directory.Exists(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                    }
+
+                    if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))) 
+                    { 
+                        File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))); 
+                    }
+                }
+
+            }
+
+            //MessageBox.Show("Please manually remove file from VAM/backup folders:" + Environment.NewLine + f.Name, "Skipping Restore file, incorrect .var file naming format.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            return GetVarCounts();
+        }
+
+        public varCounts RestoreNeededVarsEx(List<string> lstLocalFiles, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
+        {
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
+            varconfig vcbackup = GetVarconfig(_strVAMbackupdir);
+            DirectoryInfo diBackup = new DirectoryInfo(_strVAMbackupdir);
+            var neededFiles = new List<FileInfo>();
+            var lstErrorvars = new List<string>();
+
+            var backupvars = from v in vcbackup.vars
+                             where
+                                !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name)) &&
+                                !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMbackupdir) &&
+                                !lstCreatorEx.Contains(Convert.ToString(v.creator))
+                             select v;
+
+            foreach (varfile f in backupvars)
+            {
+                try
+                {
+                    if ((vc.deps.Contains(f.Name + "." + f.version.ToString(), StringComparer.OrdinalIgnoreCase) ||
+                        ((vc.deps.Contains(f.Name + ".latest", StringComparer.OrdinalIgnoreCase)) &&
+                        (!vc.latestvars.ContainsKey(f.Name) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVerBackup) && intLatestVerBackup == f.version) ||
+                        (vc.latestvars.TryGetValue(f.Name, out int intLatestVer) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVerBackup2) && intLatestVerBackup2 == f.version && intLatestVerBackup2 > intLatestVer)
+                        ) && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))))
+                    {
+                        neededFiles.Add(f.fi);
+                    }
+                }
+                catch
+                { lstErrorvars.Add(f.fi.Name); }
+            }
+
+            if (neededFiles.Any())
+            {
+                bool boolNewDeps;
+                bool boolNewFiles;
+
+                while (true)
+                {
+                    varconfig vcNeededFiles = GetVarconfig(_strVAMbackupdir, null, neededFiles);
+
+                    boolNewDeps = false;
+                    boolNewFiles = false;
+
+                    foreach (string d in vcNeededFiles.deps)
+                    {
+                        if (!vc.deps.Contains(d))
+                        {
+                            boolNewDeps = true;
+                            vc.deps.Add(d);
+                        }
+                    }
+
+                    if (boolNewDeps)
+                    {
+                        foreach (varfile f in vcbackup.vars)
+                        {
+                            try
+                            {
+                                if ((vc.deps.Contains(f.Name + "." + f.version.ToString(), StringComparer.OrdinalIgnoreCase) ||
+                                    ((vc.deps.Contains(f.Name + ".latest", StringComparer.OrdinalIgnoreCase)) &&
+                                    (!vc.latestvars.ContainsKey(f.Name) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVerBackup) && intLatestVerBackup == f.version) ||
+                                    (vc.latestvars.TryGetValue(f.Name, out int intLatestVer) && vcbackup.latestvars.TryGetValue(f.Name, out int intLatestVerBackup2) && intLatestVerBackup2 == f.version && intLatestVerBackup2 > intLatestVer)
+                                    ) 
+                                    && !neededFiles.Any(x => x.FullName == f.fi.FullName)
+                                    && !File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))))
+                                {
+                                    boolNewFiles = true;
+                                    neededFiles.Add(f.fi);
+                                }
+                            }
+                            catch
+                            { lstErrorvars.Add(f.fi.Name); }
+                        }
+                        if (!boolNewFiles)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                foreach (FileInfo f in neededFiles)
+                {
+
+                    if (!Directory.Exists(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                    }
+
+                    if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                    {
+                        File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                    }
+                }
+
+            }
+
+            //MessageBox.Show("Please manually remove file from VAM/backup folders:" + Environment.NewLine + f.Name, "Skipping Restore file, incorrect .var file naming format.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            return GetVarCounts();
+        }
+
+        public varCounts RestoreNeededVarsOld(List<string> lstLocalFiles)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
             varconfig vcbackup = GetVarconfig(_strVAMbackupdir);
@@ -456,7 +700,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts RestoreNeededVarsEx(List<string> lstLocalFiles, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
+        public varCounts RestoreNeededVarsExOld(List<string> lstLocalFiles, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
             varconfig vcbackup = GetVarconfig(_strVAMbackupdir);
@@ -846,7 +1090,7 @@ namespace VAMvarmanager
             return 1;
         }
 
-        private varconfig GetVarconfig(string strDir, List<string> lstLocalFiles = null)
+        private varconfig GetVarconfig(string strDir, List<string> lstLocalFiles = null, List<FileInfo> lstFilesToScan = null)
         {
             var diFolder = new DirectoryInfo(strDir);
             varfile vf;
@@ -862,171 +1106,175 @@ namespace VAMvarmanager
 
             foreach (FileInfo fi in diFolder.GetFiles("*.var", SearchOption.AllDirectories))
             {
-                vf = new varfile();
-                vf.fi = fi;
-                boolSkip = false;
-
-                try
+                if (lstFilesToScan == null || lstFilesToScan.Any(x => x.FullName == fi.FullName))
                 {
-                    vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")).Replace(" ", "_");
-                    vf.Name = Strings.Left(fi.Name, fi.Name.IndexOf(".", fi.Name.IndexOf(".") + 1)).Replace(" ", "_");
-                    vf.version = Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]);
-                }
-                catch (Exception exFilename)
-                {
-                    lstErrorsFilename.Add(fi.Name);
-                    vf.version = 1;
-                }
 
-                // Read file contents
-                try
-                {
-                    ZipArchive varZip = ZipFile.Open(fi.FullName, ZipArchiveMode.Read);
+                    vf = new varfile();
+                    vf.fi = fi;
+                    boolSkip = false;
 
-                    foreach (ZipArchiveEntry e in varZip.Entries)
+                    try
                     {
-                        if (e.FullName.IndexOf("custom/atom/person/textures/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolTextures = true;
-                        }
+                        vf.creator = Strings.Left(fi.Name, fi.Name.IndexOf(".")).Replace(" ", "_");
+                        vf.Name = Strings.Left(fi.Name, fi.Name.IndexOf(".", fi.Name.IndexOf(".") + 1)).Replace(" ", "_");
+                        vf.version = Convert.ToInt32(fi.Name.Split(".")[fi.Name.Split(".").Length - 2]);
+                    }
+                    catch (Exception exFilename)
+                    {
+                        lstErrorsFilename.Add(fi.Name);
+                        vf.version = 1;
+                    }
 
-                        if (e.FullName.IndexOf("custom/atom/person/morphs/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                    // Read file contents
+                    try
+                    {
+                        ZipArchive varZip = ZipFile.Open(fi.FullName, ZipArchiveMode.Read);
+
+                        foreach (ZipArchiveEntry e in varZip.Entries)
                         {
-                            vf.boolMorphs = true;
-                            if (e.FullName.EndsWith("vmi"))
+                            if (e.FullName.IndexOf("custom/atom/person/textures/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
                             {
-                                vf.countMorphs += 1;
+                                vf.boolTextures = true;
                             }
-                        }
 
-                        if (e.FullName.IndexOf("custom/assets/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolAssets = true;
-                        }
-
-                        if (e.FullName.IndexOf("saves/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolLooks = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/atom/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolLookPresets = true;
-                        }
-
-                        if (e.FullName.IndexOf("saves/scene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolScenes = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/subscene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolSubScenes = true;
-                        }
-
-                        if (e.FullName.IndexOf("saves/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolPoses = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/atom/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolPosePresets = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolHair = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/atom/person/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolHairPreset = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolClothing = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/atom/person/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolClothingPreset = true;
-                        }
-
-                        if (e.FullName.IndexOf("custom/scripts/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
-                        {
-                            vf.boolScripts = true;
-                        }
-
-                        if (e.FullName == "meta.json")
-                        {
-                            var objReader = new StreamReader(e.Open());
-                            try
+                            if (e.FullName.IndexOf("custom/atom/person/morphs/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
                             {
-                                varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
-
-                                if (vf.creator == "")
-                                { vf.creator = metaJS.creatorName.Replace(" ", "_"); }
-
-                                if (vf.Name == "")
-                                { vf.Name = metaJS.creatorName.Replace(" ", "_") + "." + metaJS.packageName.Replace(" ", "_"); }
-
-                                if (metaJS.dependencies != null)
+                                vf.boolMorphs = true;
+                                if (e.FullName.EndsWith("vmi"))
                                 {
-                                    var dependencies = metaJS.dependencies;
-                                    foreach (string dep in dependencies.Keys)
+                                    vf.countMorphs += 1;
+                                }
+                            }
+
+                            if (e.FullName.IndexOf("custom/assets/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            {
+                                vf.boolAssets = true;
+                            }
+
+                            if (e.FullName.IndexOf("saves/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            {
+                                vf.boolLooks = true;
+                            }
+
+                            if (e.FullName.IndexOf("custom/atom/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            {
+                                vf.boolLookPresets = true;
+                            }
+
+                            if (e.FullName.IndexOf("saves/scene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            {
+                                vf.boolScenes = true;
+                            }
+
+                            if (e.FullName.IndexOf("custom/subscene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            {
+                                vf.boolSubScenes = true;
+                            }
+
+                            if (e.FullName.IndexOf("saves/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            {
+                                vf.boolPoses = true;
+                            }
+
+                            if (e.FullName.IndexOf("custom/atom/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            {
+                                vf.boolPosePresets = true;
+                            }
+
+                            if (e.FullName.IndexOf("custom/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            {
+                                vf.boolHair = true;
+                            }
+
+                            if (e.FullName.IndexOf("custom/atom/person/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            {
+                                vf.boolHairPreset = true;
+                            }
+
+                            if (e.FullName.IndexOf("custom/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            {
+                                vf.boolClothing = true;
+                            }
+
+                            if (e.FullName.IndexOf("custom/atom/person/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            {
+                                vf.boolClothingPreset = true;
+                            }
+
+                            if (e.FullName.IndexOf("custom/scripts/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            {
+                                vf.boolScripts = true;
+                            }
+
+                            if (e.FullName == "meta.json")
+                            {
+                                var objReader = new StreamReader(e.Open());
+                                try
+                                {
+                                    varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
+
+                                    if (vf.creator == "")
+                                    { vf.creator = metaJS.creatorName.Replace(" ", "_"); }
+
+                                    if (vf.Name == "")
+                                    { vf.Name = metaJS.creatorName.Replace(" ", "_") + "." + metaJS.packageName.Replace(" ", "_"); }
+
+                                    if (metaJS.dependencies != null)
                                     {
-                                        if (!lstDepvars.Contains(dep.Split(".")[0].Replace(" ", "_") + "." + dep.Split(".")[1].Replace(" ", "_") + "." + dep.Split(".")[2]))
+                                        var dependencies = metaJS.dependencies;
+                                        foreach (string dep in dependencies.Keys)
                                         {
-                                            lstDepvars.Add(dep.Split(".")[0].Replace(" ", "_") + "." + dep.Split(".")[1].Replace(" ", "_") + "." + dep.Split(".")[2]);
+                                            if (!lstDepvars.Contains(dep.Split(".")[0].Replace(" ", "_") + "." + dep.Split(".")[1].Replace(" ", "_") + "." + dep.Split(".")[2]))
+                                            {
+                                                lstDepvars.Add(dep.Split(".")[0].Replace(" ", "_") + "." + dep.Split(".")[1].Replace(" ", "_") + "." + dep.Split(".")[2]);
+                                            }
+                                        }
+                                    }
+
+                                    if ((metaJS.customOptions != null) && (metaJS.customOptions.preloadMorphs != null))
+                                    {
+                                        if (metaJS.customOptions.preloadMorphs.HasValue && metaJS.customOptions.preloadMorphs.ToString() == "true")
+                                        {
+                                            vf.boolPreloadMorphs = true;
                                         }
                                     }
                                 }
-
-                                if ((metaJS.customOptions != null) && (metaJS.customOptions.preloadMorphs != null))
+                                catch (Exception exJson)
                                 {
-                                    if (metaJS.customOptions.preloadMorphs.HasValue && metaJS.customOptions.preloadMorphs.ToString() == "true")
-                                    {
-                                        vf.boolPreloadMorphs = true;
-                                    }
+                                    Debug.Print(fi.FullName);
+                                    lstErrorsJson.Add(fi.Name);
                                 }
-                            }
-                            catch (Exception exJson)
-                            {
-                                Debug.Print(fi.FullName);
-                                lstErrorsJson.Add(fi.Name);
-                            }
 
-                            objReader.Close();
-                            objReader.Dispose();
+                                objReader.Close();
+                                objReader.Dispose();
+                            }
                         }
+
+                        varZip.Dispose();
+                    }
+                    catch (Exception exZip) //broken or unreadable zip file, skip
+                    {
+                        lstErrorsZipFile.Add(fi.Name);
+                        boolSkip = true;
                     }
 
-                    varZip.Dispose();
-                }
-                catch (Exception exZip) //broken or unreadable zip file, skip
-                {
-                    lstErrorsZipFile.Add(fi.Name);
-                    boolSkip = true;
-                }
-
-                if (!boolSkip)
-                {
-                    if (latestvars.TryGetValue(vf.Name, out intlatest))
+                    if (!boolSkip)
                     {
-                        if (vf.version > intlatest)
+                        if (latestvars.TryGetValue(vf.Name, out intlatest))
                         {
-                            latestvars[vf.Name] = vf.version;
+                            if (vf.version > intlatest)
+                            {
+                                latestvars[vf.Name] = vf.version;
+                            }
                         }
-                    }
-                    else
-                    {
-                        latestvars.Add(vf.Name, vf.version);
-                    }
+                        else
+                        {
+                            latestvars.Add(vf.Name, vf.version);
+                        }
 
-                    lstVars.Add(vf);
-                }
+                        lstVars.Add(vf);
+                    }
+                }    
             }
 
             if(lstLocalFiles != null)

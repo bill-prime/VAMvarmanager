@@ -52,6 +52,7 @@ namespace VAMvarmanager
             cbBackupEx.Enabled = false;
             cbRestoreEx.Checked = false;
             cbRestoreEx.Enabled = false;
+            cbSkipFavorites.Enabled = false;
 
             //Reset settings
             //Properties.Settings.Default["vamfolder"] = null;
@@ -89,6 +90,12 @@ namespace VAMvarmanager
                 _folderex = null;
                 Properties.Settings.Default["folderex"] = null;
                 Properties.Settings.Default.Save();
+            }
+
+            try { cbSkipFavorites.Checked = (bool)Properties.Settings.Default["skipFavorites"]; }
+            catch
+            {
+                cbSkipFavorites.Checked = false;
             }
 
             _creatorRestoreex = new System.Collections.Specialized.StringCollection();
@@ -272,6 +279,7 @@ namespace VAMvarmanager
 
                 this.cbBackupEx.Enabled = true;
                 this.cbRestoreEx.Enabled = true;
+                this.cbSkipFavorites.Enabled = true;
 
                 this.cbSavesScene.Enabled = true;
                 this.gbPresets.Enabled = true;
@@ -314,6 +322,7 @@ namespace VAMvarmanager
 
                 this.cbBackupEx.Enabled = false;
                 this.cbRestoreEx.Enabled = false;
+                this.cbSkipFavorites.Enabled = false;
 
                 this.cbSavesScene.Enabled = false;
                 this.gbPresets.Enabled = false;
@@ -479,13 +488,13 @@ namespace VAMvarmanager
             
             if (cbBackupEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupUnrefVarsEx(clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters());
+                varmanager.varCounts vc = vm.BackupUnrefVarsEx(clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupUnrefVars(getLocalFileFilters());
+                varmanager.varCounts vc = vm.BackupUnrefVars(getLocalFileFilters(), cbSkipFavorites.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -501,13 +510,13 @@ namespace VAMvarmanager
 
             if (cbBackupEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupUnrefSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters());
+                varmanager.varCounts vc = vm.BackupUnrefSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupUnrefSpecVars(clbTypes.CheckedItems, getLocalFileFilters());
+                varmanager.varCounts vc = vm.BackupUnrefSpecVars(clbTypes.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -523,13 +532,13 @@ namespace VAMvarmanager
 
             if (cbBackupEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems);
+                varmanager.varCounts vc = vm.BackupSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems, cbSkipFavorites.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupSpecVars(clbTypes.CheckedItems);
+                varmanager.varCounts vc = vm.BackupSpecVars(clbTypes.CheckedItems, cbSkipFavorites.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -934,6 +943,12 @@ namespace VAMvarmanager
             }
 
             Cursor = Cursors.Default;
+        }
+
+        private void cbSkipFavorites_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default["skipFavorites"] = cbSkipFavorites.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }

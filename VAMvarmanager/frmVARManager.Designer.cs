@@ -92,6 +92,7 @@ namespace VAMvarmanager
             this.gbMisc = new System.Windows.Forms.GroupBox();
             this.sfdVarConfig = new System.Windows.Forms.SaveFileDialog();
             this.ofdVarConfig = new System.Windows.Forms.OpenFileDialog();
+            this.cbSkipFavorites = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbCreatorEx.SuspendLayout();
@@ -751,11 +752,25 @@ namespace VAMvarmanager
             this.gbMisc.TabStop = false;
             this.gbMisc.Text = "Misc";
             // 
+            // cbSkipFavorites
+            // 
+            this.cbSkipFavorites.AutoSize = true;
+            this.cbSkipFavorites.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.cbSkipFavorites.ForeColor = System.Drawing.Color.Firebrick;
+            this.cbSkipFavorites.Location = new System.Drawing.Point(526, 158);
+            this.cbSkipFavorites.Name = "cbSkipFavorites";
+            this.cbSkipFavorites.Size = new System.Drawing.Size(104, 19);
+            this.cbSkipFavorites.TabIndex = 21;
+            this.cbSkipFavorites.Text = "Skip Favorites";
+            this.cbSkipFavorites.UseVisualStyleBackColor = true;
+            this.cbSkipFavorites.CheckedChanged += new System.EventHandler(this.cbSkipFavorites_CheckedChanged);
+            // 
             // frmVARManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1080, 747);
+            this.Controls.Add(this.cbSkipFavorites);
             this.Controls.Add(this.gbMisc);
             this.Controls.Add(this.cbRestoreEx);
             this.Controls.Add(this.gbFolderFilters);
@@ -860,6 +875,7 @@ namespace VAMvarmanager
         private System.Windows.Forms.Button btnRestoreConfig;
         private System.Windows.Forms.SaveFileDialog sfdVarConfig;
         private System.Windows.Forms.OpenFileDialog ofdVarConfig;
+        private System.Windows.Forms.CheckBox cbSkipFavorites;
     }
 }
 
