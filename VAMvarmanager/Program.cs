@@ -191,7 +191,7 @@ namespace VAMvarmanager
 
         #region "var Management"
 
-        public varCounts BackupUnrefVars(List<string> lstLocalFiles, bool skipFavorites = false)
+        public varCounts BackupUnrefVars(List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
             string[] lstFilePrefs = null;
@@ -204,7 +204,8 @@ namespace VAMvarmanager
                              where
                                 !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) && 
                                 !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name,out int intLatestVer) && intLatestVer == v.version) &&
-                                (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4)))))
+                                (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4))))) &&
+                                ((dtMaxDate == default) || (v.unpacked == false && v.fi.LastWriteTime < dtMaxDate) || (v.unpacked == true && v.di.LastWriteTime < dtMaxDate))
                              select v;
 
             foreach (var f in unusedVars)
@@ -235,7 +236,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles, bool skipFavorites = false)
+        public varCounts BackupUnrefVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
             string[] lstFilePrefs = null;
@@ -251,7 +252,8 @@ namespace VAMvarmanager
                                 ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).Name)))) &&
                                 ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages")) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMdir + @"\AddonPackages"))) &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator)) &&
-                                (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4)))))
+                                (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4))))) && 
+                                ((dtMaxDate == default) || (v.unpacked == false && v.fi.LastWriteTime < dtMaxDate) || (v.unpacked == true && v.di.LastWriteTime < dtMaxDate))
                              select v;
 
             foreach (var f in unusedVars)
@@ -283,7 +285,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefSpecVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, List<string> lstLocalFiles, bool skipFavorites = false)
+        public varCounts BackupUnrefSpecVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
             string[] lstFilePrefs = null;
@@ -310,7 +312,8 @@ namespace VAMvarmanager
                                 ) &&
                                 !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) &&
                                 !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer == v.version) &&
-                                (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4)))))
+                                (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4))))) &&
+                                ((dtMaxDate == default) || (v.unpacked == false && v.fi.LastWriteTime < dtMaxDate) || (v.unpacked == true && v.di.LastWriteTime < dtMaxDate))
                              select v;
 
             foreach (var f in backupvars)
@@ -341,7 +344,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefSpecVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles, bool skipFavorites = false)
+        public varCounts BackupUnrefSpecVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
             string[] lstFilePrefs = null;
@@ -371,7 +374,8 @@ namespace VAMvarmanager
                                 ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).Name)))) &&
                                 ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages")) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMdir + @"\AddonPackages"))) &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator)) &&
-                                (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4)))))
+                                (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4))))) &&
+                                ((dtMaxDate == default) || (v.unpacked == false && v.fi.LastWriteTime < dtMaxDate) || (v.unpacked == true && v.di.LastWriteTime < dtMaxDate))
                              select v;
 
             foreach (var f in backupvars)
@@ -402,7 +406,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupSpecVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, bool skipFavorites = false)
+        public varCounts BackupSpecVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, bool skipFavorites = false, DateTime dtMaxDate = default)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
             string[] lstFilePrefs = null;
@@ -427,7 +431,8 @@ namespace VAMvarmanager
                                 (v.boolScripts && lstTypes.Contains("Scripts")) ||
                                 (v.boolTextures && lstTypes.Contains("Skin Textures"))
                                ) &&
-                               (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4)))))
+                               (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4))))) &&
+                               ((dtMaxDate == default) || (v.unpacked == false && v.fi.LastWriteTime < dtMaxDate) || (v.unpacked == true && v.di.LastWriteTime < dtMaxDate))
                              select v;
 
             foreach (var f in backupvars)
@@ -457,7 +462,7 @@ namespace VAMvarmanager
 
             return GetVarCounts();
         }
-        public varCounts BackupSpecVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, bool skipFavorites = false)
+        public varCounts BackupSpecVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, bool skipFavorites = false, DateTime dtMaxDate = default)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
             string[] lstFilePrefs = null;
@@ -485,7 +490,8 @@ namespace VAMvarmanager
                                 ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).Name)))) &&
                                 ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages")) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMdir + @"\AddonPackages"))) &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator)) &&
-                                (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4)))))
+                                (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4))))) &&
+                                ((dtMaxDate == default) || (v.unpacked == false && v.fi.LastWriteTime < dtMaxDate) || (v.unpacked == true && v.di.LastWriteTime < dtMaxDate))
                              select v;
 
             foreach (var f in backupvars)
@@ -1108,6 +1114,24 @@ namespace VAMvarmanager
             return GetVarCounts(countMoved);
         }
 
+
+        public List<string> getActiveVarConfig()
+        {
+            DirectoryInfo diVam = new DirectoryInfo(_strVAMdir + @"\AddonPackages");
+
+            var activefiles = from f in diVam.GetFiles("*.var", SearchOption.AllDirectories)
+                              orderby f.Name
+                              select f.Name;
+
+            var activedirs = from d in diVam.GetDirectories("*.var", SearchOption.AllDirectories)
+                             orderby d.Name
+                             select d.Name;
+
+            var activevars = activefiles.Concat(activedirs).OrderBy(x => x).ToList<string>();
+
+            return activevars;
+        }
+
         public void SaveVarConfig(string strFileName)
         {
             DirectoryInfo diVam = new DirectoryInfo(_strVAMdir + @"\AddonPackages");
@@ -1198,6 +1222,73 @@ namespace VAMvarmanager
                 if (!Directory.Exists(d.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))
                 {
                     Directory.Move(d.FullName,d.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"));
+                }
+            }
+
+            return GetVarCounts();
+        }
+
+        public varCounts restoreLastVarConfig(System.Collections.Specialized.StringCollection lstLastActiveVars)
+        {
+
+            DirectoryInfo diVam = new DirectoryInfo(_strVAMdir + @"\AddonPackages");
+            DirectoryInfo diBackup = new DirectoryInfo(_strVAMbackupdir);
+
+            var varsToBackup = from f in diVam.GetFiles("*.var", SearchOption.AllDirectories)
+                               where !lstLastActiveVars.Contains(f.Name)
+                               select f;
+
+            var varsToRestore = from f in diBackup.GetFiles("*.var", SearchOption.AllDirectories)
+                                where lstLastActiveVars.Contains(f.Name)
+                                select f;
+
+            foreach (var f in varsToBackup)
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                }
+
+                if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
+                {
+                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                }
+            }
+
+            foreach (var f in varsToRestore)
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                }
+
+                if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                {
+                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                }
+            }
+
+            var dirsToBackup = from d in diVam.GetDirectories("*.var", SearchOption.AllDirectories)
+                               where !lstLastActiveVars.Contains(d.Name)
+                               select d;
+
+            var dirsToRestore = from d in diBackup.GetDirectories("*.var", SearchOption.AllDirectories)
+                                where lstLastActiveVars.Contains(d.Name)
+                                select d;
+
+            foreach (var d in dirsToBackup)
+            {
+                if (!Directory.Exists(d.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)))
+                {
+                    Directory.Move(d.FullName, d.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir));
+                }
+            }
+
+            foreach (var d in dirsToRestore)
+            {
+                if (!Directory.Exists(d.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))
+                {
+                    Directory.Move(d.FullName, d.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"));
                 }
             }
 
@@ -1882,7 +1973,9 @@ namespace VAMvarmanager
                                          displayName = grp.Key.displayName,
                                          creatorName = grp.Key.creatorName,
                                          cnt = grp.Count()
-                                     };
+                                     } into selection
+                                     orderby selection.creatorName, selection.uid
+                                     select selection;
 
             foreach (var itemDistinct in varItemsDuplicates)
             {

@@ -27,6 +27,8 @@ namespace VAMvarmanager
         private List<string> _folderListbak;
         private System.Collections.Specialized.StringCollection _creatorRestoreex;
         private System.Collections.Specialized.StringCollection _folderRestoreex;
+        private System.Collections.Specialized.StringCollection _lastActivevars;
+        private int _lastActivevarcount;
 
         public frmVARManager()
         { 
@@ -236,6 +238,31 @@ namespace VAMvarmanager
                     }
                 }
 
+                //Check auto-saved last config
+                try { _lastActivevars = (System.Collections.Specialized.StringCollection)Properties.Settings.Default["lastActiveVars"]; }
+                catch
+                {
+                    _lastActivevars = null;
+                }
+
+                try { _lastActivevarcount = (int)Properties.Settings.Default["lastActiveVarcount"]; }
+                catch
+                {
+                    _lastActivevarcount = 0;
+                }
+
+                if( _lastActivevarcount == 0 || _lastActivevars == null)
+                {
+                    _lastActivevars = new System.Collections.Specialized.StringCollection();
+                    _lastActivevars.AddRange(vm.getActiveVarConfig().ToArray());
+                    Properties.Settings.Default["lastActiveVars"] = _lastActivevars;
+                    _lastActivevarcount = vm.GetVarCounts().countVAMvars;
+                    Properties.Settings.Default["lastActiveVarcount"] = _lastActivevarcount;
+                    Properties.Settings.Default.Save();
+                }
+
+                btnRestoreLastConfig.Text = "Restore Last Config/Undo" + Environment.NewLine + "(" + _lastActivevarcount.ToString() + " Active vars)";
+
                 if (cbRestoreEx.Checked)
                 {
                     this.clbCreatorsRestore.Enabled = true;
@@ -340,6 +367,8 @@ namespace VAMvarmanager
 
                 this.cbSavesScene.Enabled = false;
                 this.gbPresets.Enabled = false;
+
+                btnRestoreLastConfig.Text = "Restore Last Config/Undo" + Environment.NewLine + "(0 Active vars)";
             }
 
             Cursor = Cursors.Default;
@@ -499,16 +528,18 @@ namespace VAMvarmanager
         private void btnBackupUnref_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
-            
+
+            saveLastActivevars();
+
             if (cbBackupEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupUnrefVarsEx(clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked);
+                varmanager.varCounts vc = vm.BackupUnrefVarsEx(clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupUnrefVars(getLocalFileFilters(), cbSkipFavorites.Checked);
+                varmanager.varCounts vc = vm.BackupUnrefVars(getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -522,15 +553,17 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
+            saveLastActivevars();
+
             if (cbBackupEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupUnrefSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked);
+                varmanager.varCounts vc = vm.BackupUnrefSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupUnrefSpecVars(clbTypes.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked);
+                varmanager.varCounts vc = vm.BackupUnrefSpecVars(clbTypes.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -544,15 +577,17 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
+            saveLastActivevars();
+
             if (cbBackupEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems, cbSkipFavorites.Checked);
+                varmanager.varCounts vc = vm.BackupSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems, cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupSpecVars(clbTypes.CheckedItems, cbSkipFavorites.Checked);
+                varmanager.varCounts vc = vm.BackupSpecVars(clbTypes.CheckedItems, cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -565,6 +600,8 @@ namespace VAMvarmanager
         private void btnRestoreRef_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
+
+            saveLastActivevars();
 
             if (cbRestoreEx.Checked)
             {
@@ -588,6 +625,8 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
+            saveLastActivevars();
+
             if (cbRestoreEx.Checked)
             {
                 varmanager.varCounts vc = vm.RestoreSpecificVarsEx(clbTypes.CheckedItems, clbFoldersRestore.CheckedItems, clbCreatorsRestore.CheckedItems);
@@ -609,6 +648,8 @@ namespace VAMvarmanager
         private void btnRestoreAll_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
+
+            saveLastActivevars();
 
             if (cbRestoreEx.Checked)
             {
@@ -933,6 +974,8 @@ namespace VAMvarmanager
 
             if (ofdVarConfig.ShowDialog() == DialogResult.OK)
             {
+                saveLastActivevars();
+
                 varmanager.varCounts vc = vm.RestoreVarConfig(ofdVarConfig.FileName); ;
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
@@ -977,6 +1020,38 @@ namespace VAMvarmanager
                 dtpFilter.Enabled = false;
                 dtpFilter.Hide();
             }
+        }
+
+        private void cbDateFilter_MouseHover(object sender, EventArgs e)
+        {
+            toolTipDateFilter.Show("Only move vars older than the selected date. BACKUP operations only.", cbDateFilter);
+        }
+
+        private void saveLastActivevars()
+        {
+            _lastActivevars = new System.Collections.Specialized.StringCollection();
+            _lastActivevars.AddRange(vm.getActiveVarConfig().ToArray());
+            Properties.Settings.Default["lastActiveVars"] = _lastActivevars;
+            _lastActivevarcount = vm.GetVarCounts().countVAMvars;
+            Properties.Settings.Default["lastActiveVarcount"] = _lastActivevarcount;
+            Properties.Settings.Default.Save();
+
+            btnRestoreLastConfig.Text = "Restore Last Config/Undo" + Environment.NewLine + "(" + _lastActivevarcount.ToString() + " Active vars)";
+        }
+
+        private void btnRestoreLastConfig_Click(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+            System.Collections.Specialized.StringCollection lastActiveVarstemp = _lastActivevars;
+            int lastActiveVarcounttemp = _lastActivevarcount;
+
+            saveLastActivevars();
+
+            varmanager.varCounts vc = vm.restoreLastVarConfig(lastActiveVarstemp); ;
+            lblVamcount.Text = vc.countVAMvars.ToString();
+            lblBackupcount.Text = vc.countBackupvars.ToString();
+
+            Cursor = Cursors.Default;
         }
     }
 }

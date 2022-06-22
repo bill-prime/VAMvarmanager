@@ -36,6 +36,7 @@ namespace VAMvarmanager
             this.txtVamfolder = new System.Windows.Forms.TextBox();
             this.btnBackupUnref = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnRestoreLastConfig = new System.Windows.Forms.Button();
             this.btnSaveConfig = new System.Windows.Forms.Button();
             this.btnRestoreConfig = new System.Windows.Forms.Button();
             this.btnResetSettings = new System.Windows.Forms.Button();
@@ -95,6 +96,7 @@ namespace VAMvarmanager
             this.cbSkipFavorites = new System.Windows.Forms.CheckBox();
             this.dtpFilter = new System.Windows.Forms.DateTimePicker();
             this.cbDateFilter = new System.Windows.Forms.CheckBox();
+            this.toolTipDateFilter = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbCreatorEx.SuspendLayout();
@@ -156,6 +158,7 @@ namespace VAMvarmanager
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnRestoreLastConfig);
             this.groupBox1.Controls.Add(this.btnSaveConfig);
             this.groupBox1.Controls.Add(this.btnRestoreConfig);
             this.groupBox1.Controls.Add(this.btnResetSettings);
@@ -175,6 +178,18 @@ namespace VAMvarmanager
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Config";
+            // 
+            // btnRestoreLastConfig
+            // 
+            this.btnRestoreLastConfig.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnRestoreLastConfig.ForeColor = System.Drawing.Color.ForestGreen;
+            this.btnRestoreLastConfig.Location = new System.Drawing.Point(338, 96);
+            this.btnRestoreLastConfig.Name = "btnRestoreLastConfig";
+            this.btnRestoreLastConfig.Size = new System.Drawing.Size(160, 38);
+            this.btnRestoreLastConfig.TabIndex = 15;
+            this.btnRestoreLastConfig.Text = "Restore Last Config\r\n(200 active vars)";
+            this.btnRestoreLastConfig.UseVisualStyleBackColor = true;
+            this.btnRestoreLastConfig.Click += new System.EventHandler(this.btnRestoreLastConfig_Click);
             // 
             // btnSaveConfig
             // 
@@ -790,6 +805,7 @@ namespace VAMvarmanager
             this.cbDateFilter.Text = "Date Filter";
             this.cbDateFilter.UseVisualStyleBackColor = true;
             this.cbDateFilter.CheckedChanged += new System.EventHandler(this.cbDateFilter_CheckedChanged);
+            this.cbDateFilter.MouseHover += new System.EventHandler(this.cbDateFilter_MouseHover);
             // 
             // frmVARManager
             // 
@@ -906,6 +922,8 @@ namespace VAMvarmanager
         private System.Windows.Forms.CheckBox cbSkipFavorites;
         private System.Windows.Forms.DateTimePicker dtpFilter;
         private System.Windows.Forms.CheckBox cbDateFilter;
+        private System.Windows.Forms.Button btnRestoreLastConfig;
+        private System.Windows.Forms.ToolTip toolTipDateFilter;
     }
 }
 

@@ -114,5 +114,28 @@ namespace VAMvarmanager.Properties {
                 this["skipFavorites"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection lastActiveVars {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["lastActiveVars"]));
+            }
+            set {
+                this["lastActiveVars"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int lastActiveVarcount {
+            get {
+                return ((int)(this["lastActiveVarcount"]));
+            }
+            set {
+                this["lastActiveVarcount"] = value;
+            }
+        }
     }
 }
