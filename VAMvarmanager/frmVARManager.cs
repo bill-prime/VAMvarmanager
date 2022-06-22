@@ -261,6 +261,7 @@ namespace VAMvarmanager
                     Properties.Settings.Default.Save();
                 }
 
+                btnRestoreLastConfig.Enabled = true;
                 btnRestoreLastConfig.Text = "Restore Last Config/Undo" + Environment.NewLine + "(" + _lastActivevarcount.ToString() + " Active vars)";
 
                 if (cbRestoreEx.Checked)
@@ -368,6 +369,7 @@ namespace VAMvarmanager
                 this.cbSavesScene.Enabled = false;
                 this.gbPresets.Enabled = false;
 
+                btnRestoreLastConfig.Enabled = false;
                 btnRestoreLastConfig.Text = "Restore Last Config/Undo" + Environment.NewLine + "(0 Active vars)";
             }
 
