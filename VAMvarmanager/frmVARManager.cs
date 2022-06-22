@@ -54,6 +54,12 @@ namespace VAMvarmanager
             cbRestoreEx.Enabled = false;
             cbSkipFavorites.Enabled = false;
 
+            cbDateFilter.Checked = false;
+            cbDateFilter.Enabled = false;
+            dtpFilter.MaxDate = DateTime.Today;
+            dtpFilter.Enabled = false;
+            dtpFilter.Hide();
+
             //Reset settings
             //Properties.Settings.Default["vamfolder"] = null;
             //Properties.Settings.Default["backupfolder"] = null;
@@ -161,7 +167,8 @@ namespace VAMvarmanager
                 _folderListvam = new List<string>();
 
                 var dirs = from f in Directory.GetDirectories(_strVamdir + @"\AddonPackages", "*", SearchOption.AllDirectories)
-                                     select f.Replace(_strVamdir + @"\AddonPackages\", "");
+                           where !f.EndsWith(".var") && !f.Contains(@".var\")
+                           select f.Replace(_strVamdir + @"\AddonPackages\", "");
 
                 _folderListvam.Add(@"\root\");
                 _folderListvam.AddRange(dirs.ToList<string>());
@@ -202,6 +209,7 @@ namespace VAMvarmanager
                 _folderListbak = new List<string>();
 
                 var dirsRestore = from f in Directory.GetDirectories(_strBackupdir, "*", SearchOption.AllDirectories)
+                                  where !f.EndsWith(".var") && !f.Contains(@".var\")
                                   select f.Replace(_strBackupdir + @"\", "");
 
                 _folderListbak.Add(@"\root\");
@@ -281,6 +289,9 @@ namespace VAMvarmanager
                 this.cbRestoreEx.Enabled = true;
                 this.cbSkipFavorites.Enabled = true;
 
+                this.cbDateFilter.Enabled = true;
+                this.dtpFilter.Enabled = true;
+
                 this.cbSavesScene.Enabled = true;
                 this.gbPresets.Enabled = true;
             }
@@ -323,6 +334,9 @@ namespace VAMvarmanager
                 this.cbBackupEx.Enabled = false;
                 this.cbRestoreEx.Enabled = false;
                 this.cbSkipFavorites.Enabled = false;
+
+                this.cbDateFilter.Enabled = false;
+                this.dtpFilter.Enabled = false;
 
                 this.cbSavesScene.Enabled = false;
                 this.gbPresets.Enabled = false;
@@ -949,6 +963,20 @@ namespace VAMvarmanager
         {
             Properties.Settings.Default["skipFavorites"] = cbSkipFavorites.Checked;
             Properties.Settings.Default.Save();
+        }
+
+        private void cbDateFilter_CheckedChanged(object sender, EventArgs e)
+        {
+            if(cbDateFilter.Checked)
+            {
+                dtpFilter.Enabled = true;
+                dtpFilter.Show();
+            }
+            else
+            {
+                dtpFilter.Enabled = false;
+                dtpFilter.Hide();
+            }
         }
     }
 }

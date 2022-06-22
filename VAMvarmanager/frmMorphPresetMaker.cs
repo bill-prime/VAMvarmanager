@@ -40,7 +40,14 @@ namespace VAMvarmanager
 
             foreach(var vf in _lstMorphVars)
             {
-                clbMorphvars.Items.Add(vf.fi.Name + "|" + vf.countMorphs + " Morphs".ToString(),false);
+                if (vf.unpacked == false)
+                {
+                    clbMorphvars.Items.Add(vf.fi.Name + "|" + vf.countMorphs + " Morphs".ToString(), false);
+                }
+                else
+                {
+                    clbMorphvars.Items.Add(vf.di.Name + "|" + vf.countMorphs + " Morphs".ToString(), false);
+                }
             }
 
         }
@@ -88,14 +95,14 @@ namespace VAMvarmanager
                 itemsNeeded = from vf in _lstMorphVars
                               where (cbPreloadMorphs.CheckState == CheckState.Checked ? vf.boolPreloadMorphs == true : 1 == 1) && (txtNameFilter.Text != "" ? vf.fi.Name.Contains(txtNameFilter.Text, StringComparison.OrdinalIgnoreCase) : 1 == 1)
                               orderby vf.countMorphs descending
-                              select vf.fi.Name + "|" + vf.countMorphs + " Morphs".ToString();
+                              select (vf.unpacked == false ? vf.fi.Name : vf.di.Name) + "|" + vf.countMorphs + " Morphs".ToString();
             }
             else
             {
                 itemsNeeded = from vf in _lstMorphVars
                               where (cbPreloadMorphs.CheckState == CheckState.Checked ? vf.boolPreloadMorphs == true : 1 == 1) && (txtNameFilter.Text != "" ? vf.fi.Name.Contains(txtNameFilter.Text, StringComparison.OrdinalIgnoreCase) : 1 == 1)
-                              orderby vf.fi.Name
-                              select vf.fi.Name + "|" + vf.countMorphs + " Morphs".ToString();
+                              orderby (vf.unpacked == false ? vf.fi.Name : vf.di.Name)
+                              select (vf.unpacked == false ? vf.fi.Name : vf.di.Name) + "|" + vf.countMorphs + " Morphs".ToString();
             }
 
             clb.Items.Clear();
@@ -161,54 +168,103 @@ namespace VAMvarmanager
             strMorphPresetText = "{ " + Environment.NewLine + "   \"setUnlistedParamsToDefault\" : \"true\", " + Environment.NewLine + "   \"storables\" : [ " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\", " + Environment.NewLine + "         \"morphs\" : [ ";
 
             var selectedVars = from vf in _lstMorphVars
-                               where _lstSelectedVars.Contains(vf.fi.Name)
+                               where _lstSelectedVars.Contains((vf.unpacked == false ? vf.fi.Name : vf.di.Name))
                                select vf;
 
             foreach (var vf in selectedVars)
             {
-                zipVar = ZipFile.Open(vf.fi.FullName, ZipArchiveMode.Read);
-
-                // Read morphs
-                foreach (ZipArchiveEntry e in zipVar.Entries)
+                if(vf.unpacked == false)
                 {
-                    if (e.FullName.IndexOf(strMorphSexLookup, 0, StringComparison.CurrentCultureIgnoreCase) > -1 & e.FullName.EndsWith(".vmi"))
+                    zipVar = ZipFile.Open(vf.fi.FullName, ZipArchiveMode.Read);
+
+                    // Read morphs
+                    foreach (ZipArchiveEntry e in zipVar.Entries)
                     {
-                        strVmiPath = vf.Name + "." + vf.version + ":/" + e.FullName;
-                        srVmi = new StreamReader(e.Open());
-                        strLine = srVmi.ReadLine();
-                        while (!srVmi.EndOfStream)
+                        if (e.FullName.IndexOf(strMorphSexLookup, 0, StringComparison.CurrentCultureIgnoreCase) > -1 & e.FullName.EndsWith(".vmi"))
                         {
-                            if (strLine.ToLower().Contains("displayname"))
+                            strVmiPath = vf.Name + "." + vf.version + ":/" + e.FullName;
+                            srVmi = new StreamReader(e.Open());
+                            strLine = srVmi.ReadLine();
+                            while (!srVmi.EndOfStream)
                             {
-                                strDisplayName = strLine.Replace("displayName", "");
-                                strDisplayName = strDisplayName.Replace("displayname", "");
-                                strDisplayName = strDisplayName.Replace("\":", "\"");
-                                strDisplayName = strDisplayName.Replace("\" :", "\"");
-                                strDisplayName = strDisplayName.Replace("\",", "\"");
-                                strDisplayName = strDisplayName.Replace("\"", "");
-                                strDisplayName = strDisplayName.Trim();
-                                break;
+                                if (strLine.ToLower().Contains("displayname"))
+                                {
+                                    strDisplayName = strLine.Replace("displayName", "");
+                                    strDisplayName = strDisplayName.Replace("displayname", "");
+                                    strDisplayName = strDisplayName.Replace("\":", "\"");
+                                    strDisplayName = strDisplayName.Replace("\" :", "\"");
+                                    strDisplayName = strDisplayName.Replace("\",", "\"");
+                                    strDisplayName = strDisplayName.Replace("\"", "");
+                                    strDisplayName = strDisplayName.Trim();
+                                    break;
+                                }
+
+                                strLine = srVmi.ReadLine();
                             }
 
+                            srVmi.Close();
+                            if (boolfirst)
+                            {
+                                boolfirst = false;
+                                strMorphPresetText += Environment.NewLine;
+                            }
+                            else
+                            {
+                                strMorphPresetText += ", " + Environment.NewLine;
+                            }
+
+                            strMorphPresetText += "            { " + Environment.NewLine;
+                            strMorphPresetText += "               \"uid\" : \"" + strVmiPath + "\", " + Environment.NewLine;
+                            strMorphPresetText += "               \"name\" : \"" + strDisplayName + "\", " + Environment.NewLine;
+                            strMorphPresetText += "               \"value\" : \"" + strDefaultValue + "\"" + Environment.NewLine;
+                            strMorphPresetText += "            }";
+                        }
+                    }
+                }
+                else
+                {
+                    // Read morphs
+                    foreach (FileInfo e in vf.di.GetFiles("*.*",SearchOption.AllDirectories))
+                    {
+                        if (e.FullName.IndexOf(strMorphSexLookup.Replace("/",@"\"), 0, StringComparison.CurrentCultureIgnoreCase) > -1 & e.FullName.EndsWith(".vmi"))
+                        {
+                            strVmiPath = vf.Name + "." + vf.version + ":/" + e.FullName.Replace(vf.di.FullName + @"\", "").Replace(@"\","/");
+                            srVmi = new StreamReader(e.FullName);
                             strLine = srVmi.ReadLine();
-                        }
+                            while (!srVmi.EndOfStream)
+                            {
+                                if (strLine.ToLower().Contains("displayname"))
+                                {
+                                    strDisplayName = strLine.Replace("displayName", "");
+                                    strDisplayName = strDisplayName.Replace("displayname", "");
+                                    strDisplayName = strDisplayName.Replace("\":", "\"");
+                                    strDisplayName = strDisplayName.Replace("\" :", "\"");
+                                    strDisplayName = strDisplayName.Replace("\",", "\"");
+                                    strDisplayName = strDisplayName.Replace("\"", "");
+                                    strDisplayName = strDisplayName.Trim();
+                                    break;
+                                }
 
-                        srVmi.Close();
-                        if (boolfirst)
-                        {
-                            boolfirst = false;
-                            strMorphPresetText += Environment.NewLine;
-                        }
-                        else
-                        {
-                            strMorphPresetText += ", " + Environment.NewLine;
-                        }
+                                strLine = srVmi.ReadLine();
+                            }
 
-                        strMorphPresetText += "            { " + Environment.NewLine;
-                        strMorphPresetText += "               \"uid\" : \"" + strVmiPath + "\", " + Environment.NewLine;
-                        strMorphPresetText += "               \"name\" : \"" + strDisplayName + "\", " + Environment.NewLine;
-                        strMorphPresetText += "               \"value\" : \"" + strDefaultValue + "\"" + Environment.NewLine;
-                        strMorphPresetText += "            }";
+                            srVmi.Close();
+                            if (boolfirst)
+                            {
+                                boolfirst = false;
+                                strMorphPresetText += Environment.NewLine;
+                            }
+                            else
+                            {
+                                strMorphPresetText += ", " + Environment.NewLine;
+                            }
+
+                            strMorphPresetText += "            { " + Environment.NewLine;
+                            strMorphPresetText += "               \"uid\" : \"" + strVmiPath + "\", " + Environment.NewLine;
+                            strMorphPresetText += "               \"name\" : \"" + strDisplayName + "\", " + Environment.NewLine;
+                            strMorphPresetText += "               \"value\" : \"" + strDefaultValue + "\"" + Environment.NewLine;
+                            strMorphPresetText += "            }";
+                        }
                     }
                 }
             }

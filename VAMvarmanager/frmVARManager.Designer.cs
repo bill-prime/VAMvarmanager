@@ -93,6 +93,8 @@ namespace VAMvarmanager
             this.sfdVarConfig = new System.Windows.Forms.SaveFileDialog();
             this.ofdVarConfig = new System.Windows.Forms.OpenFileDialog();
             this.cbSkipFavorites = new System.Windows.Forms.CheckBox();
+            this.dtpFilter = new System.Windows.Forms.DateTimePicker();
+            this.cbDateFilter = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbCreatorEx.SuspendLayout();
@@ -461,9 +463,9 @@ namespace VAMvarmanager
             this.groupBox5.Controls.Add(this.cbInvertSpec);
             this.groupBox5.Controls.Add(this.cbAllSpec);
             this.groupBox5.Controls.Add(this.clbTypes);
-            this.groupBox5.Location = new System.Drawing.Point(800, 455);
+            this.groupBox5.Location = new System.Drawing.Point(800, 470);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(271, 289);
+            this.groupBox5.Size = new System.Drawing.Size(271, 274);
             this.groupBox5.TabIndex = 10;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Specific-Type Backup/Restore";
@@ -494,9 +496,9 @@ namespace VAMvarmanager
             // 
             this.clbTypes.CheckOnClick = true;
             this.clbTypes.FormattingEnabled = true;
-            this.clbTypes.Location = new System.Drawing.Point(6, 47);
+            this.clbTypes.Location = new System.Drawing.Point(6, 51);
             this.clbTypes.Name = "clbTypes";
-            this.clbTypes.Size = new System.Drawing.Size(262, 238);
+            this.clbTypes.Size = new System.Drawing.Size(262, 220);
             this.clbTypes.TabIndex = 8;
             // 
             // groupBox6
@@ -528,9 +530,9 @@ namespace VAMvarmanager
             this.groupBox7.Controls.Add(this.btnMorphPresets);
             this.groupBox7.Controls.Add(this.btnRevertpreloadmorphs);
             this.groupBox7.Controls.Add(this.btnDisablepreloadmorphs);
-            this.groupBox7.Location = new System.Drawing.Point(800, 158);
+            this.groupBox7.Location = new System.Drawing.Point(800, 180);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(271, 201);
+            this.groupBox7.Size = new System.Drawing.Size(271, 181);
             this.groupBox7.TabIndex = 12;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Morphs";
@@ -539,9 +541,9 @@ namespace VAMvarmanager
             // 
             this.btnMorphPresets.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnMorphPresets.ForeColor = System.Drawing.Color.BlueViolet;
-            this.btnMorphPresets.Location = new System.Drawing.Point(6, 136);
+            this.btnMorphPresets.Location = new System.Drawing.Point(9, 126);
             this.btnMorphPresets.Name = "btnMorphPresets";
-            this.btnMorphPresets.Size = new System.Drawing.Size(259, 51);
+            this.btnMorphPresets.Size = new System.Drawing.Size(259, 46);
             this.btnMorphPresets.TabIndex = 15;
             this.btnMorphPresets.Text = "Morph Preset Maker";
             this.btnMorphPresets.UseVisualStyleBackColor = true;
@@ -550,9 +552,9 @@ namespace VAMvarmanager
             // btnRevertpreloadmorphs
             // 
             this.btnRevertpreloadmorphs.ForeColor = System.Drawing.Color.BlueViolet;
-            this.btnRevertpreloadmorphs.Location = new System.Drawing.Point(6, 79);
+            this.btnRevertpreloadmorphs.Location = new System.Drawing.Point(6, 75);
             this.btnRevertpreloadmorphs.Name = "btnRevertpreloadmorphs";
-            this.btnRevertpreloadmorphs.Size = new System.Drawing.Size(259, 51);
+            this.btnRevertpreloadmorphs.Size = new System.Drawing.Size(259, 46);
             this.btnRevertpreloadmorphs.TabIndex = 14;
             this.btnRevertpreloadmorphs.Text = "Revert Preload Morphs Settings";
             this.btnRevertpreloadmorphs.UseVisualStyleBackColor = true;
@@ -561,9 +563,9 @@ namespace VAMvarmanager
             // btnDisablepreloadmorphs
             // 
             this.btnDisablepreloadmorphs.ForeColor = System.Drawing.Color.BlueViolet;
-            this.btnDisablepreloadmorphs.Location = new System.Drawing.Point(6, 22);
+            this.btnDisablepreloadmorphs.Location = new System.Drawing.Point(6, 25);
             this.btnDisablepreloadmorphs.Name = "btnDisablepreloadmorphs";
-            this.btnDisablepreloadmorphs.Size = new System.Drawing.Size(259, 51);
+            this.btnDisablepreloadmorphs.Size = new System.Drawing.Size(259, 46);
             this.btnDisablepreloadmorphs.TabIndex = 13;
             this.btnDisablepreloadmorphs.Text = "Disable Preload Morphs";
             this.btnDisablepreloadmorphs.UseVisualStyleBackColor = true;
@@ -573,9 +575,9 @@ namespace VAMvarmanager
             // 
             this.btnDisableClothing.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnDisableClothing.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnDisableClothing.Location = new System.Drawing.Point(6, 22);
+            this.btnDisableClothing.Location = new System.Drawing.Point(6, 21);
             this.btnDisableClothing.Name = "btnDisableClothing";
-            this.btnDisableClothing.Size = new System.Drawing.Size(259, 51);
+            this.btnDisableClothing.Size = new System.Drawing.Size(259, 46);
             this.btnDisableClothing.TabIndex = 13;
             this.btnDisableClothing.Text = "Duplicate Items Resolver";
             this.btnDisableClothing.UseVisualStyleBackColor = true;
@@ -585,9 +587,9 @@ namespace VAMvarmanager
             // 
             this.groupBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox8.Controls.Add(this.btnDisableClothing);
-            this.groupBox8.Location = new System.Drawing.Point(800, 365);
+            this.groupBox8.Location = new System.Drawing.Point(800, 391);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(271, 84);
+            this.groupBox8.Size = new System.Drawing.Size(271, 73);
             this.groupBox8.TabIndex = 15;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Duplicate Item Resolver";
@@ -765,11 +767,37 @@ namespace VAMvarmanager
             this.cbSkipFavorites.UseVisualStyleBackColor = true;
             this.cbSkipFavorites.CheckedChanged += new System.EventHandler(this.cbSkipFavorites_CheckedChanged);
             // 
+            // dtpFilter
+            // 
+            this.dtpFilter.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpFilter.Location = new System.Drawing.Point(973, 158);
+            this.dtpFilter.MaxDate = new System.DateTime(2022, 6, 22, 0, 0, 0, 0);
+            this.dtpFilter.MinDate = new System.DateTime(2010, 1, 1, 0, 0, 0, 0);
+            this.dtpFilter.Name = "dtpFilter";
+            this.dtpFilter.Size = new System.Drawing.Size(98, 23);
+            this.dtpFilter.TabIndex = 22;
+            this.dtpFilter.Value = new System.DateTime(2022, 6, 22, 0, 0, 0, 0);
+            // 
+            // cbDateFilter
+            // 
+            this.cbDateFilter.AutoSize = true;
+            this.cbDateFilter.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.cbDateFilter.ForeColor = System.Drawing.SystemColors.MenuText;
+            this.cbDateFilter.Location = new System.Drawing.Point(882, 159);
+            this.cbDateFilter.Name = "cbDateFilter";
+            this.cbDateFilter.Size = new System.Drawing.Size(85, 19);
+            this.cbDateFilter.TabIndex = 23;
+            this.cbDateFilter.Text = "Date Filter";
+            this.cbDateFilter.UseVisualStyleBackColor = true;
+            this.cbDateFilter.CheckedChanged += new System.EventHandler(this.cbDateFilter_CheckedChanged);
+            // 
             // frmVARManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1080, 747);
+            this.Controls.Add(this.cbDateFilter);
+            this.Controls.Add(this.dtpFilter);
             this.Controls.Add(this.cbSkipFavorites);
             this.Controls.Add(this.gbMisc);
             this.Controls.Add(this.cbRestoreEx);
@@ -876,6 +904,8 @@ namespace VAMvarmanager
         private System.Windows.Forms.SaveFileDialog sfdVarConfig;
         private System.Windows.Forms.OpenFileDialog ofdVarConfig;
         private System.Windows.Forms.CheckBox cbSkipFavorites;
+        private System.Windows.Forms.DateTimePicker dtpFilter;
+        private System.Windows.Forms.CheckBox cbDateFilter;
     }
 }
 

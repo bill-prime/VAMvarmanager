@@ -427,10 +427,21 @@ namespace VAMvarmanager
 
                 foreach (var viDisable in virDistinct.lstVi.Where(v => v.var.Name != virDistinct.mastervar))
                 {
-                    //Debug.Print(viDisable.var.Name);
-                    strLog += Environment.NewLine + "    " + viDisable.var.fi.Name;
-                    //Disable item
-                    _frmVM.vm.DisableDuplicateItem(viDisable.var.fi.Name, viDisable.FullName);
+                    
+                    if (viDisable.var.unpacked == false)
+                    {
+                        //Debug.Print(viDisable.var.Name);
+                        strLog += Environment.NewLine + "    " + viDisable.var.fi.Name;
+                        //Disable item
+                        _frmVM.vm.DisableDuplicateItem(viDisable.var.fi.Name, viDisable.FullName);
+                    }
+                    else 
+                    {
+                        //Debug.Print(viDisable.var.Name);
+                        strLog += Environment.NewLine + "    " + viDisable.var.di.Name;
+                        //Disable item
+                        _frmVM.vm.DisableDuplicateItem(viDisable.var.di.Name, viDisable.FullName);
+                    }
                 }
             }
 
