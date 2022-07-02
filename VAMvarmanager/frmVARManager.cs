@@ -42,8 +42,6 @@ namespace VAMvarmanager
             cbInvertCreators.Enabled = false;
             cbAllFolders.Enabled = false;
             cbInvertFolders.Enabled = false;
-            cbAllSpec.Enabled = false;
-            cbInvertSpec.Enabled = false;
 
             cbSavesScene.Enabled = false;
             gbPresets.Enabled = false;
@@ -111,18 +109,18 @@ namespace VAMvarmanager
 
             cbBackupEx.Checked = true;
 
-            clbTypes.Items.Add("Assets");
-            clbTypes.Items.Add("Clothing");
-            clbTypes.Items.Add("Clothing Presets");
-            clbTypes.Items.Add("Hair");
-            clbTypes.Items.Add("Hair Presets");
-            clbTypes.Items.Add("Looks");
-            clbTypes.Items.Add("Morphs");
-            clbTypes.Items.Add("Poses");
-            clbTypes.Items.Add("Scenes");
-            clbTypes.Items.Add("SubScenes");
-            clbTypes.Items.Add("Scripts");
-            clbTypes.Items.Add("Skin Textures");
+            dgvTypes.Rows.Add("Assets", false, false, false);
+            dgvTypes.Rows.Add("Clothing", false, false, false);
+            dgvTypes.Rows.Add("Clothing Presets", false, false, false);
+            dgvTypes.Rows.Add("Hair", false, false, false);
+            dgvTypes.Rows.Add("Hair Presets", false, false, false);
+            dgvTypes.Rows.Add("Looks", false, false, false);
+            dgvTypes.Rows.Add("Morphs", false, false, false);
+            dgvTypes.Rows.Add("Poses", false, false, false);
+            dgvTypes.Rows.Add("Scenes", false, false, false);
+            dgvTypes.Rows.Add("SubScenes", false, false, false);
+            dgvTypes.Rows.Add("Scripts", false, false, false);
+            dgvTypes.Rows.Add("Skin Textures", false, false, false);
 
             setfunctionstatus();
             
@@ -310,8 +308,6 @@ namespace VAMvarmanager
                 this.cbInvertCreators.Enabled = true;
                 this.cbAllFolders.Enabled = true;
                 this.cbInvertFolders.Enabled = true;
-                this.cbAllSpec.Enabled = true;
-                this.cbInvertSpec.Enabled = true;
 
                 this.cbBackupEx.Enabled = true;
                 this.cbRestoreEx.Enabled = true;
@@ -356,8 +352,6 @@ namespace VAMvarmanager
                 this.cbInvertCreators.Enabled = false;
                 this.cbAllFolders.Enabled = false;
                 this.cbInvertFolders.Enabled = false;
-                this.cbAllSpec.Enabled = false;
-                this.cbInvertSpec.Enabled = false;
 
                 this.cbBackupEx.Enabled = false;
                 this.cbRestoreEx.Enabled = false;
@@ -559,13 +553,13 @@ namespace VAMvarmanager
 
             if (cbBackupEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupUnrefSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
+                varmanager.varCounts vc = vm.BackupUnrefSpecVarsEx(dgvTypes, cbIgnoreHidden.Checked, clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupUnrefSpecVars(clbTypes.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
+                varmanager.varCounts vc = vm.BackupUnrefSpecVars(dgvTypes, cbIgnoreHidden.Checked, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -583,13 +577,13 @@ namespace VAMvarmanager
 
             if (cbBackupEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupSpecVarsEx(clbTypes.CheckedItems, clbFolders.CheckedItems, clbCreators.CheckedItems, cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
+                varmanager.varCounts vc = vm.BackupSpecVarsEx(dgvTypes, cbIgnoreHidden.Checked, clbFolders.CheckedItems, clbCreators.CheckedItems, cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupSpecVars(clbTypes.CheckedItems, cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
+                varmanager.varCounts vc = vm.BackupSpecVars(dgvTypes, cbIgnoreHidden.Checked, cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -631,13 +625,13 @@ namespace VAMvarmanager
 
             if (cbRestoreEx.Checked)
             {
-                varmanager.varCounts vc = vm.RestoreSpecificVarsEx(clbTypes.CheckedItems, clbFoldersRestore.CheckedItems, clbCreatorsRestore.CheckedItems);
+                varmanager.varCounts vc = vm.RestoreSpecificVarsEx(dgvTypes, cbIgnoreHidden.Checked, clbFoldersRestore.CheckedItems, clbCreatorsRestore.CheckedItems);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.RestoreSpecificVars(clbTypes.CheckedItems);
+                varmanager.varCounts vc = vm.RestoreSpecificVars(dgvTypes, cbIgnoreHidden.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -783,16 +777,6 @@ namespace VAMvarmanager
                 clbInvert(ref clbFoldersRestore);
             }
             Cursor = Cursors.Default;
-        }
-
-        private void cbAllSpec_CheckedChanged(object sender, EventArgs e)
-        {
-            clbSetAll(ref clbTypes, cbAllSpec.Checked);
-        }
-
-        private void cbInvertSpec_CheckedChanged(object sender, EventArgs e)
-        {
-            clbInvert(ref clbTypes);
         }
 
         private void clbSetAll(ref CheckedListBox clb, bool boolChecked)
@@ -1054,6 +1038,73 @@ namespace VAMvarmanager
             lblBackupcount.Text = vc.countBackupvars.ToString();
 
             Cursor = Cursors.Default;
+        }
+
+        private void dgvTypes_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dgvTypes.Columns[e.ColumnIndex].Name != "Type" && e.RowIndex >= 0)
+            {
+                if((bool)dgvTypes.Rows[e.RowIndex].Cells[e.ColumnIndex].Value == true)
+                {
+                    dgvTypes.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = false;
+                }
+                else
+                {
+                    dgvTypes.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = true;
+
+                    for (int i = 1; i < dgvTypes.ColumnCount; i++)
+                    {
+                        if (i != e.ColumnIndex)
+                        {
+                            if((bool)dgvTypes.Rows[e.RowIndex].Cells[i].Value == true)
+                            {
+                                dgvTypes.Rows[e.RowIndex].Cells[i].Value = false;
+                            }
+                        }
+                    }
+                }
+            }
+
+            dgvTypes.ClearSelection();
+        }
+
+        private void dgvTypes_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            int intCountChecked = 0;
+
+            if (dgvTypes.Columns[e.ColumnIndex].Name != "Type")
+            {
+                foreach (DataGridViewRow dgvrow in dgvTypes.Rows)
+                {
+                    if ((bool)dgvrow.Cells[e.ColumnIndex].Value == false)
+                    {
+                        dgvrow.Cells[e.ColumnIndex].Value = true;
+
+                        for (int i = 1; i < dgvTypes.ColumnCount; i++)
+                        {
+                            if (i != e.ColumnIndex)
+                            {
+                                if ((bool)dgvrow.Cells[i].Value == true)
+                                {
+                                    dgvrow.Cells[i].Value = false;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        intCountChecked += 1;
+                    }
+                }
+
+                if (intCountChecked == dgvTypes.Rows.Count)
+                {
+                    foreach (DataGridViewRow dgvrow in dgvTypes.Rows)
+                    {
+                        dgvrow.Cells[e.ColumnIndex].Value = false;
+                    }
+                }
+            }
         }
     }
 }

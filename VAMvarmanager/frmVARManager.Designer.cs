@@ -65,9 +65,12 @@ namespace VAMvarmanager
             this.txtFolderFilter = new System.Windows.Forms.TextBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.cbInvertSpec = new System.Windows.Forms.CheckBox();
-            this.cbAllSpec = new System.Windows.Forms.CheckBox();
-            this.clbTypes = new System.Windows.Forms.CheckedListBox();
+            this.cbIgnoreHidden = new System.Windows.Forms.CheckBox();
+            this.dgvTypes = new System.Windows.Forms.DataGridView();
+            this.Type = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OR = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.AND = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.NOT = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.btnRestoreRef = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
@@ -102,6 +105,7 @@ namespace VAMvarmanager
             this.gbCreatorEx.SuspendLayout();
             this.gbFolderEx.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTypes)).BeginInit();
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox8.SuspendLayout();
@@ -475,46 +479,74 @@ namespace VAMvarmanager
             // groupBox5
             // 
             this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox5.Controls.Add(this.cbInvertSpec);
-            this.groupBox5.Controls.Add(this.cbAllSpec);
-            this.groupBox5.Controls.Add(this.clbTypes);
-            this.groupBox5.Location = new System.Drawing.Point(800, 470);
+            this.groupBox5.Controls.Add(this.cbIgnoreHidden);
+            this.groupBox5.Controls.Add(this.dgvTypes);
+            this.groupBox5.Location = new System.Drawing.Point(800, 446);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(271, 274);
+            this.groupBox5.Size = new System.Drawing.Size(271, 298);
             this.groupBox5.TabIndex = 10;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Specific-Type Backup/Restore";
             // 
-            // cbInvertSpec
+            // cbIgnoreHidden
             // 
-            this.cbInvertSpec.AutoSize = true;
-            this.cbInvertSpec.Location = new System.Drawing.Point(65, 27);
-            this.cbInvertSpec.Name = "cbInvertSpec";
-            this.cbInvertSpec.Size = new System.Drawing.Size(56, 19);
-            this.cbInvertSpec.TabIndex = 13;
-            this.cbInvertSpec.Text = "Invert";
-            this.cbInvertSpec.UseVisualStyleBackColor = true;
-            this.cbInvertSpec.CheckedChanged += new System.EventHandler(this.cbInvertSpec_CheckedChanged);
+            this.cbIgnoreHidden.AutoSize = true;
+            this.cbIgnoreHidden.Location = new System.Drawing.Point(6, 22);
+            this.cbIgnoreHidden.Name = "cbIgnoreHidden";
+            this.cbIgnoreHidden.Size = new System.Drawing.Size(165, 19);
+            this.cbIgnoreHidden.TabIndex = 19;
+            this.cbIgnoreHidden.Text = "Don\'t Count Hidden Items";
+            this.cbIgnoreHidden.UseVisualStyleBackColor = true;
             // 
-            // cbAllSpec
+            // dgvTypes
             // 
-            this.cbAllSpec.AutoSize = true;
-            this.cbAllSpec.Location = new System.Drawing.Point(9, 27);
-            this.cbAllSpec.Name = "cbAllSpec";
-            this.cbAllSpec.Size = new System.Drawing.Size(40, 19);
-            this.cbAllSpec.TabIndex = 12;
-            this.cbAllSpec.Text = "All";
-            this.cbAllSpec.UseVisualStyleBackColor = true;
-            this.cbAllSpec.CheckedChanged += new System.EventHandler(this.cbAllSpec_CheckedChanged);
+            this.dgvTypes.AllowUserToAddRows = false;
+            this.dgvTypes.AllowUserToDeleteRows = false;
+            this.dgvTypes.AllowUserToResizeRows = false;
+            this.dgvTypes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTypes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Type,
+            this.OR,
+            this.AND,
+            this.NOT});
+            this.dgvTypes.Location = new System.Drawing.Point(6, 52);
+            this.dgvTypes.MultiSelect = false;
+            this.dgvTypes.Name = "dgvTypes";
+            this.dgvTypes.ReadOnly = true;
+            this.dgvTypes.RowHeadersVisible = false;
+            this.dgvTypes.RowTemplate.Height = 25;
+            this.dgvTypes.Size = new System.Drawing.Size(262, 237);
+            this.dgvTypes.TabIndex = 14;
+            this.dgvTypes.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTypes_CellClick);
+            this.dgvTypes.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTypes_ColumnHeaderMouseClick);
             // 
-            // clbTypes
+            // Type
             // 
-            this.clbTypes.CheckOnClick = true;
-            this.clbTypes.FormattingEnabled = true;
-            this.clbTypes.Location = new System.Drawing.Point(6, 51);
-            this.clbTypes.Name = "clbTypes";
-            this.clbTypes.Size = new System.Drawing.Size(262, 220);
-            this.clbTypes.TabIndex = 8;
+            this.Type.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Type.HeaderText = "Type";
+            this.Type.Name = "Type";
+            this.Type.ReadOnly = true;
+            // 
+            // OR
+            // 
+            this.OR.HeaderText = "OR";
+            this.OR.Name = "OR";
+            this.OR.ReadOnly = true;
+            this.OR.Width = 40;
+            // 
+            // AND
+            // 
+            this.AND.HeaderText = "AND";
+            this.AND.Name = "AND";
+            this.AND.ReadOnly = true;
+            this.AND.Width = 40;
+            // 
+            // NOT
+            // 
+            this.NOT.HeaderText = "NOT";
+            this.NOT.Name = "NOT";
+            this.NOT.ReadOnly = true;
+            this.NOT.Width = 40;
             // 
             // groupBox6
             // 
@@ -602,12 +634,12 @@ namespace VAMvarmanager
             // 
             this.groupBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox8.Controls.Add(this.btnDisableClothing);
-            this.groupBox8.Location = new System.Drawing.Point(800, 391);
+            this.groupBox8.Location = new System.Drawing.Point(800, 367);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(271, 73);
             this.groupBox8.TabIndex = 15;
             this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "Duplicate Item Resolver";
+            this.groupBox8.Text = "Duplicate Clothing/Hair Resolver";
             // 
             // gbPresets
             // 
@@ -841,6 +873,7 @@ namespace VAMvarmanager
             this.gbFolderEx.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTypes)).EndInit();
             this.groupBox6.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
             this.groupBox8.ResumeLayout(false);
@@ -874,7 +907,6 @@ namespace VAMvarmanager
         private System.Windows.Forms.CheckedListBox clbFolders;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.CheckedListBox clbTypes;
         private System.Windows.Forms.Label lblBackupcount;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label lblVamcount;
@@ -890,8 +922,6 @@ namespace VAMvarmanager
         private System.Windows.Forms.CheckBox cbAllCreators;
         private System.Windows.Forms.CheckBox cbInvertFolders;
         private System.Windows.Forms.CheckBox cbAllFolders;
-        private System.Windows.Forms.CheckBox cbInvertSpec;
-        private System.Windows.Forms.CheckBox cbAllSpec;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Button btnDisablepreloadmorphs;
         private System.Windows.Forms.Button btnRevertpreloadmorphs;
@@ -924,6 +954,12 @@ namespace VAMvarmanager
         private System.Windows.Forms.CheckBox cbDateFilter;
         private System.Windows.Forms.Button btnRestoreLastConfig;
         private System.Windows.Forms.ToolTip toolTipDateFilter;
+        private System.Windows.Forms.DataGridView dgvTypes;
+        private System.Windows.Forms.CheckBox cbIgnoreHidden;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Type;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn OR;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn AND;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn NOT;
     }
 }
 

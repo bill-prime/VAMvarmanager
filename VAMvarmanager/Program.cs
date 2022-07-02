@@ -176,7 +176,15 @@ namespace VAMvarmanager
             public int countBackupvars;
             public int countOldvars;
         }
-        
+
+        private partial class typeFilter
+        {
+            public string type;
+            public bool OR;
+            public bool AND;
+            public bool NOT;
+        }
+
         #endregion
 
         private string _strVAMdir;
@@ -285,31 +293,60 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefSpecVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default)
+        public varCounts BackupUnrefSpecVars(DataGridView dgvTypes, bool ignoreHidden, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default)
         {
-            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles, null, null, ignoreHidden);
             string[] lstFilePrefs = null;
             if (skipFavorites)
             {
                 lstFilePrefs = Directory.GetFiles(_strVAMdir + @"\AddonPackagesFilePrefs", "*.fav", SearchOption.AllDirectories);
             }
 
+            List<typeFilter> lstTypes = new List<typeFilter>();
+
+            foreach (DataGridViewRow row in dgvTypes.Rows)
+            {
+                var typeFilt = new typeFilter();
+                typeFilt.type = row.Cells["Type"].Value.ToString();
+                typeFilt.OR = (bool)row.Cells["OR"].Value;
+                typeFilt.AND = (bool)row.Cells["AND"].Value;
+                typeFilt.NOT = (bool)row.Cells["NOT"].Value;
+                lstTypes.Add(typeFilt);
+            }
+
             var backupvars = from v in vc.vars
                              where
+                             (
                                 (
-                                    (v.boolAssets && lstTypes.Contains("Assets")) ||
-                                    (v.boolClothing && lstTypes.Contains("Clothing")) ||
-                                    (v.boolClothingPreset && lstTypes.Contains("Clothing Presets")) ||
-                                    (v.boolHair && lstTypes.Contains("Hair")) ||
-                                    (v.boolHairPreset && lstTypes.Contains("Hair Presets")) ||
-                                    ((v.boolLooks || v.boolLookPresets) && lstTypes.Contains("Looks")) ||
-                                    (v.boolMorphs && lstTypes.Contains("Morphs")) ||
-                                    ((v.boolPoses || v.boolPosePresets) && lstTypes.Contains("Poses")) ||
-                                    (v.boolScenes && lstTypes.Contains("Scenes")) ||
-                                    (v.boolSubScenes && lstTypes.Contains("SubScenes")) ||
-                                    (v.boolScripts && lstTypes.Contains("Scripts")) ||
-                                    (v.boolTextures && lstTypes.Contains("Skin Textures"))
-                                ) &&
+                                    lstTypes.Any(x => (x.AND || x.NOT)) &&
+                                    ((!lstTypes.Any(x => x.type == "Assets" && (x.AND || x.NOT))) || (v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.AND)) || (!v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Clothing" && (x.AND || x.NOT))) || (v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.AND)) || (!v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Clothing Presets" && (x.AND || x.NOT))) || (v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.AND)) || (!v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Hair" && (x.AND || x.NOT))) || (v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.AND)) || (!v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Hair Presets" && (x.AND || x.NOT))) || (v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.AND)) || (!v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Looks" && (x.AND || x.NOT))) || ((v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.AND)) || (!(v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Morphs" && (x.AND || x.NOT))) || (v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.AND)) || (!v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Poses" && (x.AND || x.NOT))) || ((v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.AND)) || (!(v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Scenes" && (x.AND || x.NOT))) || (v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.AND)) || (!v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "SubScenes" && (x.AND || x.NOT))) || (v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.AND)) || (!v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Scripts" && (x.AND || x.NOT))) || (v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.AND)) || (!v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Skin Textures" && (x.AND || x.NOT))) || (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.AND)) || (!v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.NOT)))
+                                ) ||
+                                (
+                                    (v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.OR)) ||
+                                    (v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.OR)) ||
+                                    (v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.OR)) ||
+                                    (v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.OR)) ||
+                                    (v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.OR)) ||
+                                    ((v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.OR)) ||
+                                    (v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.OR)) ||
+                                    ((v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.OR)) ||
+                                    (v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.OR)) ||
+                                    (v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.OR)) ||
+                                    (v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.OR)) ||
+                                    (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.OR))
+                                )
+                            ) &&
                                 !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) &&
                                 !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer == v.version) &&
                                 (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4))))) &&
@@ -344,31 +381,60 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefSpecVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default)
+        public varCounts BackupUnrefSpecVarsEx(DataGridView dgvTypes, bool ignoreHidden, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default)
         {
-            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles, null, null, ignoreHidden);
             string[] lstFilePrefs = null;
             if (skipFavorites)
             {
                 lstFilePrefs = Directory.GetFiles(_strVAMdir + @"\AddonPackagesFilePrefs", "*.fav", SearchOption.AllDirectories);
             }
 
+            List<typeFilter> lstTypes = new List<typeFilter>();
+
+            foreach (DataGridViewRow row in dgvTypes.Rows)
+            {
+                var typeFilt = new typeFilter();
+                typeFilt.type = row.Cells["Type"].Value.ToString();
+                typeFilt.OR = (bool)row.Cells["OR"].Value;
+                typeFilt.AND = (bool)row.Cells["AND"].Value;
+                typeFilt.NOT = (bool)row.Cells["NOT"].Value;
+                lstTypes.Add(typeFilt);
+            }
+
             var backupvars = from v in vc.vars
                              where
+                             (
                                 (
-                                    (v.boolAssets && lstTypes.Contains("Assets")) ||
-                                    (v.boolClothing && lstTypes.Contains("Clothing")) ||
-                                    (v.boolClothingPreset && lstTypes.Contains("Clothing Presets")) ||
-                                    (v.boolHair && lstTypes.Contains("Hair")) ||
-                                    (v.boolHairPreset && lstTypes.Contains("Hair Presets")) ||
-                                    ((v.boolLooks || v.boolLookPresets) && lstTypes.Contains("Looks")) ||
-                                    (v.boolMorphs && lstTypes.Contains("Morphs")) ||
-                                    ((v.boolPoses || v.boolPosePresets) && lstTypes.Contains("Poses")) ||
-                                    (v.boolScenes && lstTypes.Contains("Scenes")) ||
-                                    (v.boolSubScenes && lstTypes.Contains("SubScenes")) ||
-                                    (v.boolScripts && lstTypes.Contains("Scripts")) ||
-                                    (v.boolTextures && lstTypes.Contains("Skin Textures"))
-                                ) &&
+                                    lstTypes.Any(x => (x.AND || x.NOT)) &&
+                                    ((!lstTypes.Any(x => x.type == "Assets" && (x.AND || x.NOT))) || (v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.AND)) || (!v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Clothing" && (x.AND || x.NOT))) || (v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.AND)) || (!v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Clothing Presets" && (x.AND || x.NOT))) || (v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.AND)) || (!v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Hair" && (x.AND || x.NOT))) || (v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.AND)) || (!v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Hair Presets" && (x.AND || x.NOT))) || (v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.AND)) || (!v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Looks" && (x.AND || x.NOT))) || ((v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.AND)) || (!(v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Morphs" && (x.AND || x.NOT))) || (v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.AND)) || (!v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Poses" && (x.AND || x.NOT))) || ((v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.AND)) || (!(v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Scenes" && (x.AND || x.NOT))) || (v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.AND)) || (!v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "SubScenes" && (x.AND || x.NOT))) || (v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.AND)) || (!v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Scripts" && (x.AND || x.NOT))) || (v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.AND)) || (!v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Skin Textures" && (x.AND || x.NOT))) || (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.AND)) || (!v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.NOT)))
+                                ) ||
+                                (
+                                    (v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.OR)) ||
+                                    (v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.OR)) ||
+                                    (v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.OR)) ||
+                                    (v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.OR)) ||
+                                    (v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.OR)) ||
+                                    ((v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.OR)) ||
+                                    (v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.OR)) ||
+                                    ((v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.OR)) ||
+                                    (v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.OR)) ||
+                                    (v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.OR)) ||
+                                    (v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.OR)) ||
+                                    (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.OR))
+                                )
+                            ) &&
                                 !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) &&
                                 !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer == v.version) &&
                                 ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).Name)))) &&
@@ -406,33 +472,62 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupSpecVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, bool skipFavorites = false, DateTime dtMaxDate = default)
+        public varCounts BackupSpecVars(DataGridView dgvTypes, bool ignoreHidden, bool skipFavorites = false, DateTime dtMaxDate = default)
         {
-            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages",null,null,null,ignoreHidden);
             string[] lstFilePrefs = null;
             if (skipFavorites)
             {
                 lstFilePrefs = Directory.GetFiles(_strVAMdir + @"\AddonPackagesFilePrefs", "*.fav", SearchOption.AllDirectories);
             }
 
+            List<typeFilter> lstTypes = new List<typeFilter>();
+
+            foreach (DataGridViewRow row in dgvTypes.Rows)
+            {
+                var typeFilt = new typeFilter();
+                typeFilt.type = row.Cells["Type"].Value.ToString();
+                typeFilt.OR = (bool)row.Cells["OR"].Value;
+                typeFilt.AND = (bool)row.Cells["AND"].Value;
+                typeFilt.NOT = (bool)row.Cells["NOT"].Value;
+                lstTypes.Add(typeFilt);
+            }
+
             var backupvars = from v in vc.vars
                              where
-                               (   
-                                (v.boolAssets && lstTypes.Contains("Assets")) ||
-                                (v.boolClothing && lstTypes.Contains("Clothing")) ||
-                                (v.boolClothingPreset && lstTypes.Contains("Clothing Presets")) ||
-                                (v.boolHair && lstTypes.Contains("Hair")) ||
-                                (v.boolHairPreset && lstTypes.Contains("Hair Presets")) ||
-                                ((v.boolLooks || v.boolLookPresets) && lstTypes.Contains("Looks")) ||
-                                (v.boolMorphs && lstTypes.Contains("Morphs")) ||
-                                ((v.boolPoses || v.boolPosePresets) && lstTypes.Contains("Poses")) ||
-                                (v.boolScenes && lstTypes.Contains("Scenes")) ||
-                                (v.boolSubScenes && lstTypes.Contains("SubScenes")) ||
-                                (v.boolScripts && lstTypes.Contains("Scripts")) ||
-                                (v.boolTextures && lstTypes.Contains("Skin Textures"))
-                               ) &&
-                               (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4))))) &&
-                               ((dtMaxDate == default) || (v.unpacked == false && v.fi.LastWriteTime < dtMaxDate) || (v.unpacked == true && v.di.LastWriteTime < dtMaxDate))
+                             (
+                                (
+                                    lstTypes.Any(x => (x.AND || x.NOT)) &&
+                                    ((!lstTypes.Any(x => x.type == "Assets" && (x.AND || x.NOT))) || (v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.AND)) || (!v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Clothing" && (x.AND || x.NOT))) || (v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.AND)) || (!v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Clothing Presets" && (x.AND || x.NOT))) || (v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.AND)) || (!v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Hair" && (x.AND || x.NOT))) || (v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.AND)) || (!v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Hair Presets" && (x.AND || x.NOT))) || (v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.AND)) || (!v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Looks" && (x.AND || x.NOT))) || ((v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.AND)) || (!(v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Morphs" && (x.AND || x.NOT))) || (v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.AND)) || (!v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Poses" && (x.AND || x.NOT))) || ((v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.AND)) || (!(v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Scenes" && (x.AND || x.NOT))) || (v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.AND)) || (!v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "SubScenes" && (x.AND || x.NOT))) || (v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.AND)) || (!v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Scripts" && (x.AND || x.NOT))) || (v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.AND)) || (!v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Skin Textures" && (x.AND || x.NOT))) || (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.AND)) || (!v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.NOT)))
+                                ) ||
+                                (
+                                    (v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.OR)) ||
+                                    (v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.OR)) ||
+                                    (v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.OR)) ||
+                                    (v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.OR)) ||
+                                    (v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.OR)) ||
+                                    ((v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.OR)) ||
+                                    (v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.OR)) ||
+                                    ((v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.OR)) ||
+                                    (v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.OR)) ||
+                                    (v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.OR)) ||
+                                    (v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.OR)) ||
+                                    (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.OR))
+                                )
+                            ) &&
+                            (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4))))) &&
+                            ((dtMaxDate == default) || (v.unpacked == false && v.fi.LastWriteTime < dtMaxDate) || (v.unpacked == true && v.di.LastWriteTime < dtMaxDate))
                              select v;
 
             foreach (var f in backupvars)
@@ -462,31 +557,60 @@ namespace VAMvarmanager
 
             return GetVarCounts();
         }
-        public varCounts BackupSpecVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, bool skipFavorites = false, DateTime dtMaxDate = default)
+        public varCounts BackupSpecVarsEx(DataGridView dgvTypes,bool ignoreHidden, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, bool skipFavorites = false, DateTime dtMaxDate = default)
         {
-            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
+            varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", null, null, null, ignoreHidden);
             string[] lstFilePrefs = null;
             if (skipFavorites)
             {
                 lstFilePrefs = Directory.GetFiles(_strVAMdir + @"\AddonPackagesFilePrefs", "*.fav", SearchOption.AllDirectories);
             }
 
+            List<typeFilter> lstTypes = new List<typeFilter>();
+
+            foreach (DataGridViewRow row in dgvTypes.Rows)
+            {
+                var typeFilt = new typeFilter();
+                typeFilt.type = row.Cells["Type"].Value.ToString();
+                typeFilt.OR = (bool)row.Cells["OR"].Value;
+                typeFilt.AND = (bool)row.Cells["AND"].Value;
+                typeFilt.NOT = (bool)row.Cells["NOT"].Value;
+                lstTypes.Add(typeFilt);
+            }
+
             var backupvars = from v in vc.vars
                              where
-                                (   
-                                    (v.boolAssets && lstTypes.Contains("Assets")) ||
-                                    (v.boolClothing && lstTypes.Contains("Clothing")) ||
-                                    (v.boolClothingPreset && lstTypes.Contains("Clothing Presets")) ||
-                                    (v.boolHair && lstTypes.Contains("Hair")) ||
-                                    (v.boolHairPreset && lstTypes.Contains("Hair Presets")) ||
-                                    ((v.boolLooks || v.boolLookPresets) && lstTypes.Contains("Looks")) ||
-                                    (v.boolMorphs && lstTypes.Contains("Morphs")) ||
-                                    ((v.boolPoses || v.boolPosePresets) && lstTypes.Contains("Poses")) ||
-                                    (v.boolScenes && lstTypes.Contains("Scenes")) ||
-                                    (v.boolSubScenes && lstTypes.Contains("SubScenes")) ||
-                                    (v.boolScripts && lstTypes.Contains("Scripts")) ||
-                                    (v.boolTextures && lstTypes.Contains("Skin Textures"))
-                                ) &&
+                             (
+                                (
+                                    lstTypes.Any(x => (x.AND || x.NOT)) &&
+                                    ((!lstTypes.Any(x => x.type == "Assets" && (x.AND || x.NOT))) || (v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.AND)) || (!v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Clothing" && (x.AND || x.NOT))) || (v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.AND)) || (!v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Clothing Presets" && (x.AND || x.NOT))) || (v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.AND)) || (!v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Hair" && (x.AND || x.NOT))) || (v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.AND)) || (!v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Hair Presets" && (x.AND || x.NOT))) || (v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.AND)) || (!v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Looks" && (x.AND || x.NOT))) || ((v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.AND)) || (!(v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Morphs" && (x.AND || x.NOT))) || (v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.AND)) || (!v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Poses" && (x.AND || x.NOT))) || ((v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.AND)) || (!(v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Scenes" && (x.AND || x.NOT))) || (v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.AND)) || (!v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "SubScenes" && (x.AND || x.NOT))) || (v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.AND)) || (!v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Scripts" && (x.AND || x.NOT))) || (v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.AND)) || (!v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Skin Textures" && (x.AND || x.NOT))) || (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.AND)) || (!v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.NOT)))
+                                ) ||
+                                (
+                                    (v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.OR)) ||
+                                    (v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.OR)) ||
+                                    (v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.OR)) ||
+                                    (v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.OR)) ||
+                                    (v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.OR)) ||
+                                    ((v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.OR)) ||
+                                    (v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.OR)) ||
+                                    ((v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.OR)) ||
+                                    (v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.OR)) ||
+                                    (v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.OR)) ||
+                                    (v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.OR)) ||
+                                    (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.OR))
+                                )
+                            ) &&
                                 ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).Name)))) &&
                                 ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages")) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMdir + @"\AddonPackages"))) &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator)) &&
@@ -929,24 +1053,55 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts RestoreSpecificVars(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes)
+        public varCounts RestoreSpecificVars(DataGridView dgvTypes, bool ignoreHidden)
         {
-            varconfig vc = GetVarconfig(_strVAMbackupdir);
+            varconfig vc = GetVarconfig(_strVAMbackupdir, null, null, null, ignoreHidden);
+
+            List<typeFilter> lstTypes = new List<typeFilter>();
+
+            foreach (DataGridViewRow row in dgvTypes.Rows)
+            {
+                var typeFilt = new typeFilter();
+                typeFilt.type = row.Cells["Type"].Value.ToString();
+                typeFilt.OR = (bool)row.Cells["OR"].Value;
+                typeFilt.AND = (bool)row.Cells["AND"].Value;
+                typeFilt.NOT = (bool)row.Cells["NOT"].Value;
+                lstTypes.Add(typeFilt);
+            }
 
             var backupvars = from v in vc.vars
                              where
-                                (v.boolAssets && lstTypes.Contains("Assets")) ||
-                                (v.boolClothing && lstTypes.Contains("Clothing")) ||
-                                (v.boolClothingPreset && lstTypes.Contains("Clothing Presets")) ||
-                                (v.boolHair && lstTypes.Contains("Hair")) ||
-                                (v.boolHairPreset && lstTypes.Contains("Hair Presets")) ||
-                                ((v.boolLooks || v.boolLookPresets) && lstTypes.Contains("Looks")) ||
-                                (v.boolMorphs && lstTypes.Contains("Morphs")) ||
-                                ((v.boolPoses || v.boolPosePresets) && lstTypes.Contains("Poses")) ||
-                                (v.boolScenes && lstTypes.Contains("Scenes")) ||
-                                (v.boolSubScenes && lstTypes.Contains("SubScenes")) ||
-                                (v.boolScripts && lstTypes.Contains("Scripts")) ||
-                                (v.boolTextures && lstTypes.Contains("Skin Textures"))
+                             (
+                                (
+                                    lstTypes.Any(x => (x.AND || x.NOT)) &&
+                                    ((!lstTypes.Any(x => x.type == "Assets" && (x.AND || x.NOT))) || (v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.AND)) || (!v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Clothing" && (x.AND || x.NOT))) || (v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.AND)) || (!v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Clothing Presets" && (x.AND || x.NOT))) || (v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.AND)) || (!v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Hair" && (x.AND || x.NOT))) || (v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.AND)) || (!v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Hair Presets" && (x.AND || x.NOT))) || (v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.AND)) || (!v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Looks" && (x.AND || x.NOT))) || ((v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.AND)) || (!(v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Morphs" && (x.AND || x.NOT))) || (v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.AND)) || (!v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Poses" && (x.AND || x.NOT))) || ((v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.AND)) || (!(v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Scenes" && (x.AND || x.NOT))) || (v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.AND)) || (!v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "SubScenes" && (x.AND || x.NOT))) || (v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.AND)) || (!v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Scripts" && (x.AND || x.NOT))) || (v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.AND)) || (!v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Skin Textures" && (x.AND || x.NOT))) || (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.AND)) || (!v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.NOT)))
+                                ) ||
+                                (
+                                    (v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.OR)) ||
+                                    (v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.OR)) ||
+                                    (v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.OR)) ||
+                                    (v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.OR)) ||
+                                    (v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.OR)) ||
+                                    ((v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.OR)) ||
+                                    (v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.OR)) ||
+                                    ((v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.OR)) ||
+                                    (v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.OR)) ||
+                                    (v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.OR)) ||
+                                    (v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.OR)) ||
+                                    (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.OR))
+                                )
+                            )
                              select v;
 
             foreach (var f in backupvars)
@@ -972,25 +1127,54 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts RestoreSpecificVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstTypes, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
+        public varCounts RestoreSpecificVarsEx(DataGridView dgvTypes, bool ignoreHidden, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
         {
-            varconfig vc = GetVarconfig(_strVAMbackupdir);
+            varconfig vc = GetVarconfig(_strVAMbackupdir, null, null, null, ignoreHidden);
+
+            List<typeFilter> lstTypes = new List<typeFilter>();
+
+            foreach (DataGridViewRow row in dgvTypes.Rows)
+            {
+                var typeFilt = new typeFilter();
+                typeFilt.type = row.Cells["Type"].Value.ToString();
+                typeFilt.OR = (bool)row.Cells["OR"].Value;
+                typeFilt.AND = (bool)row.Cells["AND"].Value;
+                typeFilt.NOT = (bool)row.Cells["NOT"].Value;
+                lstTypes.Add(typeFilt);
+            }
 
             var backupvars = from v in vc.vars
                              where
                              (
-                                (v.boolAssets && lstTypes.Contains("Assets")) ||
-                                (v.boolClothing && lstTypes.Contains("Clothing")) ||
-                                (v.boolClothingPreset && lstTypes.Contains("Clothing Presets")) ||
-                                (v.boolHair && lstTypes.Contains("Hair")) ||
-                                (v.boolHairPreset && lstTypes.Contains("Hair Presets")) ||
-                                ((v.boolLooks || v.boolLookPresets) && lstTypes.Contains("Looks")) ||
-                                (v.boolMorphs && lstTypes.Contains("Morphs")) ||
-                                ((v.boolPoses || v.boolPosePresets) && lstTypes.Contains("Poses")) ||
-                                (v.boolScenes && lstTypes.Contains("Scenes")) ||
-                                (v.boolSubScenes && lstTypes.Contains("SubScenes")) ||
-                                (v.boolScripts && lstTypes.Contains("Scripts")) ||
-                                (v.boolTextures && lstTypes.Contains("Skin Textures"))
+                                (
+                                    lstTypes.Any(x => (x.AND || x.NOT)) &&
+                                    ((!lstTypes.Any(x => x.type == "Assets" && (x.AND || x.NOT))) || (v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.AND)) || (!v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Clothing" && (x.AND || x.NOT))) || (v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.AND)) || (!v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Clothing Presets" && (x.AND || x.NOT))) || (v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.AND)) || (!v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Hair" && (x.AND || x.NOT))) || (v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.AND)) || (!v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Hair Presets" && (x.AND || x.NOT))) || (v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.AND)) || (!v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Looks" && (x.AND || x.NOT))) || ((v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.AND)) || (!(v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Morphs" && (x.AND || x.NOT))) || (v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.AND)) || (!v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Poses" && (x.AND || x.NOT))) || ((v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.AND)) || (!(v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Scenes" && (x.AND || x.NOT))) || (v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.AND)) || (!v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "SubScenes" && (x.AND || x.NOT))) || (v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.AND)) || (!v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Scripts" && (x.AND || x.NOT))) || (v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.AND)) || (!v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.NOT))) &&
+                                    ((!lstTypes.Any(x => x.type == "Skin Textures" && (x.AND || x.NOT))) || (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.AND)) || (!v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.NOT)))
+                                ) ||
+                                (
+                                    (v.boolAssets && lstTypes.Any(x => x.type == "Assets" && x.OR)) ||
+                                    (v.boolClothing && lstTypes.Any(x => x.type == "Clothing" && x.OR)) ||
+                                    (v.boolClothingPreset && lstTypes.Any(x => x.type == "Clothing Presets" && x.OR)) ||
+                                    (v.boolHair && lstTypes.Any(x => x.type == "Hair" && x.OR)) ||
+                                    (v.boolHairPreset && lstTypes.Any(x => x.type == "Hair Presets" && x.OR)) ||
+                                    ((v.boolLooks || v.boolLookPresets) && lstTypes.Any(x => x.type == "Looks" && x.OR)) ||
+                                    (v.boolMorphs && lstTypes.Any(x => x.type == "Morphs" && x.OR)) ||
+                                    ((v.boolPoses || v.boolPosePresets) && lstTypes.Any(x => x.type == "Poses" && x.OR)) ||
+                                    (v.boolScenes && lstTypes.Any(x => x.type == "Scenes" && x.OR)) ||
+                                    (v.boolSubScenes && lstTypes.Any(x => x.type == "SubScenes" && x.OR)) ||
+                                    (v.boolScripts && lstTypes.Any(x => x.type == "Scripts" && x.OR)) ||
+                                    (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.OR))
+                                )
                             ) &&
                             ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).Name)))) &&
                             ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages")) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMdir + @"\AddonPackages"))) &&
@@ -1322,7 +1506,15 @@ namespace VAMvarmanager
             {
                 try
                 {
-                    strFileuserpref = _strVAMdir + @"\AddonPackagesUserPrefs\" + Strings.Left(vf.fi.Name, vf.fi.Name.IndexOf(".", vf.fi.Name.IndexOf(".") + 1)) + ".prefs";
+                    if (vf.unpacked == false)
+                    {
+                        strFileuserpref = _strVAMdir + @"\AddonPackagesUserPrefs\" + Strings.Left(vf.fi.Name, vf.fi.Name.IndexOf(".", vf.fi.Name.IndexOf(".") + 1)) + ".prefs";
+                    }
+                    else
+                    {
+                        strFileuserpref = _strVAMdir + @"\AddonPackagesUserPrefs\" + Strings.Left(vf.di.Name, vf.di.Name.IndexOf(".", vf.di.Name.IndexOf(".") + 1)) + ".prefs";
+                    }
+                    
                     strUserPrefContents = "";
 
                     if (File.Exists(strFileuserpref))
@@ -1394,7 +1586,7 @@ namespace VAMvarmanager
             return 1;
         }
 
-        private varconfig GetVarconfig(string strDir, List<string> lstLocalFiles = null, List<FileInfo> lstFilesToScan = null, List<DirectoryInfo> lstDirsToScan = null)
+        private varconfig GetVarconfig(string strDir, List<string> lstLocalFiles = null, List<FileInfo> lstFilesToScan = null, List<DirectoryInfo> lstDirsToScan = null, bool ignoreHidden = false)
         {
             var diFolder = new DirectoryInfo(strDir);
             varfile vf;
@@ -1407,6 +1599,14 @@ namespace VAMvarmanager
             var lstErrorsFilename = new List<string>();
             var lstErrorsJson = new List<string>();
             var lstErrorsZipFile = new List<string>();
+
+            FileInfo[] lstHideFiles = null;
+
+            if (ignoreHidden)
+            {
+                var diFolderFilePrefs = new DirectoryInfo(_strVAMdir + @"\AddonPackagesFilePrefs");
+                lstHideFiles = diFolderFilePrefs.GetFiles("*.hide", SearchOption.AllDirectories);
+            }
 
             foreach (FileInfo fi in diFolder.GetFiles("*.var", SearchOption.AllDirectories))
             {
@@ -1451,59 +1651,136 @@ namespace VAMvarmanager
                                 }
                             }
 
-                            if (e.FullName.IndexOf("custom/assets/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf("custom/assets/", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith("assetbundle", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolAssets = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + fi.Name.Replace(".var", "") + "\\", "").Replace(@"\", "/") == e.FullName + ".hide"))
+                                    {
+                                        vf.boolAssets = true;
+                                    }
+                                }
+                                else { vf.boolAssets = true; }
                             }
 
-                            if (e.FullName.IndexOf("saves/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf("saves/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith("json", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolLooks = true;
+                                if (ignoreHidden)
+                                {
+                                    if(!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + fi.Name.Replace(".var", "") + "\\", "").Replace(@"\", "/") == e.FullName + ".hide"))
+                                    {
+                                        vf.boolLooks = true;
+                                    }
+                                }
+                                else { vf.boolLooks = true; }
                             }
 
-                            if (e.FullName.IndexOf("custom/atom/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf("custom/atom/person/appearance/", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".vap", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolLookPresets = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + fi.Name.Replace(".var", "") + "\\", "").Replace(@"\", "/") == e.FullName + ".hide"))
+                                    {
+                                        vf.boolLookPresets = true;
+                                    }
+                                }
+                                else { vf.boolLookPresets = true; }
                             }
 
-                            if (e.FullName.IndexOf("saves/scene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf("saves/scene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolScenes = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + fi.Name.Replace(".var", "") + "\\", "").Replace(@"\", "/") == e.FullName + ".hide"))
+                                    {
+                                        vf.boolScenes = true;
+                                    }
+                                }
+                                else { vf.boolScenes = true; }
                             }
 
-                            if (e.FullName.IndexOf("custom/subscene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf("custom/subscene/", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolSubScenes = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + fi.Name.Replace(".var", "") + "\\", "").Replace(@"\", "/") == e.FullName + ".hide"))
+                                    {
+                                        vf.boolSubScenes = true;
+                                    }
+                                }
+                                else { vf.boolSubScenes = true; }
                             }
 
-                            if (e.FullName.IndexOf("saves/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf("saves/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolPoses = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + fi.Name.Replace(".var", "") + "\\", "").Replace(@"\", "/") == e.FullName + ".hide"))
+                                    {
+                                        vf.boolPoses = true;
+                                    }
+                                }
+                                else { vf.boolPoses = true; }
                             }
 
-                            if (e.FullName.IndexOf("custom/atom/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf("custom/atom/person/pose/", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".vap", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolPosePresets = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + fi.Name.Replace(".var", "") + "\\", "").Replace(@"\", "/") == e.FullName + ".hide"))
+                                    {
+                                        vf.boolPosePresets = true;
+                                    }
+                                }
+                                else { vf.boolPosePresets = true; }
                             }
 
-                            if (e.FullName.IndexOf("custom/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf("custom/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".vam", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolHair = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + fi.Name.Replace(".var", "") + "\\", "").Replace(@"\", "/") == e.FullName + ".hide"))
+                                    {
+                                        vf.boolHair = true;
+                                    }
+                                }
+                                else { vf.boolHair = true; }
                             }
 
-                            if (e.FullName.IndexOf("custom/atom/person/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf("custom/atom/person/hair/", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".vap", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolHairPreset = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + fi.Name.Replace(".var", "") + "\\", "").Replace(@"\", "/") == e.FullName + ".hide"))
+                                    {
+                                        vf.boolHairPreset = true;
+                                    }
+                                }
+                                else { vf.boolHairPreset = true; }
                             }
 
-                            if (e.FullName.IndexOf("custom/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf("custom/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".vam", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolClothing = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + fi.Name.Replace(".var", "") + "\\", "").Replace(@"\", "/") == e.FullName + ".hide"))
+                                    {
+                                        vf.boolClothing = true;
+                                    }
+                                }
+                                else { vf.boolClothing = true; }
                             }
 
-                            if (e.FullName.IndexOf("custom/atom/person/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf("custom/atom/person/clothing/", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".vap", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolClothingPreset = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + fi.Name.Replace(".var", "") + "\\", "").Replace(@"\", "/") == e.FullName + ".hide"))
+                                    {
+                                        vf.boolClothingPreset = true;
+                                    }
+                                }
+                                else { vf.boolClothingPreset = true; }
                             }
 
                             if (e.FullName.IndexOf("custom/scripts/", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
@@ -1624,59 +1901,136 @@ namespace VAMvarmanager
                                 }
                             }
 
-                            if (e.FullName.IndexOf(@"custom\assets\", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf(@"custom\assets\", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".assetbundle", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolAssets = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + di.Name.Replace(".var", "") + "\\", "") == Strings.Right(e.FullName, e.FullName.Length - e.FullName.IndexOf(di.Name)).Replace(di.Name + "\\", "") + ".hide"))
+                                    {
+                                        vf.boolAssets = true;
+                                    }
+                                }
+                                else { vf.boolAssets = true; }
                             }
 
-                            if (e.FullName.IndexOf(@"saves\person\appearance\", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf(@"saves\person\appearance\", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolLooks = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + di.Name.Replace(".var", "") + "\\", "") == Strings.Right(e.FullName, e.FullName.Length - e.FullName.IndexOf(di.Name)).Replace(di.Name + "\\", "") + ".hide"))
+                                    {
+                                        vf.boolLooks = true;
+                                    }
+                                }
+                                else { vf.boolLooks = true; }
                             }
 
-                            if (e.FullName.IndexOf(@"custom\atom\person\appearance\", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf(@"custom\atom\person\appearance\", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".vap", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolLookPresets = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + di.Name.Replace(".var", "") + "\\", "") == Strings.Right(e.FullName, e.FullName.Length - e.FullName.IndexOf(di.Name)).Replace(di.Name + "\\", "") + ".hide"))
+                                    {
+                                        vf.boolLookPresets = true;
+                                    }
+                                }
+                                else { vf.boolLookPresets = true; }
                             }
 
-                            if (e.FullName.IndexOf(@"saves\scene\", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf(@"saves\scene\", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolScenes = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + di.Name.Replace(".var", "") + "\\", "") == Strings.Right(e.FullName, e.FullName.Length - e.FullName.IndexOf(di.Name)).Replace(di.Name + "\\", "") + ".hide"))
+                                    {
+                                        vf.boolScenes = true;
+                                    }
+                                }
+                                else { vf.boolScenes = true; }
                             }
 
-                            if (e.FullName.IndexOf(@"custom\subscene\", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf(@"custom\subscene\", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolSubScenes = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + di.Name.Replace(".var", "") + "\\", "") == Strings.Right(e.FullName, e.FullName.Length - e.FullName.IndexOf(di.Name)).Replace(di.Name + "\\", "") + ".hide"))
+                                    {
+                                        vf.boolSubScenes = true;
+                                    }
+                                }
+                                else { vf.boolSubScenes = true; }
                             }
 
-                            if (e.FullName.IndexOf(@"saves\person\pose\", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf(@"saves\person\pose\", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolPoses = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + di.Name.Replace(".var", "") + "\\", "") == Strings.Right(e.FullName, e.FullName.Length - e.FullName.IndexOf(di.Name)).Replace(di.Name + "\\", "") + ".hide"))
+                                    {
+                                        vf.boolPoses = true;
+                                    }
+                                }
+                                else { vf.boolPoses = true; }
                             }
 
-                            if (e.FullName.IndexOf(@"custom\atom\person\pose\", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf(@"custom\atom\person\pose\", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".vap", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolPosePresets = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + di.Name.Replace(".var", "") + "\\", "") == Strings.Right(e.FullName, e.FullName.Length - e.FullName.IndexOf(di.Name)).Replace(di.Name + "\\", "") + ".hide"))
+                                    {
+                                        vf.boolPosePresets = true;
+                                    }
+                                }
+                                else { vf.boolPosePresets = true; }
                             }
 
-                            if (e.FullName.IndexOf(@"custom\hair\", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf(@"custom\hair\", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".vam", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolHair = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + di.Name.Replace(".var", "") + "\\", "") == Strings.Right(e.FullName, e.FullName.Length - e.FullName.IndexOf(di.Name)).Replace(di.Name + "\\", "") + ".hide"))
+                                    {
+                                        vf.boolHair = true;
+                                    }
+                                }
+                                else { vf.boolHair = true; }
                             }
 
-                            if (e.FullName.IndexOf(@"custom\atom\person\hair\", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf(@"custom\atom\person\hair\", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".vap", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolHairPreset = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + di.Name.Replace(".var", "") + "\\", "") == Strings.Right(e.FullName, e.FullName.Length - e.FullName.IndexOf(di.Name)).Replace(di.Name + "\\", "") + ".hide"))
+                                    {
+                                        vf.boolHairPreset = true;
+                                    }
+                                }
+                                else { vf.boolHairPreset = true; }
                             }
 
-                            if (e.FullName.IndexOf(@"custom\clothing\", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf(@"custom\clothing\", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".vam", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolClothing = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + di.Name.Replace(".var", "") + "\\", "") == Strings.Right(e.FullName, e.FullName.Length - e.FullName.IndexOf(di.Name)).Replace(di.Name + "\\", "") + ".hide"))
+                                    {
+                                        vf.boolClothing = true;
+                                    }
+                                }
+                                else { vf.boolClothing = true; }
                             }
 
-                            if (e.FullName.IndexOf(@"custom\atom\person\clothing\", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
+                            if (e.FullName.IndexOf(@"custom\atom\person\clothing\", 0, StringComparison.CurrentCultureIgnoreCase) > -1 && e.FullName.EndsWith(".vap", StringComparison.OrdinalIgnoreCase))
                             {
-                                vf.boolClothingPreset = true;
+                                if (ignoreHidden)
+                                {
+                                    if (!lstHideFiles.Any(x => x.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + di.Name.Replace(".var", "") + "\\", "") == Strings.Right(e.FullName, e.FullName.Length - e.FullName.IndexOf(di.Name)).Replace(di.Name + "\\", "") + ".hide"))
+                                    {
+                                        vf.boolClothingPreset = true;
+                                    }
+                                }
+                                else { vf.boolClothingPreset = true; }
                             }
 
                             if (e.FullName.IndexOf(@"custom\scripts\", 0, StringComparison.CurrentCultureIgnoreCase) > -1)
@@ -2196,6 +2550,7 @@ namespace VAMvarmanager
                                     {
                                         objReader = new StreamReader(e.FullName);
                                         vf = JsonSerializer.Deserialize<vamFile>(objReader.ReadToEnd());
+                                        //lstVarItems.Add(new varItem(v, e.Name, e.FullName.Replace(_strVAMdir + @"\AddonPackagesFilePrefs\" + di.Name.Replace(".var", "") + "\\", "").Replace(@"\", "/"), vf));
                                         lstVarItems.Add(new varItem(v, e.Name, e.FullName.Replace(v.di.FullName + @"\", "").Replace(@"\","/"), vf));
                                         objReader.Close();
                                     }
