@@ -100,6 +100,7 @@ namespace VAMvarmanager
             this.dtpFilter = new System.Windows.Forms.DateTimePicker();
             this.cbDateFilter = new System.Windows.Forms.CheckBox();
             this.toolTipDateFilter = new System.Windows.Forms.ToolTip(this.components);
+            this.cbUIAssist = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbCreatorEx.SuspendLayout();
@@ -296,7 +297,7 @@ namespace VAMvarmanager
             this.groupBox2.Controls.Add(this.btnBackupUnrefSpec);
             this.groupBox2.Controls.Add(this.btnBackupSpec);
             this.groupBox2.Controls.Add(this.btnBackupUnref);
-            this.groupBox2.Location = new System.Drawing.Point(12, 381);
+            this.groupBox2.Location = new System.Drawing.Point(12, 387);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(219, 180);
             this.groupBox2.TabIndex = 6;
@@ -649,7 +650,7 @@ namespace VAMvarmanager
             this.gbPresets.Controls.Add(this.cbHair);
             this.gbPresets.Controls.Add(this.cbClothing);
             this.gbPresets.Controls.Add(this.cbAppearance);
-            this.gbPresets.Location = new System.Drawing.Point(12, 183);
+            this.gbPresets.Location = new System.Drawing.Point(12, 205);
             this.gbPresets.Name = "gbPresets";
             this.gbPresets.Size = new System.Drawing.Size(219, 105);
             this.gbPresets.TabIndex = 16;
@@ -719,7 +720,7 @@ namespace VAMvarmanager
             // cbSavesScene
             // 
             this.cbSavesScene.AutoSize = true;
-            this.cbSavesScene.Location = new System.Drawing.Point(18, 158);
+            this.cbSavesScene.Location = new System.Drawing.Point(15, 158);
             this.cbSavesScene.Name = "cbSavesScene";
             this.cbSavesScene.Size = new System.Drawing.Size(197, 19);
             this.cbSavesScene.TabIndex = 0;
@@ -794,9 +795,9 @@ namespace VAMvarmanager
             // gbMisc
             // 
             this.gbMisc.Controls.Add(this.btnMoveOldVarVersions);
-            this.gbMisc.Location = new System.Drawing.Point(12, 294);
+            this.gbMisc.Location = new System.Drawing.Point(12, 310);
             this.gbMisc.Name = "gbMisc";
-            this.gbMisc.Size = new System.Drawing.Size(219, 81);
+            this.gbMisc.Size = new System.Drawing.Size(219, 76);
             this.gbMisc.TabIndex = 20;
             this.gbMisc.TabStop = false;
             this.gbMisc.Text = "Misc";
@@ -839,11 +840,22 @@ namespace VAMvarmanager
             this.cbDateFilter.CheckedChanged += new System.EventHandler(this.cbDateFilter_CheckedChanged);
             this.cbDateFilter.MouseHover += new System.EventHandler(this.cbDateFilter_MouseHover);
             // 
+            // cbUIAssist
+            // 
+            this.cbUIAssist.AutoSize = true;
+            this.cbUIAssist.Location = new System.Drawing.Point(15, 182);
+            this.cbUIAssist.Name = "cbUIAssist";
+            this.cbUIAssist.Size = new System.Drawing.Size(215, 19);
+            this.cbUIAssist.TabIndex = 24;
+            this.cbUIAssist.Text = "Scan UIAssist Profiles for References";
+            this.cbUIAssist.UseVisualStyleBackColor = true;
+            // 
             // frmVARManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1080, 747);
+            this.Controls.Add(this.cbUIAssist);
             this.Controls.Add(this.cbDateFilter);
             this.Controls.Add(this.dtpFilter);
             this.Controls.Add(this.cbSkipFavorites);
@@ -960,6 +972,7 @@ namespace VAMvarmanager
         private System.Windows.Forms.DataGridViewCheckBoxColumn OR;
         private System.Windows.Forms.DataGridViewCheckBoxColumn AND;
         private System.Windows.Forms.DataGridViewCheckBoxColumn NOT;
+        private System.Windows.Forms.CheckBox cbUIAssist;
     }
 }
 

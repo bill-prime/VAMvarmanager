@@ -44,6 +44,7 @@ namespace VAMvarmanager
             cbInvertFolders.Enabled = false;
 
             cbSavesScene.Enabled = false;
+            cbUIAssist.Enabled = false;
             gbPresets.Enabled = false;
 
             btnMorphPresets.Enabled = false;
@@ -317,6 +318,7 @@ namespace VAMvarmanager
                 this.dtpFilter.Enabled = true;
 
                 this.cbSavesScene.Enabled = true;
+                this.cbUIAssist.Enabled = true;
                 this.gbPresets.Enabled = true;
             }
             else
@@ -361,6 +363,7 @@ namespace VAMvarmanager
                 this.dtpFilter.Enabled = false;
 
                 this.cbSavesScene.Enabled = false;
+                this.cbUIAssist.Enabled = false;
                 this.gbPresets.Enabled = false;
 
                 btnRestoreLastConfig.Enabled = false;
@@ -875,6 +878,7 @@ namespace VAMvarmanager
             List<string> lstReturn = new List<string> ();
 
             if (cbSavesScene.Checked) { lstReturn.Add(@"\Saves\scene"); }
+            if (cbUIAssist.Checked) { lstReturn.Add(@"\Saves\PluginData\JayJayWon\UIAssist"); }
             if (cbAppearance.Checked) { lstReturn.Add(@"\Custom\Atom\Person\Appearance"); }
             if (cbClothing.Checked) { lstReturn.Add(@"\Custom\Atom\Person\Clothing"); }
             if (cbHair.Checked) { lstReturn.Add(@"\Custom\Atom\Person\Hair"); }

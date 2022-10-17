@@ -2112,7 +2112,7 @@ namespace VAMvarmanager
             {
                 foreach (var s in lstLocalFiles)
                 {
-                    lstDepvars = ScanJsonForDependencies(_strVAMdir + s, (s.Contains("Saves") ? "json" : "vap"), lstDepvars);
+                    lstDepvars = ScanJsonForDependencies(_strVAMdir + s, (s.Contains("Saves\\scene") ? "json" : (s.Contains("\\Saves\\PluginData\\JayJayWon\\UIAssist") ? "uiap" :  "vap")), lstDepvars);
                 }
             }
 
@@ -2141,7 +2141,7 @@ namespace VAMvarmanager
             {
                 foreach (string line in System.IO.File.ReadLines(fi))
                 {
-                    if (line.Contains(":/Custom") && !line.Contains("SELF:/"))
+                    if ((line.Contains(":/Custom") && !line.Contains("SELF:/")) || (strExtension == "uiap" && line.Contains(":/Saves",StringComparison.OrdinalIgnoreCase)))
                     {    
                         try
                         {
