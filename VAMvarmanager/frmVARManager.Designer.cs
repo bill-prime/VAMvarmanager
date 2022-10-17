@@ -101,6 +101,8 @@ namespace VAMvarmanager
             this.cbDateFilter = new System.Windows.Forms.CheckBox();
             this.toolTipDateFilter = new System.Windows.Forms.ToolTip(this.components);
             this.cbUIAssist = new System.Windows.Forms.CheckBox();
+            this.btnSaveFilters = new System.Windows.Forms.Button();
+            this.btnLoadFilters = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbCreatorEx.SuspendLayout();
@@ -850,11 +852,35 @@ namespace VAMvarmanager
             this.cbUIAssist.Text = "Scan UIAssist Profiles for References";
             this.cbUIAssist.UseVisualStyleBackColor = true;
             // 
+            // btnSaveFilters
+            // 
+            this.btnSaveFilters.ForeColor = System.Drawing.Color.DarkBlue;
+            this.btnSaveFilters.Location = new System.Drawing.Point(636, 153);
+            this.btnSaveFilters.Name = "btnSaveFilters";
+            this.btnSaveFilters.Size = new System.Drawing.Size(101, 27);
+            this.btnSaveFilters.TabIndex = 16;
+            this.btnSaveFilters.Text = "Save Filters";
+            this.btnSaveFilters.UseVisualStyleBackColor = true;
+            this.btnSaveFilters.Click += new System.EventHandler(this.btnSaveFilters_Click);
+            // 
+            // btnLoadFilters
+            // 
+            this.btnLoadFilters.ForeColor = System.Drawing.Color.DarkGreen;
+            this.btnLoadFilters.Location = new System.Drawing.Point(743, 153);
+            this.btnLoadFilters.Name = "btnLoadFilters";
+            this.btnLoadFilters.Size = new System.Drawing.Size(101, 27);
+            this.btnLoadFilters.TabIndex = 25;
+            this.btnLoadFilters.Text = "Load Filters";
+            this.btnLoadFilters.UseVisualStyleBackColor = true;
+            this.btnLoadFilters.Click += new System.EventHandler(this.btnLoadFilters_Click);
+            // 
             // frmVARManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1080, 747);
+            this.Controls.Add(this.btnLoadFilters);
+            this.Controls.Add(this.btnSaveFilters);
             this.Controls.Add(this.cbUIAssist);
             this.Controls.Add(this.cbDateFilter);
             this.Controls.Add(this.dtpFilter);
@@ -973,6 +999,8 @@ namespace VAMvarmanager
         private System.Windows.Forms.DataGridViewCheckBoxColumn AND;
         private System.Windows.Forms.DataGridViewCheckBoxColumn NOT;
         private System.Windows.Forms.CheckBox cbUIAssist;
+        private System.Windows.Forms.Button btnSaveFilters;
+        private System.Windows.Forms.Button btnLoadFilters;
     }
 }
 
