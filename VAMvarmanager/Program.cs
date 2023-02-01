@@ -2044,6 +2044,7 @@ namespace VAMvarmanager
                                 var objReader = new StreamReader(e.FullName);
                                 try
                                 {
+                                    var jsonOptions = new JsonSerializerOptions { AllowTrailingCommas = true };
                                     varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
 
                                     if (vf.creator == "")
