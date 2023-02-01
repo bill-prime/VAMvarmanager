@@ -518,12 +518,15 @@ namespace VAMvarmanager
         {
             this.fbVam = new FolderBrowserDialog();
             fbVam.RootFolder = Environment.SpecialFolder.Desktop;
-            fbVam.ShowDialog();
-            Properties.Settings.Default["vamfolder"] = fbVam.SelectedPath;
-            Properties.Settings.Default.Save();
 
-            _enabled = checkValiddirs();
+            if(fbVam.ShowDialog() == DialogResult.OK)
+            {
+                Properties.Settings.Default["vamfolder"] = fbVam.SelectedPath;
+                Properties.Settings.Default.Save();
 
+                _enabled = checkValiddirs();
+            }
+            
             setfunctionstatus();
         }
 
@@ -531,13 +534,16 @@ namespace VAMvarmanager
         {
             this.fbBackup = new FolderBrowserDialog();
             fbBackup.RootFolder = Environment.SpecialFolder.Desktop;
-            fbBackup.ShowDialog();
-            Properties.Settings.Default["backupfolder"] = fbBackup.SelectedPath;
-            Properties.Settings.Default.Save();
-            txtBackupfolder.Text = Properties.Settings.Default["backupfolder"].ToString();
 
-            _enabled = checkValiddirs();
+            if (fbBackup.ShowDialog() == DialogResult.OK)
+            {
+                Properties.Settings.Default["backupfolder"] = fbBackup.SelectedPath;
+                Properties.Settings.Default.Save();
+                txtBackupfolder.Text = Properties.Settings.Default["backupfolder"].ToString();
 
+                _enabled = checkValiddirs();
+            }
+            
             setfunctionstatus();
         }
 
@@ -1131,7 +1137,6 @@ namespace VAMvarmanager
         private void btnSaveFilters_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
-
             string strFilterConfigFileName;
             SaveFileDialog sfdFilters = new SaveFileDialog();
 
@@ -1140,50 +1145,65 @@ namespace VAMvarmanager
             sfdFilters.DefaultExt = "xml";
             sfdFilters.Filter = "XML Files (*.xml)|*.xml";
             sfdFilters.AddExtension = true;
-            sfdFilters.ShowDialog();
 
-            strFilterConfigFileName = sfdFilters.FileName;
-
-            if (strFilterConfigFileName != null)
+            try 
             {
-                if (!strFilterConfigFileName.EndsWith(".xml"))
+                if (sfdFilters.ShowDialog() == DialogResult.OK)
                 {
-                    strFilterConfigFileName = strFilterConfigFileName + ".xml";
+                    strFilterConfigFileName = sfdFilters.FileName;
 
+                    if (strFilterConfigFileName != null)
+                    {
+                        if (!strFilterConfigFileName.EndsWith(".xml"))
+                        {
+                            strFilterConfigFileName = strFilterConfigFileName + ".xml";
+
+                        }
+                    }
+
+                    XmlSerializer ser = new XmlSerializer(typeof(vmFilterConfig));
+                    TextWriter writer = new StreamWriter(strFilterConfigFileName);
+                    List<string> lstCreatorEx = new List<string>();
+                    List<string> lstFolderEx = new List<string>();
+                    List<string> lstRestoreCreatorEx = new List<string>();
+                    List<string> lstRestoreFolderEx = new List<string>();
+                    foreach (string s in _creatorex)
+                    {
+                        lstCreatorEx.Add(s);
+                    }
+                    foreach (string s in _folderex)
+                    {
+                        lstFolderEx.Add(s);
+                    }
+                    foreach (string s in _creatorRestoreex)
+                    {
+                        lstRestoreCreatorEx.Add(s);
+                    }
+                    foreach (string s in _folderRestoreex)
+                    {
+                        lstRestoreFolderEx.Add(s);
+                    }
+
+                    vmFilterConfig fc = new vmFilterConfig();
+                    fc.creatorex = lstCreatorEx;
+                    fc.folderex = lstFolderEx;
+                    fc.creatorRestoreex = lstRestoreCreatorEx;
+                    fc.folderRestoreex = lstRestoreFolderEx;
+
+                    ser.Serialize(writer, fc);
+                    writer.Close();
                 }
             }
+            catch (Exception ex)
+            {
+                string strExDetails = "Message ---\n" + ex.Message;
+                strExDetails += "\nStackTrace ---\n" + ex.StackTrace;
+                strExDetails += "\nTargetSite ---\n" + ex.TargetSite;
+                strExDetails += "\nInnerException ---\n" + ex.InnerException;
 
-            XmlSerializer ser = new XmlSerializer(typeof(vmFilterConfig));
-            TextWriter writer = new StreamWriter(strFilterConfigFileName);
-            List<string> lstCreatorEx = new List<string>();
-            List<string> lstFolderEx = new List<string>();
-            List<string> lstRestoreCreatorEx = new List<string>();
-            List<string> lstRestoreFolderEx = new List<string>();
-            foreach (string s in _creatorex)
-            {
-                lstCreatorEx.Add(s);
+                MessageBox.Show(strExDetails, "Saving Filters Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            foreach (string s in _folderex)
-            {
-                lstFolderEx.Add(s);
-            }
-            foreach (string s in _creatorRestoreex)
-            {
-                lstRestoreCreatorEx.Add(s);
-            }
-            foreach (string s in _folderRestoreex)
-            {
-                lstRestoreFolderEx.Add(s);
-            }
-
-            vmFilterConfig fc = new vmFilterConfig();
-            fc.creatorex= lstCreatorEx;
-            fc.folderex = lstFolderEx;
-            fc.creatorRestoreex = lstRestoreCreatorEx;
-            fc.folderRestoreex = lstRestoreFolderEx;
-
-            ser.Serialize(writer, fc);
-            writer.Close();
 
             Cursor = Cursors.Default;
         }
@@ -1198,44 +1218,53 @@ namespace VAMvarmanager
             fdFilters.InitialDirectory = _strVamdir;
             fdFilters.DefaultExt = "xml";
             fdFilters.Filter = "XML Files (*.xml)|*.xml";
-            fdFilters.ShowDialog();
 
-            strFilterConfigFileName = fdFilters.FileName;
 
-            try
+            if (fdFilters.ShowDialog() == DialogResult.OK)
             {
-                XmlSerializer ser = new XmlSerializer(typeof(vmFilterConfig));
-                TextReader reader = new StreamReader(strFilterConfigFileName);
+                strFilterConfigFileName = fdFilters.FileName;
 
-                vmFilterConfig fc = (vmFilterConfig)ser.Deserialize(reader);
-                reader.Close();
+                try
+                {
+                    XmlSerializer ser = new XmlSerializer(typeof(vmFilterConfig));
+                    TextReader reader = new StreamReader(strFilterConfigFileName);
 
-                _creatorex.Clear();
-                foreach (string s in fc.creatorex)
-                {
-                    _creatorex.Add(s);
-                }
-                _folderex.Clear();
-                foreach (string s in fc.folderex)
-                {
-                    _folderex.Add(s);
-                }
-                _creatorRestoreex.Clear();
-                foreach (string s in fc.creatorRestoreex)
-                {
-                    _creatorRestoreex.Add(s);
-                }
-                _folderRestoreex.Clear();
-                foreach (string s in fc.folderRestoreex)
-                {
-                    _folderRestoreex.Add(s);
-                }
+                    vmFilterConfig fc = (vmFilterConfig)ser.Deserialize(reader);
+                    reader.Close();
 
-                setfunctionstatus();
-            }
-            catch
-            {
-                MessageBox.Show("Error Loading Saved Filters", "Error Loading Saved Filters.", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    _creatorex.Clear();
+                    foreach (string s in fc.creatorex)
+                    {
+                        _creatorex.Add(s);
+                    }
+                    _folderex.Clear();
+                    foreach (string s in fc.folderex)
+                    {
+                        _folderex.Add(s);
+                    }
+                    _creatorRestoreex.Clear();
+                    foreach (string s in fc.creatorRestoreex)
+                    {
+                        _creatorRestoreex.Add(s);
+                    }
+                    _folderRestoreex.Clear();
+                    foreach (string s in fc.folderRestoreex)
+                    {
+                        _folderRestoreex.Add(s);
+                    }
+
+                    setfunctionstatus();
+                }
+                catch(Exception ex)
+                {
+                    string strExDetails = "Message ---\n" + ex.Message;
+                    strExDetails += "\nStackTrace ---\n" + ex.StackTrace;
+                    strExDetails += "\nTargetSite ---\n" + ex.TargetSite;
+                    strExDetails += "\nInnerException ---\n" + ex.InnerException;
+
+                    MessageBox.Show(strExDetails, "Saving Filters Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
 
             Cursor = Cursors.Default;

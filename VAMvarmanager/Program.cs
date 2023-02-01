@@ -1793,7 +1793,8 @@ namespace VAMvarmanager
                                 var objReader = new StreamReader(e.Open());
                                 try
                                 {
-                                    varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd());
+                                    var jsonOptions = new JsonSerializerOptions { AllowTrailingCommas = true };
+                                    varMeta? metaJS = JsonSerializer.Deserialize<varMeta>(objReader.ReadToEnd(), jsonOptions);
 
                                     if (vf.creator == "")
                                     { vf.creator = metaJS.creatorName.Replace(" ", "_"); }
