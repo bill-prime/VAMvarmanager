@@ -257,7 +257,7 @@ namespace VAMvarmanager
                              where
                                 !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) &&
                                 !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer == v.version) &&
-                                ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).Name)))) &&
+                                ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.FullName.Replace(_strVAMdir + @"\AddonPackages\", "")))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).FullName.Replace(_strVAMdir + @"\AddonPackages\", ""))))) &&
                                 ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages")) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMdir + @"\AddonPackages"))) &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator)) &&
                                 (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4))))) && 
@@ -437,7 +437,7 @@ namespace VAMvarmanager
                             ) &&
                                 !vc.deps.Contains(v.Name + "." + v.version.ToString(), StringComparer.OrdinalIgnoreCase) &&
                                 !(vc.deps.Contains(v.Name + ".latest", StringComparer.OrdinalIgnoreCase) && vc.latestvars.TryGetValue(v.Name, out int intLatestVer) && intLatestVer == v.version) &&
-                                ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).Name)))) &&
+                                ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.FullName.Replace(_strVAMdir + @"\AddonPackages\", "")))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).FullName.Replace(_strVAMdir + @"\AddonPackages\", ""))))) &&
                                 ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages")) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMdir + @"\AddonPackages"))) &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator)) &&
                                 (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4))))) &&
@@ -611,7 +611,7 @@ namespace VAMvarmanager
                                     (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.OR))
                                 )
                             ) &&
-                                ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).Name)))) &&
+                                ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.FullName.Replace(_strVAMdir + @"\AddonPackages\", "")))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).FullName.Replace(_strVAMdir + @"\AddonPackages\", ""))))) &&
                                 ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages")) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMdir + @"\AddonPackages"))) &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator)) &&
                                 (!skipFavorites || (v.unpacked == false && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.fi.Name, v.fi.Name.Length - 4)))) || (v.unpacked == true && !lstFilePrefs.Any(x => x.Contains(Strings.Left(v.di.Name, v.di.Name.Length - 4))))) &&
@@ -620,6 +620,7 @@ namespace VAMvarmanager
 
             foreach (var f in backupvars)
             {
+
                 if (f.unpacked == false)
                 {
                     if (!Directory.Exists(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
@@ -784,8 +785,8 @@ namespace VAMvarmanager
 
             var backupvars = from v in vcbackup.vars
                              where
-                                ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).Name)))) &&
-                                ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages")) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMdir + @"\AddonPackages"))) &&
+                                ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.FullName.Replace(_strVAMbackupdir + @"\", "")))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).FullName.Replace(_strVAMbackupdir + @"\", ""))))) &&
+                                ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMbackupdir)) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMbackupdir))) &&
                                 !lstCreatorEx.Contains(Convert.ToString(v.creator))
                              select v;
 
@@ -1176,8 +1177,8 @@ namespace VAMvarmanager
                                     (v.boolTextures && lstTypes.Any(x => x.type == "Skin Textures" && x.OR))
                                 )
                             ) &&
-                            ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).Name)))) &&
-                            ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages")) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMdir + @"\AddonPackages"))) &&
+                            ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.FullName.Replace(_strVAMbackupdir + @"\", "")))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).FullName.Replace(_strVAMbackupdir + @"\", ""))))) &&
+                            ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMbackupdir)) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMbackupdir))) &&
                             !lstCreatorEx.Contains(Convert.ToString(v.creator))
                              select v;
 
@@ -1237,8 +1238,8 @@ namespace VAMvarmanager
 
             var backupvars = from v in vc.vars
                              where
-                             ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.Name))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).Name)))) &&
-                             ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMdir + @"\AddonPackages")) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMdir + @"\AddonPackages"))) &&
+                             ((v.unpacked == false && !lstFolderEx.Contains(Convert.ToString(v.fi.Directory.FullName.Replace(_strVAMbackupdir + @"\", "")))) || (v.unpacked == true && !lstFolderEx.Contains(Convert.ToString(Directory.GetParent(v.di.FullName).FullName.Replace(_strVAMbackupdir + @"\", ""))))) &&
+                             ((v.unpacked == false && !(lstFolderEx.Contains(@"\root\") && Path.GetDirectoryName(v.fi.FullName) == _strVAMbackupdir)) || (v.unpacked == true && !(lstFolderEx.Contains(@"\root\") && Directory.GetParent(v.di.FullName).FullName == _strVAMbackupdir))) &&
                              !lstCreatorEx.Contains(Convert.ToString(v.creator))
                              select v;
 
