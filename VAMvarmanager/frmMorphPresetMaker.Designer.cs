@@ -44,6 +44,7 @@
             this.txtNameFilter = new System.Windows.Forms.TextBox();
             this.btnReturnToVM = new System.Windows.Forms.Button();
             this.sfdMorphPreset = new System.Windows.Forms.SaveFileDialog();
+            this.cbOverlayPreset = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.gbMorphvars.SuspendLayout();
             this.gbFilters.SuspendLayout();
@@ -67,6 +68,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cbOverlayPreset);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.btnSaveMorphPreset);
             this.groupBox1.Controls.Add(this.comboSex);
@@ -76,7 +78,7 @@
             this.groupBox1.Controls.Add(this.txtPresetName);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(305, 193);
+            this.groupBox1.Size = new System.Drawing.Size(305, 219);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Morph Preset";
@@ -95,7 +97,7 @@
             // 
             this.btnSaveMorphPreset.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnSaveMorphPreset.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnSaveMorphPreset.Location = new System.Drawing.Point(6, 136);
+            this.btnSaveMorphPreset.Location = new System.Drawing.Point(6, 158);
             this.btnSaveMorphPreset.Name = "btnSaveMorphPreset";
             this.btnSaveMorphPreset.Size = new System.Drawing.Size(293, 51);
             this.btnSaveMorphPreset.TabIndex = 7;
@@ -203,6 +205,17 @@
             this.btnReturnToVM.UseVisualStyleBackColor = true;
             this.btnReturnToVM.Click += new System.EventHandler(this.btnReturnToVM_Click);
             // 
+            // cbOverlayPreset
+            // 
+            this.cbOverlayPreset.AutoSize = true;
+            this.cbOverlayPreset.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.cbOverlayPreset.Location = new System.Drawing.Point(6, 129);
+            this.cbOverlayPreset.Name = "cbOverlayPreset";
+            this.cbOverlayPreset.Size = new System.Drawing.Size(116, 21);
+            this.cbOverlayPreset.TabIndex = 5;
+            this.cbOverlayPreset.Text = "Overlay Preset";
+            this.cbOverlayPreset.UseVisualStyleBackColor = true;
+            // 
             // frmMorphPresetMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -246,5 +259,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox cbSortNumMorphs;
         private System.Windows.Forms.SaveFileDialog sfdMorphPreset;
+        private System.Windows.Forms.CheckBox cbOverlayPreset;
     }
 }

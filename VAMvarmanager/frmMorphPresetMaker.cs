@@ -165,7 +165,11 @@ namespace VAMvarmanager
             var strDisplayName = default(string);
             string strMorphPresetText;
             string strMorphSexLookup = comboSex.Text == "female" ? "custom/atom/person/morphs/female" : "custom/atom/person/morphs/male";
-            strMorphPresetText = "{ " + Environment.NewLine + "   \"setUnlistedParamsToDefault\" : \"true\", " + Environment.NewLine + "   \"storables\" : [ " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\", " + Environment.NewLine + "         \"morphs\" : [ ";
+
+            if(cbOverlayPreset.Checked)
+                strMorphPresetText = "{ " + Environment.NewLine + "   \"setUnlistedParamsToDefault\" : \"false\", " + Environment.NewLine + "   \"storables\" : [ " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\", " + Environment.NewLine + "         \"morphs\" : [ ";
+            else
+                strMorphPresetText = "{ " + Environment.NewLine + "   \"setUnlistedParamsToDefault\" : \"true\", " + Environment.NewLine + "   \"storables\" : [ " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\", " + Environment.NewLine + "         \"morphs\" : [ ";
 
             var selectedVars = from vf in _lstMorphVars
                                where _lstSelectedVars.Contains((vf.unpacked == false ? vf.fi.Name : vf.di.Name))
@@ -269,7 +273,10 @@ namespace VAMvarmanager
                 }
             }
 
-            strMorphPresetText += Environment.NewLine + "         ]" + Environment.NewLine + "      }, " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\"" + Environment.NewLine + "      }, " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\", " + Environment.NewLine + "         \"useMaleMorphsOnFemale\" : \"false\"" + Environment.NewLine + "      }, " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\", " + Environment.NewLine + "         \"useFemaleMorphsOnMale\" : \"false\"" + Environment.NewLine + "      }" + Environment.NewLine + "   ]" + Environment.NewLine + "}";
+            if (cbOverlayPreset.Checked)
+                strMorphPresetText += Environment.NewLine + "         ]" + Environment.NewLine + "      }, " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\"" + Environment.NewLine + "      }, " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\"" + Environment.NewLine + "      }, " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\"" + Environment.NewLine + "      }" + Environment.NewLine + "   ]" + Environment.NewLine + "}";
+            else
+                strMorphPresetText += Environment.NewLine + "         ]" + Environment.NewLine + "      }, " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\"" + Environment.NewLine + "      }, " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\", " + Environment.NewLine + "         \"useMaleMorphsOnFemale\" : \"false\"" + Environment.NewLine + "      }, " + Environment.NewLine + "      { " + Environment.NewLine + "         \"id\" : \"geometry\", " + Environment.NewLine + "         \"useFemaleMorphsOnMale\" : \"false\"" + Environment.NewLine + "      }" + Environment.NewLine + "   ]" + Environment.NewLine + "}";
 
             // Write to preset file
             File.WriteAllText(strFileName, strMorphPresetText);
