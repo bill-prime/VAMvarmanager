@@ -199,7 +199,7 @@ namespace VAMvarmanager
 
         #region "var Management"
 
-        public varCounts BackupUnrefVars(List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default)
+        public varCounts BackupUnrefVars(List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default, bool overwriteFiles = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
             string[] lstFilePrefs = null;
@@ -225,9 +225,9 @@ namespace VAMvarmanager
                         Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                     }
 
-                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
+                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))) || overwriteFiles)
                     { 
-                        File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))); 
+                        File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)), overwriteFiles); 
                     }
                 }
                 else
@@ -244,7 +244,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default)
+        public varCounts BackupUnrefVarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default, bool overwriteFiles = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
             string[] lstFilePrefs = null;
@@ -274,9 +274,9 @@ namespace VAMvarmanager
                         Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                     }
 
-                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
+                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))) || overwriteFiles)
                     {
-                        File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                        File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)), overwriteFiles);
                     }
                 }
                 else
@@ -293,7 +293,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefSpecVars(DataGridView dgvTypes, bool ignoreHidden, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default)
+        public varCounts BackupUnrefSpecVars(DataGridView dgvTypes, bool ignoreHidden, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default, bool overwriteFiles = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles, null, null, ignoreHidden);
             string[] lstFilePrefs = null;
@@ -362,9 +362,9 @@ namespace VAMvarmanager
                         Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                     }
 
-                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
+                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))) || overwriteFiles)
                     {
-                        File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                        File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)), overwriteFiles);
                     }
                 }
                 else
@@ -381,7 +381,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupUnrefSpecVarsEx(DataGridView dgvTypes, bool ignoreHidden, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default)
+        public varCounts BackupUnrefSpecVarsEx(DataGridView dgvTypes, bool ignoreHidden, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, List<string> lstLocalFiles, bool skipFavorites = false, DateTime dtMaxDate = default, bool overwriteFiles = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles, null, null, ignoreHidden);
             string[] lstFilePrefs = null;
@@ -453,9 +453,9 @@ namespace VAMvarmanager
                         Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                     }
 
-                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
+                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))) || overwriteFiles)
                     {
-                        File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                        File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)), overwriteFiles);
                     }
                 }
                 else
@@ -472,7 +472,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts BackupSpecVars(DataGridView dgvTypes, bool ignoreHidden, bool skipFavorites = false, DateTime dtMaxDate = default)
+        public varCounts BackupSpecVars(DataGridView dgvTypes, bool ignoreHidden, bool skipFavorites = false, DateTime dtMaxDate = default, bool overwriteFiles = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages",null,null,null,ignoreHidden);
             string[] lstFilePrefs = null;
@@ -539,9 +539,9 @@ namespace VAMvarmanager
                         Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                     }
 
-                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
+                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))) || overwriteFiles)
                     {
-                        File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                        File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)), overwriteFiles);
                     }
                 }
                 else
@@ -557,7 +557,7 @@ namespace VAMvarmanager
 
             return GetVarCounts();
         }
-        public varCounts BackupSpecVarsEx(DataGridView dgvTypes,bool ignoreHidden, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, bool skipFavorites = false, DateTime dtMaxDate = default)
+        public varCounts BackupSpecVarsEx(DataGridView dgvTypes,bool ignoreHidden, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, bool skipFavorites = false, DateTime dtMaxDate = default, bool overwriteFiles = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", null, null, null, ignoreHidden);
             string[] lstFilePrefs = null;
@@ -628,9 +628,9 @@ namespace VAMvarmanager
                         Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                     }
 
-                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
+                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))) || overwriteFiles)
                     {
-                        File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                        File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)), overwriteFiles);
                     }
                 }
                 else
@@ -647,7 +647,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts RestoreNeededVars(List<string> lstLocalFiles)
+        public varCounts RestoreNeededVars(List<string> lstLocalFiles, bool overwriteFiles = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
             varconfig vcbackup = GetVarconfig(_strVAMbackupdir);
@@ -750,9 +750,9 @@ namespace VAMvarmanager
                         Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
                     }
 
-                    if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))) 
+                    if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))) || overwriteFiles) 
                     { 
-                        File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))); 
+                        File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")), overwriteFiles); 
                     }
                 }
 
@@ -772,7 +772,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts RestoreNeededVarsEx(List<string> lstLocalFiles, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
+        public varCounts RestoreNeededVarsEx(List<string> lstLocalFiles, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, bool overwriteFiles = false)
         {
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages", lstLocalFiles);
             varconfig vcbackup = GetVarconfig(_strVAMbackupdir);
@@ -882,9 +882,9 @@ namespace VAMvarmanager
                         Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
                     }
 
-                    if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                    if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))) || overwriteFiles)
                     {
-                        File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                        File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")), overwriteFiles);
                     }
                 }
 
@@ -1054,7 +1054,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts RestoreSpecificVars(DataGridView dgvTypes, bool ignoreHidden)
+        public varCounts RestoreSpecificVars(DataGridView dgvTypes, bool ignoreHidden, bool overwriteFiles = false)
         {
             varconfig vc = GetVarconfig(_strVAMbackupdir, null, null, null, ignoreHidden);
 
@@ -1114,7 +1114,7 @@ namespace VAMvarmanager
                         Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
                     }
 
-                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))); }
+                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))) || overwriteFiles) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")), overwriteFiles); }
                 }
                 else
                 {
@@ -1128,7 +1128,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts RestoreSpecificVarsEx(DataGridView dgvTypes, bool ignoreHidden, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
+        public varCounts RestoreSpecificVarsEx(DataGridView dgvTypes, bool ignoreHidden, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, bool overwriteFiles = false)
         {
             varconfig vc = GetVarconfig(_strVAMbackupdir, null, null, null, ignoreHidden);
 
@@ -1192,7 +1192,7 @@ namespace VAMvarmanager
                         Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
                     }
 
-                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))); }
+                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))) || overwriteFiles) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")), overwriteFiles); }
                 }
                 else
                 {
@@ -1207,7 +1207,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts RestoreAllvars()
+        public varCounts RestoreAllvars(bool overwriteFiles = false)
         {
             DirectoryInfo diBackup = new DirectoryInfo(_strVAMbackupdir);
 
@@ -1218,7 +1218,7 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
                 }
 
-                if (!File.Exists(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))){ File.Move(f.FullName, f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"), false); }
+                if (!File.Exists(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")) || overwriteFiles){ File.Move(f.FullName, f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"), overwriteFiles); }
             }
 
             foreach (DirectoryInfo d in diBackup.GetDirectories("*.var", SearchOption.AllDirectories))
@@ -1232,7 +1232,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts RestoreAllvarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx)
+        public varCounts RestoreAllvarsEx(System.Windows.Forms.CheckedListBox.CheckedItemCollection lstFolderEx, System.Windows.Forms.CheckedListBox.CheckedItemCollection lstCreatorEx, bool overwriteFiles = false)
         {
             varconfig vc = GetVarconfig(_strVAMbackupdir);
 
@@ -1252,7 +1252,7 @@ namespace VAMvarmanager
                         Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
                     }
 
-                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")))) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))); }
+                    if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))) || overwriteFiles) { File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")), overwriteFiles); }
                 }
                 else
                 {
@@ -1266,7 +1266,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts MoveOldVarVersions()
+        public varCounts MoveOldVarVersions(bool overwriteFiles = false)
         {
             string strOldVarDirectory = _strVAMdir + @"\_oldvars";
             varconfig vc = GetVarconfig(_strVAMdir + @"\AddonPackages");
@@ -1289,9 +1289,9 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory)));
                 }
 
-                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory)))) 
+                if (!File.Exists(Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory))) || overwriteFiles) 
                 { 
-                    File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory)));
+                    File.Move(Convert.ToString(f.fi.FullName), Convert.ToString(f.fi.FullName.Replace(_strVAMdir + @"\AddonPackages", strOldVarDirectory)), overwriteFiles);
                     countMoved += 1;
                 }
             }
@@ -1345,7 +1345,7 @@ namespace VAMvarmanager
             sw.Dispose();
         }
 
-        public varCounts RestoreVarConfig(string strFileName)
+        public varCounts RestoreVarConfig(string strFileName, bool overwriteFiles = false)
         {
             var activevarconfig = File.ReadLines(strFileName);
 
@@ -1367,9 +1367,9 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                 }
 
-                if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
+                if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))) || overwriteFiles)
                 {
-                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)), overwriteFiles);
                 }
             }
 
@@ -1380,9 +1380,9 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
                 }
 
-                if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))) || overwriteFiles)
                 {
-                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")), overwriteFiles);
                 }
             }
 
@@ -1413,7 +1413,7 @@ namespace VAMvarmanager
             return GetVarCounts();
         }
 
-        public varCounts restoreLastVarConfig(System.Collections.Specialized.StringCollection lstLastActiveVars)
+        public varCounts restoreLastVarConfig(System.Collections.Specialized.StringCollection lstLastActiveVars, bool overwriteFiles = false)
         {
 
             DirectoryInfo diVam = new DirectoryInfo(_strVAMdir + @"\AddonPackages");
@@ -1434,9 +1434,9 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
                 }
 
-                if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))))
+                if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir))) || overwriteFiles)
                 {
-                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)));
+                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMdir + @"\AddonPackages", _strVAMbackupdir)), overwriteFiles);
                 }
             }
 
@@ -1447,9 +1447,9 @@ namespace VAMvarmanager
                     Directory.CreateDirectory(Path.GetDirectoryName(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
                 }
 
-                if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))))
+                if (!File.Exists(Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages"))) || overwriteFiles)
                 {
-                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")));
+                    File.Move(Convert.ToString(f.FullName), Convert.ToString(f.FullName.Replace(_strVAMbackupdir, _strVAMdir + @"\AddonPackages")), overwriteFiles);
                 }
             }
 
@@ -2142,6 +2142,10 @@ namespace VAMvarmanager
 
             foreach (var fi in Directory.GetFiles(strDirectory, "*." + strExtension, SearchOption.AllDirectories))
             {
+                if(strDirectory.EndsWith("Custom\\PluginPresets") && !fi.ToString().EndsWith("PluginPresets\\Plugins_UserDefaults.vap"))
+                {
+                    continue;
+                }
                 foreach (string line in System.IO.File.ReadLines(fi))
                 {
                     if ((line.Contains(":/Custom") && !line.Contains("SELF:/")) || (strExtension == "uiap" && line.Contains(":/Saves",StringComparison.OrdinalIgnoreCase)))

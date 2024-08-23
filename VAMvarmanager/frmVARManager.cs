@@ -54,6 +54,7 @@ namespace VAMvarmanager
             cbAllFolders.Enabled = false;
             cbInvertFolders.Enabled = false;
 
+            cbOverwrite.Enabled = false;
             cbSavesScene.Enabled = false;
             cbUIAssist.Enabled = false;
             gbPresets.Enabled = false;
@@ -332,6 +333,7 @@ namespace VAMvarmanager
                 this.cbDateFilter.Enabled = true;
                 this.dtpFilter.Enabled = true;
 
+                this.cbOverwrite.Enabled = true;
                 this.cbSavesScene.Enabled = true;
                 this.cbUIAssist.Enabled = true;
                 this.gbPresets.Enabled = true;
@@ -379,6 +381,7 @@ namespace VAMvarmanager
                 this.cbDateFilter.Enabled = false;
                 this.dtpFilter.Enabled = false;
 
+                this.cbOverwrite.Enabled = false;
                 this.cbSavesScene.Enabled = false;
                 this.cbUIAssist.Enabled = false;
                 this.gbPresets.Enabled = false;
@@ -555,13 +558,13 @@ namespace VAMvarmanager
 
             if (cbBackupEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupUnrefVarsEx(clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
+                varmanager.varCounts vc = vm.BackupUnrefVarsEx(clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default, cbOverwrite.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupUnrefVars(getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
+                varmanager.varCounts vc = vm.BackupUnrefVars(getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default, cbOverwrite.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -579,13 +582,13 @@ namespace VAMvarmanager
 
             if (cbBackupEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupUnrefSpecVarsEx(dgvTypes, cbIgnoreHidden.Checked, clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
+                varmanager.varCounts vc = vm.BackupUnrefSpecVarsEx(dgvTypes, cbIgnoreHidden.Checked, clbFolders.CheckedItems, clbCreators.CheckedItems, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default, cbOverwrite.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupUnrefSpecVars(dgvTypes, cbIgnoreHidden.Checked, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
+                varmanager.varCounts vc = vm.BackupUnrefSpecVars(dgvTypes, cbIgnoreHidden.Checked, getLocalFileFilters(), cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default, cbOverwrite.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -603,13 +606,13 @@ namespace VAMvarmanager
 
             if (cbBackupEx.Checked)
             {
-                varmanager.varCounts vc = vm.BackupSpecVarsEx(dgvTypes, cbIgnoreHidden.Checked, clbFolders.CheckedItems, clbCreators.CheckedItems, cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
+                varmanager.varCounts vc = vm.BackupSpecVarsEx(dgvTypes, cbIgnoreHidden.Checked, clbFolders.CheckedItems, clbCreators.CheckedItems, cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default, cbOverwrite.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.BackupSpecVars(dgvTypes, cbIgnoreHidden.Checked, cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default);
+                varmanager.varCounts vc = vm.BackupSpecVars(dgvTypes, cbIgnoreHidden.Checked, cbSkipFavorites.Checked, cbDateFilter.Checked ? dtpFilter.Value : default, cbOverwrite.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -627,13 +630,13 @@ namespace VAMvarmanager
 
             if (cbRestoreEx.Checked)
             {
-                varmanager.varCounts vc = vm.RestoreNeededVarsEx(getLocalFileFilters(), clbFoldersRestore.CheckedItems, clbCreatorsRestore.CheckedItems);
+                varmanager.varCounts vc = vm.RestoreNeededVarsEx(getLocalFileFilters(), clbFoldersRestore.CheckedItems, clbCreatorsRestore.CheckedItems, cbOverwrite.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.RestoreNeededVars(getLocalFileFilters());
+                varmanager.varCounts vc = vm.RestoreNeededVars(getLocalFileFilters(), cbOverwrite.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -651,13 +654,13 @@ namespace VAMvarmanager
 
             if (cbRestoreEx.Checked)
             {
-                varmanager.varCounts vc = vm.RestoreSpecificVarsEx(dgvTypes, cbIgnoreHidden.Checked, clbFoldersRestore.CheckedItems, clbCreatorsRestore.CheckedItems);
+                varmanager.varCounts vc = vm.RestoreSpecificVarsEx(dgvTypes, cbIgnoreHidden.Checked, clbFoldersRestore.CheckedItems, clbCreatorsRestore.CheckedItems, cbOverwrite.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.RestoreSpecificVars(dgvTypes, cbIgnoreHidden.Checked);
+                varmanager.varCounts vc = vm.RestoreSpecificVars(dgvTypes, cbIgnoreHidden.Checked, cbOverwrite.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -675,13 +678,13 @@ namespace VAMvarmanager
 
             if (cbRestoreEx.Checked)
             {
-                varmanager.varCounts vc = vm.RestoreAllvarsEx(clbFoldersRestore.CheckedItems, clbCreatorsRestore.CheckedItems);
+                varmanager.varCounts vc = vm.RestoreAllvarsEx(clbFoldersRestore.CheckedItems, clbCreatorsRestore.CheckedItems, cbOverwrite.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
             else
             {
-                varmanager.varCounts vc = vm.RestoreAllvars();
+                varmanager.varCounts vc = vm.RestoreAllvars(cbOverwrite.Checked);
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -695,7 +698,7 @@ namespace VAMvarmanager
         {
             Cursor = Cursors.WaitCursor;
 
-            varmanager.varCounts vc = vm.MoveOldVarVersions();
+            varmanager.varCounts vc = vm.MoveOldVarVersions(cbOverwrite.Checked);
             lblVamcount.Text = vc.countVAMvars.ToString();
             lblBackupcount.Text = vc.countBackupvars.ToString();
 
@@ -900,6 +903,7 @@ namespace VAMvarmanager
         {
             List<string> lstReturn = new List<string> ();
 
+            lstReturn.Add(@"\Custom\PluginPresets");
             if (cbSavesScene.Checked) { lstReturn.Add(@"\Saves\scene"); }
             if (cbUIAssist.Checked) { lstReturn.Add(@"\Saves\PluginData\JayJayWon\UIAssist"); }
             if (cbAppearance.Checked) { lstReturn.Add(@"\Custom\Atom\Person\Appearance"); }
@@ -989,7 +993,7 @@ namespace VAMvarmanager
             {
                 saveLastActivevars();
 
-                varmanager.varCounts vc = vm.RestoreVarConfig(ofdVarConfig.FileName); ;
+                varmanager.varCounts vc = vm.RestoreVarConfig(ofdVarConfig.FileName, cbOverwrite.Checked); ;
                 lblVamcount.Text = vc.countVAMvars.ToString();
                 lblBackupcount.Text = vc.countBackupvars.ToString();
             }
@@ -1060,7 +1064,7 @@ namespace VAMvarmanager
 
             saveLastActivevars();
 
-            varmanager.varCounts vc = vm.restoreLastVarConfig(lastActiveVarstemp); ;
+            varmanager.varCounts vc = vm.restoreLastVarConfig(lastActiveVarstemp, cbOverwrite.Checked); ;
             lblVamcount.Text = vc.countVAMvars.ToString();
             lblBackupcount.Text = vc.countBackupvars.ToString();
 
